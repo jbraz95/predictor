@@ -17,12 +17,11 @@ def run():
     tasks = ["'BASIC_PREPARATION'", "'CREATE_JPEGS'"]
     app = "'task-manager'"
     datacenter = "'atlas-xcms-eu-west1'"
-    time = '[2m]'
 
     for task in tasks:
         #prediction = getPrediction()
         filters = '{app=' + app + ',datacenter=' + datacenter + ', task_type=' + task + ',force="false"}'
-        actualValue = get_actual_value(server = server, metric = "incoming_task_count_total", filters = filters)
+        actualValue = get_actual_value(server=server, metric="incoming_task_count_total", filters=filters)
         print(actualValue)
 
         ietc_started = 'incoming_event_count_total{app=' + app + ',datacenter=' + datacenter + ', task_type=' + task + \
