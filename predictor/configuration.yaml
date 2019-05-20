@@ -1,0 +1,4 @@
+server:
+  url: http://prometheus.xite.com:9090
+  datacenter: "'atlas-xcms-eu-west1'"
+  app: "'task-manager'"

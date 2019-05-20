@@ -1,28 +1,21 @@
 import sys
+from file_loader.config_loader import *
 from api_calls.general_api_calls import get_actual_value
 from prediction.regression import get_prediction
 
 
-def get_server():
-    if len(sys.argv) > 1:
-        return sys.argv[1]
-    else:
-        print("You have to add the server and port to use this tool!")
-        print("Ex: python3 -m predictor http://www.server.com:9090")
-        sys.exit()
-
-
 def run():
     # Variables
-    server = get_server()
+    config_file = "predictor/configuration.yaml"
+    app = get_app(config_file)
+    datacenter = get_datacenter(config_file)
+    server = get_server(config_file)
     tasks = ["'BASIC_PREPARATION'", "'CREATE_JPEGS'"]
     # finish, started, terminated
     model_list = [[[- 1.9427715755, 1], [+ 2.8701723231, 1], [- 0.1042482924, 1], [+ 4.9257723939, 1]],
                   [[- 1.1012672705, 1], [+ 2.0970134380, 1], [- 0.5041718980, 2], [+ 1.3642873561, 1]]]
-    index = 0
-    app = "'task-manager'"
-    datacenter = "'atlas-xcms-eu-west1'"
 
+    index = 0
     for task in tasks:
         print("Name of task type: " + task)
         query_list = ['incoming_event_count_total{app=' + app + ',datacenter=' + datacenter + ', task_type=' +
@@ -42,4 +35,3 @@ def run():
         print("The number of incoming tasks is: " + str(actual_value))
 
         index += 1
-
