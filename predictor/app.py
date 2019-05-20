@@ -1,32 +1,40 @@
-import requests, sys
+import requests
+import sys
+from api_calls.general_api_calls import get_actual_value
 
-# Variables
-server = sys.argv[1]
-tasks = ["'BASIC_PREPARATION'", "'CREATE_JPEGS'"]
-app = "'task-manager'"
-datacenter = "'atlas-xcms-eu-west1'"
-time = '[2m]'
+def getserver():
+    if len(sys.argv) > 1:
+        return sys.argv[1]
+    else:
+        print("You have to add the server and port to use this tool!")
+        print("Ex: python3 -m predictor http://www.server.com:9090")
+        sys.exit()
 
-for task in tasks:
-    IECT_Started = 'incoming_event_count_total{app=' + app + \
-        ',datacenter=' + datacenter + ', task_type=' + task + \
-        ',event_type="STARTED"}'
-    IECT_Finished = 'incoming_event_count_total{app=' + app + \
-        ',datacenter=' + datacenter + ', task_type=' + task + \
-        ',event_type="FINISHED"}'
-    IECT_Terminated = 'incoming_event_count_total{app=' + app + \
-        ',datacenter=' + datacenter + ', task_type=' + task + \
-        ',event_type="TERMINATED"}'
-    ITCT = 'incoming_task_count_total{app=' + app + \
-        ',datacenter=' + datacenter + ', task_type=' + task + \
-        ',force="false"}'
 
-    metrics = [IECT_Started, IECT_Finished, IECT_Terminated, ITCT]
+def run():
+    # Variables
+    server = getserver()
+    tasks = ["'BASIC_PREPARATION'", "'CREATE_JPEGS'"]
+    app = "'task-manager'"
+    datacenter = "'atlas-xcms-eu-west1'"
+    time = '[2m]'
 
-    for metric in metrics:
-        response = requests.get(server+'/api/v1/query'.format(sys.argv[1]) \
-            , params={'query': metric+time})
-        metric = response.json()['data']['result'][0]['values']
-        print(metric)
+    for task in tasks:
+        #prediction = getPrediction()
+        filters = '{app=' + app + ',datacenter=' + datacenter + ', task_type=' + task + ',force="false"}'
+        actualValue = get_actual_value(server = server, metric = "incoming_task_count_total", filters = filters)
+        print(actualValue)
 
-    print(metrics)
+        ietc_started = 'incoming_event_count_total{app=' + app + ',datacenter=' + datacenter + ', task_type=' + task + \
+                       ',event_type="STARTED"}'
+        ietc_finished = 'incoming_event_count_total{app=' + app + ',datacenter=' + datacenter + ', task_type=' + task \
+                        + ',event_type="FINISHED"}'
+        ietc_terminated = 'incoming_event_count_total{app=' + app + ',datacenter=' + datacenter + ', task_type=' + task\
+                          + ',event_type="TERMINATED"}'
+        itct = 'incoming_task_count_total{app=' + app + \
+               ',datacenter=' + datacenter + ', task_type=' + task + \
+               ',force="false"}'
+
+        metrics = [ietc_started, ietc_finished, ietc_terminated, itct]
+
+
