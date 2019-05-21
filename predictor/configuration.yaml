@@ -4,7 +4,8 @@ server:
   app: "'task-manager'"
 
 regression:
-  - incoming_task_total_count-BASIC_PREPARATION:
+  - incoming_task_count_total-BASIC_PREPARATION:
+      predict: "incoming_task_count_total"
       metrics:
         - incoming_event_count_total:
             task_type: "FINISHED"
@@ -20,7 +21,8 @@ regression:
             exp: "1"
       constant: "+4.9257723939"
       task_type: "BASIC_PREPARATION"
-  - incoming_task_total_count-CREATE_JPEGS:
+  - incoming_task_count_total-CREATE_JPEGS:
+      predict: "incoming_task_count_total"
       metrics:
         - incoming_event_count_total:
             task_type: "FINISHED"
@@ -36,7 +38,8 @@ regression:
             exp: "2"
       constant: "+1.3642873561"
       task_type: "CREATE_JPEGS"
-  - incoming_task_total_count-FUBO:
+  - incoming_task_count_total-FUBO:
+      predict: "incoming_task_count_total"
       metrics:
         - incoming_event_count_total:
             task_type: "FINISHED"
@@ -48,7 +51,8 @@ regression:
             exp: "1"
       constant: "-7.8718054068"
       task_type: "FUBO"
-  - incoming_task_total_count-PMT:
+  - incoming_task_count_total-PMT:
+      predict: "incoming_task_count_total"
       metrics:
         - incoming_event_count_total:
             task_type: "FINISHED"
@@ -64,7 +68,8 @@ regression:
             exp: "1"
       constant: "+2.2319223380"
       task_type: "PMT"
-  - incoming_task_total_count-TOA:
+  - incoming_task_count_total-TOA:
+      predict: "incoming_task_count_total"
       metrics:
         - incoming_event_count_total:
             task_type: "FINISHED"
@@ -80,7 +85,8 @@ regression:
             exp: "1"
       constant: "+2.4275736945"
       task_type: "TOA"
-  - incoming_task_total_count-TOA_4K:
+  - incoming_task_count_total-TOA_4K:
+      predict: "incoming_task_count_total"
       metrics:
         - incoming_event_count_total:
             task_type: "FINISHED"
@@ -96,7 +102,8 @@ regression:
             exp: "1"
       constant: "-1.9996214927"
       task_type: "TOA_4K"
-  - incoming_task_total_count-VESET_BELGIUM:
+  - incoming_task_count_total-VESET_BELGIUM:
+      predict: "incoming_task_count_total"
       metrics:
         - incoming_event_count_total:
             task_type: "FINISHED"
@@ -113,6 +120,7 @@ regression:
       constant: "-3.6225320092"
       task_type: "VESET_BELGIUM"
   - task_in_failure:
+      predict: "task_in_failure"
       metrics:
         - incoming_event_count_total:
             task_type: "ERROR"
