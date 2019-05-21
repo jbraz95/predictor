@@ -2,3 +2,121 @@ server:
   url: http://prometheus.xite.com:9090
   datacenter: "'atlas-xcms-eu-west1'"
   app: "'task-manager'"
+
+regression:
+  - incoming_task_total_count-BASIC_PREPARATION:
+      metrics:
+        - incoming_event_count_total:
+            task_type: "FINISHED"
+            value: "-1.9427715755"
+            exp: "1"
+        - incoming_event_count_total:
+            task_type: "STARTED"
+            value: "+2.8701723231"
+            exp: "1"
+        - incoming_event_count_total:
+            task_type: "TERMINATED"
+            value: "-0.1042482924"
+            exp: "1"
+      constant: "+4.9257723939"
+      task_type: "BASIC_PREPARATION"
+  - incoming_task_total_count-CREATE_JPEGS:
+      metrics:
+        - incoming_event_count_total:
+            task_type: "FINISHED"
+            value: "-1.1012672705"
+            exp: "1"
+        - incoming_event_count_total:
+            task_type: "STARTED"
+            value: "+2.0970134380"
+            exp: "1"
+        - incoming_event_count_total:
+            task_type: "TERMINATED"
+            value: "-0.5041718980"
+            exp: "2"
+      constant: "+1.3642873561"
+      task_type: "CREATE_JPEGS"
+  - incoming_task_total_count-FUBO:
+      metrics:
+        - incoming_event_count_total:
+            task_type: "FINISHED"
+            value: "-1.6098391394"
+            exp: "1"
+        - incoming_event_count_total:
+            task_type: "STARTED"
+            value: "+2.7462404654"
+            exp: "1"
+      constant: "-7.8718054068"
+      task_type: "FUBO"
+  - incoming_task_total_count-PMT:
+      metrics:
+        - incoming_event_count_total:
+            task_type: "FINISHED"
+            value: "-1.0587647440"
+            exp: "1"
+        - incoming_event_count_total:
+            task_type: "STARTED"
+            value: "+1.6666665789"
+            exp: "1"
+        - incoming_event_count_total:
+            task_type: "TERMINATED"
+            value: "+0.7555271460"
+            exp: "1"
+      constant: "+2.2319223380"
+      task_type: "PMT"
+  - incoming_task_total_count-TOA:
+      metrics:
+        - incoming_event_count_total:
+            task_type: "FINISHED"
+            value: "-1.1716673056"
+            exp: "1"
+        - incoming_event_count_total:
+            task_type: "STARTED"
+            value: "+1.9749673030"
+            exp: "1"
+        - incoming_event_count_total:
+            task_type: "TERMINATED"
+            value: "+3.7246558313 "
+            exp: "1"
+      constant: "+2.4275736945"
+      task_type: "TOA"
+  - incoming_task_total_count-TOA_4K:
+      metrics:
+        - incoming_event_count_total:
+            task_type: "FINISHED"
+            value: "+0.5782614032"
+            exp: "1"
+        - incoming_event_count_total:
+            task_type: "STARTED"
+            value: "+0.3926033457"
+            exp: "1"
+        - incoming_event_count_total:
+            task_type: "TERMINATED"
+            value: "-1.3018056615"
+            exp: "1"
+      constant: "-1.9996214927"
+      task_type: "TOA_4K"
+  - incoming_task_total_count-VESET_BELGIUM:
+      metrics:
+        - incoming_event_count_total:
+            task_type: "FINISHED"
+            value: "0.3502647401"
+            exp: "1"
+        - incoming_event_count_total:
+            task_type: "STARTED"
+            value: "+0.6948983163"
+            exp: "1"
+        - incoming_event_count_total:
+            task_type: "TERMINATED"
+            value: "-4.9593665539"
+            exp: "1"
+      constant: "-3.6225320092"
+      task_type: "VESET_BELGIUM"
+  - task_in_failure:
+      metrics:
+        - incoming_event_count_total:
+            task_type: "ERROR"
+            value: "+0.3588034606"
+            exp: "1"
+      constant: "52.0885583682"
+      task_type: "BASIC_PREPARATION"
