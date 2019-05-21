@@ -34,3 +34,9 @@ def get_query(app, datacenter, case, variable_to_predict):
     result = possible_metrics[metric](app=app, datacenter=datacenter, case=case,
                                       variable_to_predict=variable_to_predict)
     return result
+
+
+def get_time_series():
+    return 1
+
+
