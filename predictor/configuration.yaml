@@ -2,6 +2,7 @@ server:
   url: http://prometheus.xite.com:9090
   datacenter: "'atlas-xcms-eu-west1'"
   app: "'task-manager'"
+  kubernetes_namespace: "'production-task-manager'"
 
 regression:
   - incoming_task_count_total-BASIC_PREPARATION:

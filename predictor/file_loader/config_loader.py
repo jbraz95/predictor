@@ -24,5 +24,10 @@ def get_app(file):
     return load_file(file)["server"]["app"]
 
 
+def get_kubernetes_namespace(file):
+    return load_file(file)["server"]["kubernetes_namespace"]
+
+
 def get_regression_info(file):
     return load_file(file)['regression']
+
