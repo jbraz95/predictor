@@ -2,9 +2,19 @@ from file_loader.config_loader import *
 from api_calls.general_api_calls import get_actual_value, get_query_actual, get_values
 from prediction.regression import get_regression
 from prediction.arima import get_arima_forecast
+import time
 
 
-def run():
+def check_time(previous_time):
+    actual_time = time.time()
+    if actual_time >= (previous_time+60):
+        return True
+    else:
+        time.sleep(5)
+        return False
+
+
+def monitor():
     # Variables
     config_file = "predictor/configuration.yaml"
     app = get_app(config_file)
@@ -42,3 +52,14 @@ def run():
             print(arima_constant)
             print("The next " + str(forecast_time) + " minutes will have these values (no constant): ")
             print(arima_no_constant)
+
+
+def run():
+    previous_time = 0
+    while True:
+        if check_time(previous_time):
+            print(previous_time, time.time())
+            previous_time = time.time()
+            monitor()
+        else:
+            print(previous_time, time.time())
