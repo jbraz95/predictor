@@ -31,3 +31,11 @@ def get_kubernetes_namespace(file):
 def get_regression_info(file):
     return load_file(file)['regression']
 
+
+def get_forecast_time(file):
+    return load_file(file)["arima"]["forecast_time"]
+
+
+def get_forecast_training_time(file):
+    return load_file(file)["arima"]["forecast_training_time"]
+

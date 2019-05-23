@@ -4,6 +4,10 @@ server:
   app: "'task-manager'"
   kubernetes_namespace: "'production-task-manager'"
 
+arima:
+  forecast_time: 60
+  forecast_training_time: 300
+
 regression:
   - incoming_task_count_total-BASIC_PREPARATION:
       predict: "incoming_task_count_total"

@@ -11,13 +11,13 @@ def run():
     datacenter = get_datacenter(config_file)
     server = get_server(config_file)
     kubernetes_namespace = get_kubernetes_namespace(config_file)
-    forecast_time = 60
-    forecast_training_time = 300
+    forecast_time = get_forecast_time(config_file)
+    forecast_training_time = get_forecast_training_time(config_file)
 
     regression_info = get_regression_info(file=config_file)
     for case in regression_info:
         for metric in case:
-            print("Name of metric: " + metric)
+            print("----------------Name of metric: " + metric + "----------------")
 
             # Actual value
             query = get_query_actual(app=app, datacenter=datacenter, case=case, metric_to_check=metric,

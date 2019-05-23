@@ -5,7 +5,7 @@ from numpy import around
 def adapt_time_series(series):
     value_series = []
     for time, value in series:
-        value_series.append(float(value))
+        value_series.append(int(value))
     return value_series
 
 
