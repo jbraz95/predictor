@@ -1,8 +1,28 @@
 from statsmodels.tsa.arima_model import ARIMA
-from api_calls.general_api_calls import get_time_series
+from numpy import around
 
 
-def get_arima_forecast():
-    series = get_time_series()
+def adapt_time_series(series):
+    value_series = []
+    for time, value in series:
+        value_series.append(float(value))
+    return value_series
 
-    return 1
+
+def get_arima_forecast(series, p, d, q, forecast, trend):
+    series_adapted = adapt_time_series(series)
+    forecast_result = []
+
+    try:
+        model = ARIMA(series_adapted, order=(p, d, q))
+        model_fit = model.fit(disp=0, trend=trend)
+        forecast_result = model_fit.forecast(steps=forecast)[0]
+    except Exception as e:
+        print(e)
+        print(series_adapted)
+        print(forecast_result)
+    finally:
+        if len(forecast_result) == 0:
+            forecast_result = [series_adapted[0]] * forecast
+
+    return around(forecast_result)
