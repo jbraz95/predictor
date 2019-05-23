@@ -5,18 +5,16 @@ from prediction.arima import get_arima_forecast
 import time
 
 
-def check_time(previous_time):
+def check_time(previous_time, time_span):
     actual_time = time.time()
-    if actual_time >= (previous_time+60):
+    if actual_time >= (previous_time+time_span):
         return True
     else:
-        time.sleep(5)
         return False
 
 
-def monitor():
+def monitor(config_file):
     # Variables
-    config_file = "predictor/configuration.yaml"
     app = get_app(config_file)
     datacenter = get_datacenter(config_file)
     server = get_server(config_file)
@@ -56,10 +54,11 @@ def monitor():
 
 def run():
     previous_time = 0
+    config_file = "predictor/configuration.yaml"
+    time_span = get_monitoring_time_span(config_file)
     while True:
-        if check_time(previous_time):
-            print(previous_time, time.time())
+        if check_time(previous_time, time_span=time_span):
             previous_time = time.time()
-            monitor()
+            monitor(config_file=config_file)
         else:
-            print(previous_time, time.time())
+            time.sleep(5)

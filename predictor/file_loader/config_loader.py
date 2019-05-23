@@ -17,15 +17,19 @@ def get_server(file):
 
 
 def get_datacenter(file):
-    return load_file(file)["server"]["datacenter"]
+    return load_file(file)["monitoring"]["datacenter"]
 
 
 def get_app(file):
-    return load_file(file)["server"]["app"]
+    return load_file(file)["monitoring"]["app"]
 
 
 def get_kubernetes_namespace(file):
-    return load_file(file)["server"]["kubernetes_namespace"]
+    return load_file(file)["monitoring"]["kubernetes_namespace"]
+
+
+def get_monitoring_time_span(file):
+    return load_file(file)["monitoring"]["time_span"]
 
 
 def get_regression_info(file):
