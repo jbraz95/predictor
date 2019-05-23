@@ -32,6 +32,10 @@ def get_monitoring_time_span(file):
     return load_file(file)["monitoring"]["time_span"]
 
 
+def get_monitoring_time_span_sleep(file):
+    return load_file(file)["monitoring"]["time_span_sleep"]
+
+
 def get_regression_info(file):
     return load_file(file)['regression']
 

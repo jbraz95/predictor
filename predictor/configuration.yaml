@@ -6,6 +6,7 @@ monitoring:
   app: "'task-manager'"
   kubernetes_namespace: "'production-task-manager'"
   time_span: 60
+  time_span_sleep: 5
 
 arima:
   forecast_time: 60

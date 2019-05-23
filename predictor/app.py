@@ -56,9 +56,10 @@ def run():
     previous_time = 0
     config_file = "predictor/configuration.yaml"
     time_span = get_monitoring_time_span(config_file)
+    time_span_sleep = get_monitoring_time_span_sleep(config_file)
     while True:
         if check_time(previous_time, time_span=time_span):
             previous_time = time.time()
             monitor(config_file=config_file)
         else:
-            time.sleep(5)
+            time.sleep(time_span_sleep)
