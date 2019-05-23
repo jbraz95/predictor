@@ -16,6 +16,19 @@ def get_actual_value(server, query):
     return metric
 
 
+# Giving a server, a query and the number of minutes you want to get, it gets you the timeseries of the query
+def get_values(server, query, minutes):
+    time_range = "["+str(minutes)+"m]"
+    response = requests.get(server + '/api/v1/query', params={'query': query + time_range})
+
+    if len(response.json()['data']['result']) == 0:
+        return [[0, 0]]
+
+    metric = response.json()['data']['result'][0]['values']
+
+    return metric
+
+
 # Gives you a query for knowing the actual value of incoming task count total
 def itct_actual(app, datacenter, case, metric_to_check, kubernetes_namespace):
     task_type = case[metric_to_check]['task_type']
@@ -69,6 +82,3 @@ def get_query_regression(app, datacenter, case, variable_to_predict, metric, mod
                                                  kubernetes_namespace=kubernetes_namespace)
     return result
 
-
-def get_time_series():
-    return 1
