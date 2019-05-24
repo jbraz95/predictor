@@ -42,6 +42,12 @@ def monitor(config_file):
             query = get_query_actual(app=app, datacenter=datacenter, case=case, metric_to_check=metric,
                                      kubernetes_namespace=kubernetes_namespace)
             time_series = get_values(server=server, query=query, minutes=forecast_training_time)
+            #if metric == "incoming_task_count_total-TOA":
+            #print("SPECIAL CASEEEEE!!!!!!!!!!!!!!!!!")
+            #arima_constant = get_arima_forecast(series=time_series, p=4, d=1, q=0, forecast=forecast_time,
+            #                                    trend='c')
+            #arima_no_constant = get_arima_forecast(series=time_series, p=0, d=1, q=3, forecast=forecast_time,
+            #                                       trend='nc')
             arima_constant = get_arima_forecast(series=time_series, p=1, d=1, q=0, forecast=forecast_time,
                                                 trend='c')
             arima_no_constant = get_arima_forecast(series=time_series, p=0, d=1, q=13, forecast=forecast_time,
