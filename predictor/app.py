@@ -1,7 +1,7 @@
 from file_loader.config_loader import *
 from api_calls.general_api_calls import get_actual_value, get_query_actual, get_values
 from prediction.regression import get_regression
-from prediction.arima import get_arima_forecast
+from prediction.arima import get_arima_forecast_old, get_arima_forecast
 import time
 
 
@@ -42,20 +42,30 @@ def monitor(config_file):
             query = get_query_actual(app=app, datacenter=datacenter, case=case, metric_to_check=metric,
                                      kubernetes_namespace=kubernetes_namespace)
             time_series = get_values(server=server, query=query, minutes=forecast_training_time)
-            #if metric == "incoming_task_count_total-TOA":
-            #print("SPECIAL CASEEEEE!!!!!!!!!!!!!!!!!")
-            #arima_constant = get_arima_forecast(series=time_series, p=4, d=1, q=0, forecast=forecast_time,
-            #                                    trend='c')
-            #arima_no_constant = get_arima_forecast(series=time_series, p=0, d=1, q=3, forecast=forecast_time,
-            #                                       trend='nc')
-            arima_constant = get_arima_forecast(series=time_series, p=1, d=1, q=0, forecast=forecast_time,
-                                                trend='c')
-            arima_no_constant = get_arima_forecast(series=time_series, p=0, d=1, q=13, forecast=forecast_time,
-                                                   trend='nc')
-            print("The next " + str(forecast_time) + " minutes will have these values (constant): ")
-            print(arima_constant)
-            print("The next " + str(forecast_time) + " minutes will have these values (no constant): ")
-            print(arima_no_constant)
+            print(query)
+            print(time_series)
+
+            params = get_params_arima_metric(file=config_file, metric=metric)
+
+            for param in params:
+                name = list(param.keys())[0]
+                p = param[name]['p']
+                d = param[name]['d']
+                q = param[name]['q']
+                trend = param[name]['trend']
+                print(p)
+                print(d)
+                print(q)
+                print(trend)
+
+                arima = get_arima_forecast_old(series=time_series, p=p, d=d, q=q, forecast=forecast_time,
+                                               trend=trend)
+
+                if trend == 'nc':
+                    print("The next " + str(forecast_time) + " minutes will have these values (no constant): ")
+                else:
+                    print("The next " + str(forecast_time) + " minutes will have these values (constant): ")
+                print(arima)
 
 
 def run():

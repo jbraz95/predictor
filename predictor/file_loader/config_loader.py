@@ -47,3 +47,10 @@ def get_forecast_time(file):
 def get_forecast_training_time(file):
     return load_file(file)["arima"]["forecast_training_time"]
 
+
+def get_params_arima_metric(file, metric):
+    for metric_set in load_file(file)["arima"]["metrics"]:
+        metric_name = list(metric_set.keys())[0]
+        if metric == metric_name:
+            return metric_set[metric]
+

@@ -9,7 +9,11 @@ def adapt_time_series(series):
     return value_series
 
 
-def get_arima_forecast(series, p, d, q, forecast, trend):
+def get_arima_forecast():
+    return 1
+
+
+def get_arima_forecast_old(series, p, d, q, forecast, trend):
     series_adapted = adapt_time_series(series)
     forecast_result = []
 
