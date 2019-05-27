@@ -45,6 +45,7 @@ def monitor(config_file):
 
             params = get_params_arima_metric(file=config_file, metric=metric)
 
+            print(time_series)
             for param in params:
                 name = list(param.keys())[0]
                 p = param[name]['p']

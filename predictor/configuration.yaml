@@ -32,7 +32,7 @@ arima:
         - constant_no:
             p: 0
             d: 1
-            q: 10
+            q: 8
             trend: 'nc'
     - incoming_task_count_total-FUBO:
         - constant_yes:
@@ -95,11 +95,6 @@ arima:
             d: 0
             q: 0
             trend: 'c'
-        - constant_no:
-            p: 0
-            d: 1
-            q: 1
-            trend: 'nc'
 
 regression:
   - incoming_task_count_total-BASIC_PREPARATION:
