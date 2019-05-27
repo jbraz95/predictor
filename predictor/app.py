@@ -42,7 +42,6 @@ def monitor(config_file):
             query = get_query_actual(app=app, datacenter=datacenter, case=case, metric_to_check=metric,
                                      kubernetes_namespace=kubernetes_namespace)
             time_series = get_values(server=server, query=query, minutes=forecast_training_time)
-
             params = get_params_arima_metric(file=config_file, metric=metric)
 
             print(time_series)

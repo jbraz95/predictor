@@ -38,6 +38,15 @@ def itct_actual(app, datacenter, case, metric_to_check, kubernetes_namespace):
     return query
 
 
+# Gives you a query for knowing the actual value of forced incoming task count total
+def itct_actual_forced(app, datacenter, case, metric_to_check, kubernetes_namespace):
+    task_type = case[metric_to_check]['task_type']
+    metric = case[metric_to_check]['predict']
+    query = metric + '{app=' + app + ',datacenter=' + datacenter + ',kubernetes_namespace=' + kubernetes_namespace + \
+            ',task_type="' + task_type + '",force="true"} '
+    return query
+
+
 # Gives you a query for knowing the actual value of task in failure
 def tif_actual(app, datacenter, case, metric_to_check, kubernetes_namespace):
     metric = case[metric_to_check]['predict']
