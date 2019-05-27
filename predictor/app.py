@@ -1,7 +1,7 @@
 from file_loader.config_loader import *
 from api_calls.general_api_calls import get_actual_value, get_query_actual, get_values
 from prediction.regression import get_regression
-from prediction.arima import get_arima_forecast_old, get_arima_forecast
+from prediction.arima import get_arima_forecast
 import time
 
 
@@ -42,8 +42,6 @@ def monitor(config_file):
             query = get_query_actual(app=app, datacenter=datacenter, case=case, metric_to_check=metric,
                                      kubernetes_namespace=kubernetes_namespace)
             time_series = get_values(server=server, query=query, minutes=forecast_training_time)
-            print(query)
-            print(time_series)
 
             params = get_params_arima_metric(file=config_file, metric=metric)
 
@@ -53,13 +51,9 @@ def monitor(config_file):
                 d = param[name]['d']
                 q = param[name]['q']
                 trend = param[name]['trend']
-                print(p)
-                print(d)
-                print(q)
-                print(trend)
 
-                arima = get_arima_forecast_old(series=time_series, p=p, d=d, q=q, forecast=forecast_time,
-                                               trend=trend)
+                arima = get_arima_forecast(series=time_series, p=p, d=d, q=q, forecast=forecast_time,
+                                           trend=trend)
 
                 if trend == 'nc':
                     print("The next " + str(forecast_time) + " minutes will have these values (no constant): ")

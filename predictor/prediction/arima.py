@@ -9,11 +9,7 @@ def adapt_time_series(series):
     return value_series
 
 
-def get_arima_forecast():
-    return 1
-
-
-def get_arima_forecast_old(series, p, d, q, forecast, trend):
+def get_arima_forecast(series, p, d, q, forecast, trend):
     series_adapted = adapt_time_series(series)
     forecast_result = []
 
@@ -23,10 +19,10 @@ def get_arima_forecast_old(series, p, d, q, forecast, trend):
         forecast_result = model_fit.forecast(steps=forecast)[0]
     except Exception as e:
         print(e)
-        print(series_adapted)
         print(forecast_result)
     finally:
         if len(forecast_result) == 0:
-            forecast_result = [series_adapted[0]] * forecast
+            length = len(series_adapted) - 1
+            forecast_result = [series_adapted[length]] * forecast
 
     return around(forecast_result)
