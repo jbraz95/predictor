@@ -22,5 +22,9 @@ def get_regression(server, case, variable_to_predict, app, datacenter, kubernete
                                       kubernetes_namespace=kubernetes_namespace)
     forced_cases = float(get_actual_value(server=server, query=query_forced)[1])
     prediction -= forced_cases
+
+    if prediction < 0:
+        prediction = 0
+
     prediction = round(prediction, 0)
     return prediction
