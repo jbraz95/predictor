@@ -2,6 +2,7 @@ from file_loader.config_loader import *
 from api_calls.general_api_calls import get_actual_value, get_query_actual, get_values
 from prediction.regression import get_regression
 from prediction.arima import get_arima_forecast
+from slack_integration.slackbot import run_bot
 import time
 
 
@@ -67,6 +68,10 @@ def run():
     config_file = "predictor/configuration.yaml"
     time_span = get_monitoring_time_span(config_file)
     time_span_sleep = get_monitoring_time_span_sleep(config_file)
+    token = get_slack_token(config_file)
+    channel = get_slack_channel(config_file)
+
+    run_bot(token=token, channel=channel)
     while True:
         if check_time(previous_time, time_span=time_span):
             previous_time = time.time()

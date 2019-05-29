@@ -1,6 +1,10 @@
 server:
   url: http://prometheus.xite.com:9090
 
+slack:
+  token: xoxb-428326618882-651131019078-j3m1goldPEUVJvlTVu0sQ6re
+  channel: CCKHS9DBJ
+
 monitoring:
   datacenter: "'atlas-xcms-eu-west1'"
   app: "'task-manager'"

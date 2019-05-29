@@ -16,6 +16,14 @@ def get_server(file):
     return load_file(file)["server"]["url"]
 
 
+def get_slack_token(file):
+    return load_file(file)["slack"]["token"]
+
+
+def get_slack_channel(file):
+    return load_file(file)["slack"]["channel"]
+
+
 def get_datacenter(file):
     return load_file(file)["monitoring"]["datacenter"]
 
