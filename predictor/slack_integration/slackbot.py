@@ -1,9 +1,9 @@
 import slack
 
 
-def run_bot(token, channel):
+def send_message(token, channel, message):
     client = slack.WebClient(token)
     client.chat_postMessage(
         channel=channel,
-        text='Sending message!'
+        text=message
     )
