@@ -2,7 +2,7 @@ from file_loader.config_loader import *
 from api_calls.general_api_calls import get_actual_value, get_query_actual, get_values
 from prediction.regression import get_regression
 from prediction.arima import get_arima_forecast
-from slack_integration.slackbot import send_message
+from slack_integration.slackbot import send_image, send_message
 import time
 
 
@@ -72,6 +72,8 @@ def run():
     channel = get_slack_channel(config_file)
 
     send_message(token=token, channel=channel, message="Testing!")
+    send_image(token=token, channel=channel, message="A chart",
+               image_url="https://upload.wikimedia.org/wikipedia/commons/9/92/Logo_XITE_2017_zwart.png")
     while True:
         if check_time(previous_time, time_span=time_span):
             previous_time = time.time()
