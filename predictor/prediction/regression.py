@@ -20,9 +20,7 @@ def get_regression(server, case, variable_to_predict, app, datacenter, kubernete
     prediction += float(case[variable_to_predict]["constant"])
     query_forced = itct_actual_forced(app=app, datacenter=datacenter, case=case, metric_to_check=variable_to_predict,
                                       kubernetes_namespace=kubernetes_namespace)
-    print(query_forced)
     forced_cases = float(get_actual_value(server=server, query=query_forced)[1])
-    print("There are: " + str(forced_cases) + " number of forced cases")
     prediction -= forced_cases
     prediction = round(prediction, 0)
     return prediction
