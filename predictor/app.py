@@ -3,7 +3,7 @@ from api_calls.general_api_calls import get_actual_value, get_query_actual, get_
 from prediction.regression import get_regression
 from prediction.arima import get_arima_forecast
 from slack_integration.slackbot import send_image, send_message
-from generate_images.image_generator import generate_line_chart
+from generate_images.image_generator import generate_actual_chart, generate_arima_chart
 import time
 
 
@@ -46,7 +46,7 @@ def monitor(config_file):
             time_series = get_values(server=server, query=query, minutes=forecast_training_time)
             params = get_params_arima_metric(file=config_file, metric=metric)
 
-            url = generate_line_chart(timeseries=time_series, name=metric)
+            url = generate_actual_chart(timeseries=time_series, name=metric)
             print(url)
 
             # print(time_series)
@@ -65,6 +65,9 @@ def monitor(config_file):
                 else:
                     print("The next " + str(forecast_time) + " minutes will have these values (constant): ")
                 print(arima)
+
+                url = generate_arima_chart(timeseries=arima, name=metric)
+                print(url)
 
 
 def run():

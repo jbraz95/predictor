@@ -14,23 +14,39 @@ def adapt_time_series(series):
     return [time_series, value_series]
 
 
-def generate_line_chart(timeseries, name):
-    base_url = "https://image-charts.com/chart"
-    type_chart = "?cht=lc"
-    size = "&chs=700x200"
-
+def generate_actual_chart(timeseries, name):
     data_parsed = adapt_time_series(timeseries)
     values = data_parsed[1]
     time = data_parsed[0]
 
     values_str = list_to_str(values)
 
-    data_url = "&chd=a:" + values_str
-
     min_y = str(values[0])
     max_y = str(values[len(values) - 1])
 
-    axis = "&chxt=x,y&chxs=0,s"
+    url = generate_url_chart(data=values_str, name=name, max_y=max_y, min_y=min_y)
+    return url
+
+
+def generate_arima_chart(timeseries, name):
+    values_str = list_to_str(timeseries)
+
+    min_y = str(timeseries[0])
+    max_y = str(timeseries[len(timeseries) - 1])
+
+    url = generate_url_chart(data=values_str, name=name, max_y=max_y, min_y=min_y)
+
+    return url
+
+
+def generate_url_chart(data, name, max_y, min_y):
+    base_url = "https://image-charts.com/chart"
+    type_chart = "?cht=lc"
+    size = "&chs=700x200"
+
+    data_url = "&chd=a:" + data
+
+    axis = "&chxt=x,y&chxs=0,s|1,s"
     range_chart = "&chxr=1," + min_y + "," + max_y
     title_chart = "&chtt=" + name
 
