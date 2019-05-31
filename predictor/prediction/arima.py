@@ -3,6 +3,12 @@ from numpy import around
 from api_calls.general_api_calls import adapt_time_series
 
 
+# It generates the forecast for a timeseries
+# series: a timeseries where the algorithm will get trained and will generate the forecast
+# p: parameter of AR (auto regressive)
+# d: parameter to differenciate the timeseries
+# q: parameter of MA (moving average)
+# trend: 'nc' = no constant | 'c' = constant
 def get_arima_forecast(series, p, d, q, forecast, trend):
     series_adapted = adapt_time_series(series)[1]
     forecast_result = []

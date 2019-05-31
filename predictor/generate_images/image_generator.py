@@ -1,12 +1,9 @@
 from api_calls.general_api_calls import adapt_time_series
 
-def list_to_str(values):
-    value_str = ""
-    for value in values:
-        value_str += str(value) + ","
-    return value_str
 
-
+# It generates a chart for timeseries (the timeseries that have not been adapted)
+# timeseries: array of a timeseries to be adapted
+# name: name of the chart
 def generate_timeseries_chart(timeseries, name):
     data_parsed = adapt_time_series(timeseries)
     values = data_parsed[1]
@@ -21,6 +18,9 @@ def generate_timeseries_chart(timeseries, name):
     return url
 
 
+# It generates a chart
+# data: array of data to be put on the chart
+# name: name of the chart
 def generate_data_chart(data, name):
     values_str = list_to_str(data)
 
@@ -32,6 +32,20 @@ def generate_data_chart(data, name):
     return url
 
 
+# Transforms a list to a string to put it into the URL generator
+# values: values to be transformed to a string
+def list_to_str(values):
+    value_str = ""
+    for value in values:
+        value_str += str(value) + ","
+    return value_str
+
+
+# Generates the url of the chart to be displayed
+# data: string with the data to be displayed in the chart
+# name: name of the chart
+# max_y: max value of axis Y
+# min_y: min value of axis Y
 def generate_url_chart(data, name, max_y, min_y):
     base_url = "https://image-charts.com/chart"
     type_chart = "?cht=lc"

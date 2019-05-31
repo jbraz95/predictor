@@ -46,7 +46,7 @@ def monitor(config_file):
             time_series = get_values(server=server, query=query, minutes=forecast_training_time)
             params = get_params_arima_metric(file=config_file, metric=metric)
 
-            #print(time_series)
+            # print(time_series)
             for param in params:
                 name = list(param.keys())[0]
                 p = param[name]['p']

@@ -105,15 +105,15 @@ regression:
       predict: "incoming_task_count_total"
       metrics:
         - incoming_event_count_total:
-            task_type: "FINISHED"
+            event_type: "FINISHED"
             value: "-1.9427715755"
             exp: "1"
         - incoming_event_count_total:
-            task_type: "STARTED"
+            event_type: "STARTED"
             value: "+2.8701723231"
             exp: "1"
         - incoming_event_count_total:
-            task_type: "TERMINATED"
+            event_type: "TERMINATED"
             value: "-0.1042482924"
             exp: "1"
       constant: "+4.9257723939"
@@ -122,15 +122,15 @@ regression:
       predict: "incoming_task_count_total"
       metrics:
         - incoming_event_count_total:
-            task_type: "FINISHED"
+            event_type: "FINISHED"
             value: "-1.1012672705"
             exp: "1"
         - incoming_event_count_total:
-            task_type: "STARTED"
+            event_type: "STARTED"
             value: "+2.0970134380"
             exp: "1"
         - incoming_event_count_total:
-            task_type: "TERMINATED"
+            event_type: "TERMINATED"
             value: "-0.5041718980"
             exp: "2"
       constant: "+1.3642873561"
@@ -139,11 +139,11 @@ regression:
       predict: "incoming_task_count_total"
       metrics:
         - incoming_event_count_total:
-            task_type: "FINISHED"
+            event_type: "FINISHED"
             value: "-1.6098391394"
             exp: "1"
         - incoming_event_count_total:
-            task_type: "STARTED"
+            event_type: "STARTED"
             value: "+2.7462404654"
             exp: "1"
       constant: "-7.8718054068"
@@ -152,15 +152,15 @@ regression:
       predict: "incoming_task_count_total"
       metrics:
         - incoming_event_count_total:
-            task_type: "FINISHED"
+            event_type: "FINISHED"
             value: "-1.0587647440"
             exp: "1"
         - incoming_event_count_total:
-            task_type: "STARTED"
+            event_type: "STARTED"
             value: "+1.6666665789"
             exp: "1"
         - incoming_event_count_total:
-            task_type: "TERMINATED"
+            event_type: "TERMINATED"
             value: "+0.7555271460"
             exp: "1"
       constant: "+2.2319223380"
@@ -169,15 +169,15 @@ regression:
       predict: "incoming_task_count_total"
       metrics:
         - incoming_event_count_total:
-            task_type: "FINISHED"
+            event_type: "FINISHED"
             value: "-1.1716673056"
             exp: "1"
         - incoming_event_count_total:
-            task_type: "STARTED"
+            event_type: "STARTED"
             value: "+1.9749673030"
             exp: "1"
         - incoming_event_count_total:
-            task_type: "TERMINATED"
+            event_type: "TERMINATED"
             value: "+3.7246558313 "
             exp: "1"
       constant: "+2.4275736945"
@@ -186,15 +186,15 @@ regression:
       predict: "incoming_task_count_total"
       metrics:
         - incoming_event_count_total:
-            task_type: "FINISHED"
+            event_type: "FINISHED"
             value: "+0.5782614032"
             exp: "1"
         - incoming_event_count_total:
-            task_type: "STARTED"
+            event_type: "STARTED"
             value: "+0.3926033457"
             exp: "1"
         - incoming_event_count_total:
-            task_type: "TERMINATED"
+            event_type: "TERMINATED"
             value: "-1.3018056615"
             exp: "1"
       constant: "-1.9996214927"
@@ -203,15 +203,15 @@ regression:
       predict: "incoming_task_count_total"
       metrics:
         - incoming_event_count_total:
-            task_type: "FINISHED"
+            event_type: "FINISHED"
             value: "0.3502647401"
             exp: "1"
         - incoming_event_count_total:
-            task_type: "STARTED"
+            event_type: "STARTED"
             value: "+0.6948983163"
             exp: "1"
         - incoming_event_count_total:
-            task_type: "TERMINATED"
+            event_type: "TERMINATED"
             value: "-4.9593665539"
             exp: "1"
       constant: "-3.6225320092"
@@ -220,7 +220,7 @@ regression:
       predict: "task_in_failure"
       metrics:
         - incoming_event_count_total:
-            task_type: "ERROR"
+            event_type: "ERROR"
             value: "+0.3588034606"
             exp: "1"
       constant: "52.0885583682"
