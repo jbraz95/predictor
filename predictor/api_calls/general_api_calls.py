@@ -91,3 +91,11 @@ def get_query_regression(app, datacenter, case, variable_to_predict, metric, mod
                                                  kubernetes_namespace=kubernetes_namespace)
     return result
 
+
+def adapt_time_series(series):
+    value_series = []
+    time_series = []
+    for time, value in series:
+        value_series.append(int(value))
+        time_series.append(float(time))
+    return [time_series, value_series]

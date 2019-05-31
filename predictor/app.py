@@ -1,9 +1,9 @@
 from file_loader.config_loader import *
-from api_calls.general_api_calls import get_actual_value, get_query_actual, get_values
-from prediction.regression import get_regression
+from api_calls.general_api_calls import get_actual_value, get_query_actual, get_values, adapt_time_series
+from prediction.regression import get_regression, get_regression_array
 from prediction.arima import get_arima_forecast
 from slack_integration.slackbot import send_image, send_message
-from generate_images.image_generator import generate_actual_chart, generate_arima_chart
+from generate_images.image_generator import generate_timeseries_chart, generate_data_chart
 import time
 
 
@@ -46,10 +46,7 @@ def monitor(config_file):
             time_series = get_values(server=server, query=query, minutes=forecast_training_time)
             params = get_params_arima_metric(file=config_file, metric=metric)
 
-            url = generate_actual_chart(timeseries=time_series, name=metric)
-            print(url)
-
-            # print(time_series)
+            #print(time_series)
             for param in params:
                 name = list(param.keys())[0]
                 p = param[name]['p']
@@ -66,8 +63,17 @@ def monitor(config_file):
                     print("The next " + str(forecast_time) + " minutes will have these values (constant): ")
                 print(arima)
 
-                url = generate_arima_chart(timeseries=arima, name=metric)
+                url = generate_data_chart(data=arima, name=metric)
                 print(url)
+
+            # Generate charts
+            url = generate_timeseries_chart(timeseries=time_series, name=metric)
+            print(url)
+            regression_array = get_regression_array(server=server, case=case, variable_to_predict=metric, app=app,
+                                                    datacenter=datacenter, kubernetes_namespace=kubernetes_namespace,
+                                                    time=60)
+            url = generate_data_chart(data=regression_array, name="regression")
+            print(url)
 
 
 def run():

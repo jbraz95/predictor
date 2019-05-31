@@ -1,16 +1,10 @@
 from statsmodels.tsa.arima_model import ARIMA
 from numpy import around
-
-
-def adapt_time_series(series):
-    value_series = []
-    for time, value in series:
-        value_series.append(int(value))
-    return value_series
+from api_calls.general_api_calls import adapt_time_series
 
 
 def get_arima_forecast(series, p, d, q, forecast, trend):
-    series_adapted = adapt_time_series(series)
+    series_adapted = adapt_time_series(series)[1]
     forecast_result = []
 
     try:

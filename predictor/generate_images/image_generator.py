@@ -1,3 +1,5 @@
+from api_calls.general_api_calls import adapt_time_series
+
 def list_to_str(values):
     value_str = ""
     for value in values:
@@ -5,16 +7,7 @@ def list_to_str(values):
     return value_str
 
 
-def adapt_time_series(series):
-    value_series = []
-    time_series = []
-    for time, value in series:
-        value_series.append(int(value))
-        time_series.append(float(time))
-    return [time_series, value_series]
-
-
-def generate_actual_chart(timeseries, name):
+def generate_timeseries_chart(timeseries, name):
     data_parsed = adapt_time_series(timeseries)
     values = data_parsed[1]
     time = data_parsed[0]
@@ -28,11 +21,11 @@ def generate_actual_chart(timeseries, name):
     return url
 
 
-def generate_arima_chart(timeseries, name):
-    values_str = list_to_str(timeseries)
+def generate_data_chart(data, name):
+    values_str = list_to_str(data)
 
-    min_y = str(timeseries[0])
-    max_y = str(timeseries[len(timeseries) - 1])
+    min_y = str(data[0])
+    max_y = str(data[len(data) - 1])
 
     url = generate_url_chart(data=values_str, name=name, max_y=max_y, min_y=min_y)
 
