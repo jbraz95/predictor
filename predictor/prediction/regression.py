@@ -4,6 +4,12 @@ from api_calls.general_api_calls import get_actual_value, get_query_regression, 
 
 # Using the model information, it checks all the actual values of the model and it calculates the regression of it to
 # know the supposed value.
+# Server: Where to do the regression
+# Case: information about the metric to check (filters)
+# variable_to_predict: metric that we want to predict
+# app: the app to check
+# datacenter: the datacenter to check
+# kubernetes_namespace = kubernetes information to do the query
 def get_regression(server, case, variable_to_predict, app, datacenter, kubernetes_namespace):
     prediction = 0
     # For each model
@@ -31,6 +37,15 @@ def get_regression(server, case, variable_to_predict, app, datacenter, kubernete
     return prediction
 
 
+# Using the model information, it checks all the values of the model and it calculates the regression of it to
+# know the supposed values in the last "time" minutes
+# Server: Where to do the regression
+# Case: information about the metric to check (filters)
+# variable_to_predict: metric that we want to predict
+# app: the app to check
+# datacenter: the datacenter to check
+# kubernetes_namespace = kubernetes information to do the query
+# time: how many minutes in the past you are going to check
 def get_regression_array(server, case, variable_to_predict, app, datacenter, kubernetes_namespace, time):
     prediction = [0] * time
     # For each model
@@ -64,9 +79,6 @@ def get_regression_array(server, case, variable_to_predict, app, datacenter, kub
         forced_cases += [last_value] * (time - len(forced_cases))
 
     prediction = [pred - forced for pred, forced in zip(prediction, forced_cases)]
-
-    #if prediction < 0:
-    #    prediction = 0
 
     prediction = [round(pred) for pred in prediction]
     return prediction

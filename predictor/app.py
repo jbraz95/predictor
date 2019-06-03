@@ -7,6 +7,9 @@ from generate_images.image_generator import generate_timeseries_chart, generate_
 import time
 
 
+# Check the time to know if we have to do a monitoring
+# previous_time: timestamp of the last monitoring
+# time_span: time between checks
 def check_time(previous_time, time_span):
     actual_time = time.time()
     if actual_time >= (previous_time+time_span):
@@ -15,6 +18,8 @@ def check_time(previous_time, time_span):
         return False
 
 
+# With the information contained in the configuration file, a monitoring is done
+# config_file: file with all the configuration for the monitoring
 def monitor(config_file):
     # Variables
     app = get_app(config_file)

@@ -1,6 +1,10 @@
 import slack
 
 
+# Function that sends a message to slack
+# token: Token for the bot
+# channel: Slack channel where to send the message
+# message: message to send
 def send_message(token, channel, message):
     client = slack.WebClient(token)
     client.chat_postMessage(
@@ -9,6 +13,11 @@ def send_message(token, channel, message):
     )
 
 
+# Function that sends an image with a message to slack
+# token: Token for the bot
+# channel: Slack channel where to send the message
+# message: message to send
+# image_url: url with the image to show
 def send_image(token, channel, message, image_url):
     client = slack.WebClient(token)
     client.chat_postMessage(
