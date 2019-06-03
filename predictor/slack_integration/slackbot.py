@@ -1,3 +1,5 @@
+import asyncio
+import time
 import slack
 
 
@@ -38,3 +40,23 @@ def send_image(token, channel, message, image_url):
     )
 
 
+def read_messages(token, channel):
+    @slack.RTMClient.run_on(event='message')
+    def say_hello(**payload):
+        data = payload['data']
+        print(data)
+        if 'Hello' in data['text']:
+            channel_id = data.get("channel")
+            user = data.get("user")
+
+            webclient = payload['web_client']
+            webclient.chat_postMessage(
+                channel=channel_id,
+                text="Hi <@{}>!".format(user)
+            )
+
+    print("pre running")
+    loop = asyncio.new_event_loop()
+    asyncio.set_event_loop(loop)
+    rtm_client = slack.RTMClient(token=token, run_async=True, loop=loop)
+    loop.run_until_complete(rtm_client.start())

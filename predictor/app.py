@@ -2,7 +2,7 @@ from file_loader.config_loader import *
 from api_calls.general_api_calls import get_actual_value, get_query_actual, get_values, adapt_time_series
 from prediction.regression import get_regression, get_regression_array
 from prediction.arima import get_arima_forecast
-from slack_integration.slackbot import send_image, send_message
+from slack_integration.slackbot import send_image, send_message, read_messages
 from generate_images.image_generator import generate_timeseries_chart, generate_data_chart
 import time
 import threading
@@ -82,14 +82,10 @@ def monitor(config_file):
             print(url)
 
 
-def run_prediction():
+def run_prediction(config_file):
     previous_time = 0
-    config_file = "predictor/configuration.yaml"
     time_span = get_monitoring_time_span(config_file)
     time_span_sleep = get_monitoring_time_span_sleep(config_file)
-    token = get_slack_token(config_file)
-    channel = get_slack_channel(config_file)
-    print("hello!")
 
     #send_message(token=token, channel=channel, message="Testing!")
     #send_image(token=token, channel=channel, message="A chart",
@@ -102,21 +98,21 @@ def run_prediction():
             time.sleep(time_span_sleep)
 
 
-def run_slack():
+def run_slack(config_file):
     try:
-        while True:
-            print("todo slack")
-            time.sleep(2)
+        token = get_slack_token(config_file)
+        channel = get_slack_channel(config_file)
+        read_messages(token=token, channel=channel)
     except Exception as e:
         print(e)
 
 
 def run():
     try:
-        pred = threading.Thread(target=run_prediction, args=(), daemon=True)
-        sla = threading.Thread(target=run_slack, args=())
+        config_file = "predictor/configuration.yaml"
+        pred = threading.Thread(target=run_prediction, args=(config_file, ))
         pred.start()
-        sla.start()
+        run_slack(config_file=config_file)
     except Exception as e:
         print("Error: unable to start thread")
         print(e)
