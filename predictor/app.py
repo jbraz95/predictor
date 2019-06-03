@@ -5,6 +5,7 @@ from prediction.arima import get_arima_forecast
 from slack_integration.slackbot import send_image, send_message
 from generate_images.image_generator import generate_timeseries_chart, generate_data_chart
 import time
+import threading
 
 
 # Check the time to know if we have to do a monitoring
@@ -81,13 +82,14 @@ def monitor(config_file):
             print(url)
 
 
-def run():
+def run_prediction():
     previous_time = 0
     config_file = "predictor/configuration.yaml"
     time_span = get_monitoring_time_span(config_file)
     time_span_sleep = get_monitoring_time_span_sleep(config_file)
     token = get_slack_token(config_file)
     channel = get_slack_channel(config_file)
+    print("hello!")
 
     #send_message(token=token, channel=channel, message="Testing!")
     #send_image(token=token, channel=channel, message="A chart",
@@ -98,3 +100,23 @@ def run():
             monitor(config_file=config_file)
         else:
             time.sleep(time_span_sleep)
+
+
+def run_slack():
+    try:
+        while True:
+            print("todo slack")
+            time.sleep(2)
+    except Exception as e:
+        print(e)
+
+
+def run():
+    try:
+        pred = threading.Thread(target=run_prediction, args=(), daemon=True)
+        sla = threading.Thread(target=run_slack, args=())
+        pred.start()
+        sla.start()
+    except Exception as e:
+        print("Error: unable to start thread")
+        print(e)
