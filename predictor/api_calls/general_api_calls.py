@@ -4,6 +4,9 @@ import requests
 # Giving a server and a query, it gets you the actual value of the query
 # Server: the server where we have to query
 # Query: The query to be executed
+from file_loader.config_loader import get_app, get_datacenter, get_kubernetes_namespace, get_regression_info
+
+
 def get_actual_value(server, query):
     response = requests.get(server + '/api/v1/query', params={'query': query + "[2m]"})
     if len(response.json()['data']['result']) == 0:
@@ -86,6 +89,21 @@ def get_query_actual(app, datacenter, case, metric_to_check, kubernetes_namespac
     result = possible_metrics[metric](app=app, datacenter=datacenter, case=case,
                                       metric_to_check=metric_to_check, kubernetes_namespace=kubernetes_namespace)
     return result
+
+
+def get_query_actual_search(config, metric):
+    regression_info = get_regression_info(config)
+    for case in regression_info:
+        for metric_case in case:
+            if metric_case == metric:
+                case_selected = case
+
+    app = get_app(config)
+    datacenter = get_datacenter(config)
+    kubernetes_namespace = get_kubernetes_namespace(config)
+
+    return get_query_actual(app=app, datacenter=datacenter, case=case_selected, metric_to_check=metric,
+                            kubernetes_namespace=kubernetes_namespace)
 
 
 # Gives you a query for knowing the actual value of one of the values related to the incoming task count total model

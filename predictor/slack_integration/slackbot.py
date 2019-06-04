@@ -1,7 +1,9 @@
 import asyncio
 import slack
 
-from generate_images.image_generator import generate_data_chart
+from api_calls.general_api_calls import get_values, get_query_actual_search
+from file_loader.config_loader import get_server, get_monitoring_time_span
+from generate_images.image_generator import generate_data_chart, generate_timeseries_chart
 from prediction.regression import get_regression_array, get_regression_array_search
 
 
@@ -65,16 +67,36 @@ def select_metric(data):
 
 
 @slack.RTMClient.run_on(event='message')
-async def say_hello(**payload):
+async def ask_actual_data(**payload):
+    config_file = "predictor/configuration.yaml"
     data = payload['data']
-    if 'Hello' in data['text']:
-        channel_id = data.get("channel")
-        user = data.get("user")
+    if 'actual' in data['text'].lower():
+        metric = select_metric(data)
+        server = get_server(config_file)
+        time = get_monitoring_time_span(config_file)
 
+        query = get_query_actual_search(config=config_file, metric=metric)
+        array = get_values(server=server, query=query, minutes=time)
+        print(array)
+        url = generate_timeseries_chart(array, metric)
+
+        channel_id = data.get("channel")
         webclient = payload['web_client']
         webclient.chat_postMessage(
             channel=channel_id,
-            text="Hi <@{}>!".format(user)
+            text=metric,
+            blocks=[
+                {
+                    "type": "image",
+                    "title": {
+                        "type": "plain_text",
+                        "text": metric
+                    },
+                    "block_id": "image4",
+                    "image_url": url,
+                    "alt_text": metric
+                }
+            ]
         )
 
 
