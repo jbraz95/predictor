@@ -77,7 +77,6 @@ async def ask_actual_data(**payload):
 
         query = get_query_actual_search(config=config_file, metric=metric)
         array = get_values(server=server, query=query, minutes=time)
-        print(array)
         url = generate_timeseries_chart(array, metric)
 
         channel_id = data.get("channel")
@@ -105,6 +104,36 @@ async def ask_regression(**payload):
     config_file = "predictor/configuration.yaml"
     data = payload['data']
     if 'regression' in data['text'].lower():
+        metric = select_metric(data)
+
+        regression_array = get_regression_array_search(config=config_file, metric=metric)
+        url = generate_data_chart(regression_array, metric)
+
+        channel_id = data.get("channel")
+        webclient = payload['web_client']
+        webclient.chat_postMessage(
+            channel=channel_id,
+            text=metric,
+            blocks=[
+                {
+                    "type": "image",
+                    "title": {
+                        "type": "plain_text",
+                        "text": metric
+                    },
+                    "block_id": "image4",
+                    "image_url": url,
+                    "alt_text": metric
+                }
+            ]
+        )
+
+
+@slack.RTMClient.run_on(event='message')
+async def ask_forecast(**payload):
+    config_file = "predictor/configuration.yaml"
+    data = payload['data']
+    if 'forecast' in data['text'].lower():
         metric = select_metric(data)
 
         regression_array = get_regression_array_search(config=config_file, metric=metric)
