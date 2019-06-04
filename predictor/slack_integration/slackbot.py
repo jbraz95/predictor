@@ -68,19 +68,64 @@ def select_metric(data):
     return metric
 
 
+def get_correct_url(arrays_to_get, metric):
+    config_file = "predictor/configuration.yaml"
+
+    server = get_server(config_file)
+    time = get_monitoring_time_span(config_file)
+    query = get_query_actual_search(config=config_file, metric=metric)
+
+    multi_data = []
+    array_names = []
+
+    if 'actual' in arrays_to_get:
+        actual = get_values(server=server, query=query, minutes=time)
+        multi_data.append(actual)
+        array_names.append('actual')
+
+    if 'regression' in arrays_to_get:
+        regression_array = get_regression_array_search(config=config_file, metric=metric)
+        multi_data.append(regression_array)
+        array_names.append('regression')
+
+    if 'forecast' in arrays_to_get:
+        forecast_time = get_forecast_time(config_file)
+        forecast_training_time = get_forecast_training_time(config_file)
+        params = get_params_arima_metric(file=config_file, metric=metric)
+        time_series_training = get_values(server=server, query=query, minutes=forecast_training_time)
+
+        forecasts = []
+        for param in params:
+            name = list(param.keys())[0]
+            p = param[name]['p']
+            d = param[name]['d']
+            q = param[name]['q']
+            trend = param[name]['trend']
+
+            arima = get_arima_forecast(series=time_series_training, p=p, d=d, q=q, forecast=forecast_time,
+                                       trend=trend)
+            set_arima = [trend, arima]
+            forecasts.append(set_arima)
+
+        for set_arima in forecasts:
+            array_names.append(set_arima[0])
+            multi_data.append(set_arima[1])
+
+    url = generate_url_multichart(array_data=multi_data, array_names=array_names, name=metric,
+                                  time=time)
+
+    return url
+
+
 @slack.RTMClient.run_on(event='message')
 async def ask_actual_data(**payload):
-    config_file = "predictor/configuration.yaml"
     data = payload['data']
     if 'actual' in data['text'].lower() and not ('forecast' in data['text'].lower()) and \
             not ('regression' in data['text'].lower()):
-        metric = select_metric(data)
-        server = get_server(config_file)
-        time = get_monitoring_time_span(config_file)
 
-        query = get_query_actual_search(config=config_file, metric=metric)
-        array = get_values(server=server, query=query, minutes=time)
-        url = generate_timeseries_chart(array, metric)
+        arrays_to_get = ['actual']
+        metric = select_metric(data)
+        url = get_correct_url(arrays_to_get, metric)
 
         channel_id = data.get("channel")
         webclient = payload['web_client']
@@ -104,39 +149,13 @@ async def ask_actual_data(**payload):
 
 @slack.RTMClient.run_on(event='message')
 async def ask_forecast(**payload):
-    config_file = "predictor/configuration.yaml"
     data = payload['data']
     if 'forecast' in data['text'].lower() and not ('actual' in data['text'].lower()) and \
             not ('regression' in data['text'].lower()):
+
+        arrays_to_get = ['forecast']
         metric = select_metric(data)
-        server = get_server(config_file)
-        forecast_time = get_forecast_time(config_file)
-        forecast_training_time = get_forecast_training_time(config_file)
-
-        query = get_query_actual_search(config=config_file, metric=metric)
-        time_series = get_values(server=server, query=query, minutes=forecast_training_time)
-        params = get_params_arima_metric(file=config_file, metric=metric)
-
-        forecasts = []
-        for param in params:
-            name = list(param.keys())[0]
-            p = param[name]['p']
-            d = param[name]['d']
-            q = param[name]['q']
-            trend = param[name]['trend']
-
-            arima = get_arima_forecast(series=time_series, p=p, d=d, q=q, forecast=forecast_time,
-                                       trend=trend)
-            set_arima = [trend, arima]
-            forecasts.append(set_arima)
-
-        array_names = []
-        multi_data = []
-        for set_arima in forecasts:
-            array_names.append(set_arima[0])
-            multi_data.append(set_arima[1])
-        url = generate_url_multichart(array_data=multi_data, array_names=array_names, name=metric,
-                                      time=60)
+        url = get_correct_url(arrays_to_get, metric)
 
         channel_id = data.get("channel")
         webclient = payload['web_client']
@@ -160,14 +179,12 @@ async def ask_forecast(**payload):
 
 @slack.RTMClient.run_on(event='message')
 async def ask_regression(**payload):
-    config_file = "predictor/configuration.yaml"
     data = payload['data']
     if 'regression' in data['text'].lower() and not ('actual' in data['text'].lower()) and \
             not ('forecast' in data['text'].lower()):
+        arrays_to_get = ['regression']
         metric = select_metric(data)
-
-        regression_array = get_regression_array_search(config=config_file, metric=metric)
-        url = generate_data_chart(regression_array, metric)
+        url = get_correct_url(arrays_to_get, metric)
 
         channel_id = data.get("channel")
         webclient = payload['web_client']
@@ -191,23 +208,13 @@ async def ask_regression(**payload):
 
 @slack.RTMClient.run_on(event='message')
 async def ask_actual_regression_data(**payload):
-    config_file = "predictor/configuration.yaml"
     data = payload['data']
     if 'actual' in data['text'].lower() and 'regression' in data['text'].lower() and \
             not ('forecast' in data['text'].lower()):
+
+        arrays_to_get = ['actual', 'regression']
         metric = select_metric(data)
-        server = get_server(config_file)
-        time = get_monitoring_time_span(config_file)
-
-        query = get_query_actual_search(config=config_file, metric=metric)
-        array = get_values(server=server, query=query, minutes=time)
-
-        regression_array = get_regression_array_search(config=config_file, metric=metric)
-
-        multi_data = [array, regression_array]
-        array_names = ['actual', 'regression']
-        url = generate_url_multichart(array_data=multi_data, array_names=array_names, name=metric,
-                                      time=60)
+        url = get_correct_url(arrays_to_get, metric)
 
         channel_id = data.get("channel")
         webclient = payload['web_client']
@@ -231,45 +238,13 @@ async def ask_actual_regression_data(**payload):
 
 @slack.RTMClient.run_on(event='message')
 async def ask_actual_forecast_data(**payload):
-    config_file = "predictor/configuration.yaml"
     data = payload['data']
     if 'actual' in data['text'].lower() and 'forecast' in data['text'].lower() and \
             not ('regression' in data['text'].lower()):
+
+        arrays_to_get = ['actual', 'forecast']
         metric = select_metric(data)
-        server = get_server(config_file)
-        time = get_monitoring_time_span(config_file)
-        forecast_time = get_forecast_time(config_file)
-        forecast_training_time = get_forecast_training_time(config_file)
-
-        query = get_query_actual_search(config=config_file, metric=metric)
-        actual = get_values(server=server, query=query, minutes=time)
-
-        time_series = get_values(server=server, query=query, minutes=forecast_training_time)
-        params = get_params_arima_metric(file=config_file, metric=metric)
-
-        forecasts = []
-        for param in params:
-            name = list(param.keys())[0]
-            p = param[name]['p']
-            d = param[name]['d']
-            q = param[name]['q']
-            trend = param[name]['trend']
-
-            arima = get_arima_forecast(series=time_series, p=p, d=d, q=q, forecast=forecast_time,
-                                       trend=trend)
-            set_arima = [trend, arima]
-            forecasts.append(set_arima)
-
-        array_names = []
-        multi_data = []
-        for set_arima in forecasts:
-            array_names.append(set_arima[0])
-            multi_data.append(set_arima[1])
-
-        array_names.append('actual')
-        multi_data.append(actual)
-        url = generate_url_multichart(array_data=multi_data, array_names=array_names, name=metric,
-                                      time=60)
+        url = get_correct_url(arrays_to_get, metric)
 
         channel_id = data.get("channel")
         webclient = payload['web_client']
@@ -297,40 +272,10 @@ async def ask_regression_forecast_data(**payload):
     data = payload['data']
     if 'regression' in data['text'].lower() and 'forecast' in data['text'].lower() and \
             not ('actual' in data['text'].lower()):
+
+        arrays_to_get = ['forecast', 'regression']
         metric = select_metric(data)
-        server = get_server(config_file)
-        forecast_time = get_forecast_time(config_file)
-        forecast_training_time = get_forecast_training_time(config_file)
-
-        regression_array = get_regression_array_search(config=config_file, metric=metric)
-
-        query = get_query_actual_search(config=config_file, metric=metric)
-        time_series = get_values(server=server, query=query, minutes=forecast_training_time)
-        params = get_params_arima_metric(file=config_file, metric=metric)
-
-        forecasts = []
-        for param in params:
-            name = list(param.keys())[0]
-            p = param[name]['p']
-            d = param[name]['d']
-            q = param[name]['q']
-            trend = param[name]['trend']
-
-            arima = get_arima_forecast(series=time_series, p=p, d=d, q=q, forecast=forecast_time,
-                                       trend=trend)
-            set_arima = [trend, arima]
-            forecasts.append(set_arima)
-
-        array_names = []
-        multi_data = []
-        for set_arima in forecasts:
-            array_names.append(set_arima[0])
-            multi_data.append(set_arima[1])
-
-        array_names.append('regression')
-        multi_data.append(regression_array)
-        url = generate_url_multichart(array_data=multi_data, array_names=array_names, name=metric,
-                                      time=60)
+        url = get_correct_url(arrays_to_get, metric)
 
         channel_id = data.get("channel")
         webclient = payload['web_client']
@@ -358,45 +303,10 @@ async def ask_actual_regression_forecast_data(**payload):
     data = payload['data']
     if 'regression' in data['text'].lower() and 'forecast' in data['text'].lower() and \
             'actual' in data['text'].lower():
+
+        arrays_to_get = ['actual', 'regression', 'forecast']
         metric = select_metric(data)
-        server = get_server(config_file)
-        forecast_time = get_forecast_time(config_file)
-        forecast_training_time = get_forecast_training_time(config_file)
-        time = get_monitoring_time_span(config_file)
-
-        regression_array = get_regression_array_search(config=config_file, metric=metric)
-
-        query = get_query_actual_search(config=config_file, metric=metric)
-        time_series = get_values(server=server, query=query, minutes=forecast_training_time)
-        params = get_params_arima_metric(file=config_file, metric=metric)
-
-        actual = get_values(server=server, query=query, minutes=time)
-
-        forecasts = []
-        for param in params:
-            name = list(param.keys())[0]
-            p = param[name]['p']
-            d = param[name]['d']
-            q = param[name]['q']
-            trend = param[name]['trend']
-
-            arima = get_arima_forecast(series=time_series, p=p, d=d, q=q, forecast=forecast_time,
-                                       trend=trend)
-            set_arima = [trend, arima]
-            forecasts.append(set_arima)
-
-        array_names = []
-        multi_data = []
-        for set_arima in forecasts:
-            array_names.append(set_arima[0])
-            multi_data.append(set_arima[1])
-
-        array_names.append('regression')
-        multi_data.append(regression_array)
-        array_names.append('actual')
-        multi_data.append(actual)
-        url = generate_url_multichart(array_data=multi_data, array_names=array_names, name=metric,
-                                      time=60)
+        url = get_correct_url(arrays_to_get, metric)
 
         channel_id = data.get("channel")
         webclient = payload['web_client']
