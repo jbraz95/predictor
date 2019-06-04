@@ -3,7 +3,7 @@ from api_calls.general_api_calls import get_actual_value, get_query_actual, get_
 from prediction.regression import get_regression, get_regression_array
 from prediction.arima import get_arima_forecast
 from slack_integration.slackbot import send_image, send_message, read_messages
-from generate_images.image_generator import generate_timeseries_chart, generate_data_chart
+from generate_images.image_generator import generate_timeseries_chart, generate_data_chart, generate_url_multichart
 import time
 import threading
 
@@ -54,6 +54,7 @@ def monitor(config_file):
             params = get_params_arima_metric(file=config_file, metric=metric)
 
             # print(time_series)
+            forecasts = []
             for param in params:
                 name = list(param.keys())[0]
                 p = param[name]['p']
@@ -69,6 +70,8 @@ def monitor(config_file):
                 else:
                     print("The next " + str(forecast_time) + " minutes will have these values (constant): ")
                 print(arima)
+                set_arima = [trend, arima]
+                forecasts.append(set_arima)
 
                 url = generate_data_chart(data=arima, name=metric)
                 print(url)
@@ -80,6 +83,20 @@ def monitor(config_file):
                                                     datacenter=datacenter, kubernetes_namespace=kubernetes_namespace,
                                                     time=60)
             url = generate_data_chart(data=regression_array, name="regression")
+            print(url)
+
+            # Double chart
+            multi_data = [time_series, regression_array]
+            array_names = ["actual_values", "regression"]
+            url = generate_url_multichart(array_data=multi_data, array_names=array_names, name=metric,
+                                          time=60)
+            print(url)
+
+            for set_arima in forecasts:
+                array_names.append(set_arima[0])
+                multi_data.append(set_arima[1])
+            url = generate_url_multichart(array_data=multi_data, array_names=array_names, name=metric,
+                                          time=60)
             print(url)
 
 
@@ -107,9 +124,9 @@ def run_slack(config_file):
 def run():
     try:
         config_file = "predictor/configuration.yaml"
-        # pred = threading.Thread(target=run_prediction, args=(config_file, ))
-        # pred.start()
-        run_slack(config_file=config_file)
+        pred = threading.Thread(target=run_prediction, args=(config_file, ))
+        pred.start()
+        # run_slack(config_file=config_file)
     except Exception as e:
         print("Error: unable to start thread")
         print(e)

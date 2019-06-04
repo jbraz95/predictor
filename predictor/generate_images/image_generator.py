@@ -1,3 +1,5 @@
+import math
+
 from api_calls.general_api_calls import adapt_time_series
 
 
@@ -11,8 +13,8 @@ def generate_timeseries_chart(timeseries, name):
 
     values_str = list_to_str(values)
 
-    min_y = str(values[0])
-    max_y = str(values[len(values) - 1])
+    min_y = str(min(values))
+    max_y = str(max(values))
 
     url = generate_url_chart(data=values_str, name=name, max_y=max_y, min_y=min_y)
     return url
@@ -24,12 +26,39 @@ def generate_timeseries_chart(timeseries, name):
 def generate_data_chart(data, name):
     values_str = list_to_str(data)
 
-    min_y = str(data[0])
-    max_y = str(data[len(data) - 1])
+    min_y = str(min(data))
+    max_y = str(max(data))
 
     url = generate_url_chart(data=values_str, name=name, max_y=max_y, min_y=min_y)
 
     return url
+
+
+def generate_data_multichart(array_data, time):
+    data = "&chd=a:"
+    for array in array_data:
+        if isinstance(array[0], list):
+            data_parsed = adapt_time_series(array)
+            values = data_parsed[1]
+
+            length = len(values) - 1
+            start = length-time
+            if start < 0:
+                start = 0
+
+            values = values[start:length]
+            data += list_to_str(values)
+        else:
+            length = len(array) - 1
+            start = length - time
+            if start < 0:
+                start = 0
+
+            array = array[start:length]
+            data += list_to_str(array)
+        data += "|"
+    data = data[:-1]
+    return data
 
 
 # Transforms a list to a string to put it into the URL generator
@@ -40,8 +69,48 @@ def list_to_str(values):
         value_str += str(value) + ","
 
     # removing last character of string because of extra comma
-    value_str = value_str
-    return value_str[:-1]
+    value_str = value_str[:-1]
+    return value_str
+
+
+def generate_url_multichart(array_data, array_names, name, time):
+    base_url = "https://image-charts.com/chart"
+    type_chart = "?cht=lc"
+    size = "&chs=700x200"
+    data = generate_data_multichart(array_data=array_data, time=time)
+    max_y = None
+    min_y = None
+
+    for array in array_data:
+        if isinstance(array[0], list):
+            data_parsed = adapt_time_series(array)
+            values = data_parsed[1]
+            local_max_y = max(values)
+            local_min_y = min(values)
+        else:
+            local_max_y = max(array)
+            local_min_y = min(array)
+
+        if max_y is None or local_max_y > max_y:
+            max_y = local_max_y
+
+        if min_y is None or local_min_y < min_y:
+            min_y = local_min_y
+
+    axis = "&chxt=x,y&chxs=0,s|1,s"
+    range_chart = "&chxr=1," + str(min_y) + "," + str(max_y)
+    title_chart = "&chtt=" + name
+
+    legend = "&chdl="
+    for legend_name in array_names:
+        legend += legend_name + "|"
+    legend = legend[:-1]
+
+    chart_extras = axis + range_chart + title_chart + legend
+
+    url = base_url + type_chart + size + chart_extras + data
+
+    return url
 
 
 # Generates the url of the chart to be displayed
