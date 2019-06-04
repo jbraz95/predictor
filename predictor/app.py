@@ -124,9 +124,9 @@ def run_slack(config_file):
 def run():
     try:
         config_file = "predictor/configuration.yaml"
-        pred = threading.Thread(target=run_prediction, args=(config_file, ))
-        pred.start()
-        # run_slack(config_file=config_file)
+        # pred = threading.Thread(target=run_prediction, args=(config_file, ))
+        # pred.start()
+        run_slack(config_file=config_file)
     except Exception as e:
         print("Error: unable to start thread")
         print(e)
