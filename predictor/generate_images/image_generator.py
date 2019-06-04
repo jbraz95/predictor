@@ -38,7 +38,10 @@ def list_to_str(values):
     value_str = ""
     for value in values:
         value_str += str(value) + ","
-    return value_str
+
+    # removing last character of string because of extra comma
+    value_str = value_str
+    return value_str[:-1]
 
 
 # Generates the url of the chart to be displayed

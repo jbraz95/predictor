@@ -10,7 +10,12 @@ from api_calls.general_api_calls import get_actual_value, get_query_regression, 
 # app: the app to check
 # datacenter: the datacenter to check
 # kubernetes_namespace = kubernetes information to do the query
+from file_loader.config_loader import get_server, get_app, get_datacenter, get_kubernetes_namespace, \
+    get_monitoring_time_span, get_regression_info
+
+
 def get_regression(server, case, variable_to_predict, app, datacenter, kubernetes_namespace):
+    print(variable_to_predict)
     prediction = 0
     # For each model
     for model in case[variable_to_predict]["metrics"]:
@@ -83,3 +88,19 @@ def get_regression_array(server, case, variable_to_predict, app, datacenter, kub
     prediction = [round(pred) for pred in prediction]
     return prediction
 
+
+def get_regression_array_search(config, metric):
+    server = get_server(config)
+    regression_info = get_regression_info(config)
+    for case in regression_info:
+        for metric_case in case:
+            if metric_case == metric:
+                case_selected = case
+
+    app = get_app(config)
+    datacenter = get_datacenter(config)
+    kubernetes_namespace = get_kubernetes_namespace(config)
+    time = get_monitoring_time_span(config)
+
+    return get_regression_array(server=server, case=case_selected, variable_to_predict=metric, app=app, datacenter=datacenter,
+                                kubernetes_namespace=kubernetes_namespace, time=time)

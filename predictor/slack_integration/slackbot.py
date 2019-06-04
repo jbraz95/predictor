@@ -1,6 +1,8 @@
 import asyncio
-import time
 import slack
+
+from generate_images.image_generator import generate_data_chart
+from prediction.regression import get_regression_array, get_regression_array_search
 
 
 # Function that sends a message to slack
@@ -40,22 +42,74 @@ def send_image(token, channel, message, image_url):
     )
 
 
-def read_messages(token, channel):
-    @slack.RTMClient.run_on(event='message')
-    def say_hello(**payload):
-        data = payload['data']
-        print(data)
-        if 'Hello' in data['text']:
-            channel_id = data.get("channel")
-            user = data.get("user")
+def select_metric(data):
+    metric = ""
+    if 'basic' and 'preparation' in data['text'].lower():
+        metric = "incoming_task_count_total-BASIC_PREPARATION"
+    elif 'create' and 'jpegs' in data['text'].lower():
+        metric = "incoming_task_count_total-CREATE_JPEGS"
+    elif 'fubo' in data['text'].lower():
+        metric = "incoming_task_count_total-FUBO"
+    elif 'pmt' in data['text'].lower():
+        metric = "incoming_task_count_total-PMT"
+    elif 'toa' and '4k' in data['text'].lower():
+        metric = "incoming_task_count_total-TOA_4K"
+    elif 'toa' in data['text'].lower():
+        metric = "incoming_task_count_total-TOA"
+    elif 'veset' and 'belgium' in data['text'].lower():
+        metric = "incoming_task_count_total-VESET_BELGIUM"
+    elif 'task' and 'failure' in data['text'].lower():
+        metric = "task_in_failure"
 
-            webclient = payload['web_client']
-            webclient.chat_postMessage(
-                channel=channel_id,
-                text="Hi <@{}>!".format(user)
-            )
+    return metric
 
-    print("pre running")
+
+@slack.RTMClient.run_on(event='message')
+async def say_hello(**payload):
+    data = payload['data']
+    if 'Hello' in data['text']:
+        channel_id = data.get("channel")
+        user = data.get("user")
+
+        webclient = payload['web_client']
+        webclient.chat_postMessage(
+            channel=channel_id,
+            text="Hi <@{}>!".format(user)
+        )
+
+
+@slack.RTMClient.run_on(event='message')
+async def ask_regression(**payload):
+    config_file = "predictor/configuration.yaml"
+    data = payload['data']
+    if 'regression' in data['text'].lower():
+        metric = select_metric(data)
+
+        regression_array = get_regression_array_search(config=config_file, metric=metric)
+        url = generate_data_chart(regression_array, metric)
+
+        channel_id = data.get("channel")
+        webclient = payload['web_client']
+        webclient.chat_postMessage(
+            channel=channel_id,
+            text=metric,
+            blocks=[
+                {
+                    "type": "image",
+                    "title": {
+                        "type": "plain_text",
+                        "text": metric
+                    },
+                    "block_id": "image4",
+                    "image_url": url,
+                    "alt_text": metric
+                }
+            ]
+        )
+
+
+def read_messages(token):
+    print("SlackBot Running")
     loop = asyncio.new_event_loop()
     asyncio.set_event_loop(loop)
     rtm_client = slack.RTMClient(token=token, run_async=True, loop=loop)

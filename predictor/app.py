@@ -32,6 +32,7 @@ def monitor(config_file):
 
     regression_info = get_regression_info(file=config_file)
     for case in regression_info:
+        print(case)
         for metric in case:
             print("----------------Name of metric: " + metric + "----------------")
 
@@ -87,9 +88,6 @@ def run_prediction(config_file):
     time_span = get_monitoring_time_span(config_file)
     time_span_sleep = get_monitoring_time_span_sleep(config_file)
 
-    #send_message(token=token, channel=channel, message="Testing!")
-    #send_image(token=token, channel=channel, message="A chart",
-    #           image_url="https://upload.wikimedia.org/wikipedia/commons/9/92/Logo_XITE_2017_zwart.png")
     while True:
         if check_time(previous_time, time_span=time_span):
             previous_time = time.time()
@@ -101,8 +99,7 @@ def run_prediction(config_file):
 def run_slack(config_file):
     try:
         token = get_slack_token(config_file)
-        channel = get_slack_channel(config_file)
-        read_messages(token=token, channel=channel)
+        read_messages(token=token)
     except Exception as e:
         print(e)
 
@@ -110,8 +107,8 @@ def run_slack(config_file):
 def run():
     try:
         config_file = "predictor/configuration.yaml"
-        pred = threading.Thread(target=run_prediction, args=(config_file, ))
-        pred.start()
+        # pred = threading.Thread(target=run_prediction, args=(config_file, ))
+        # pred.start()
         run_slack(config_file=config_file)
     except Exception as e:
         print("Error: unable to start thread")
