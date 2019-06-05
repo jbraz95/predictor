@@ -2,10 +2,10 @@ import asyncio
 import slack
 
 from api_calls.general_api_calls import get_values, get_query_actual_search
-from file_loader.config_loader import get_server, get_monitoring_time_span, get_params_arima_metric, get_forecast_time, \
-    get_forecast_training_time
-from generate_images.image_generator import generate_data_chart, generate_timeseries_chart, generate_url_multichart
-from prediction.arima import get_arima_forecast
+from file_loader.config_loader import get_server, get_monitoring_time_span, get_params_arima_metric, get_forecast_time,\
+     get_forecast_training_time
+from generate_images.image_generator import generate_url_multichart
+from prediction.arima import get_arima_forecast, get_forecast_array
 from prediction.regression import get_regression_array_search
 
 
@@ -91,21 +91,10 @@ def get_url_image(arrays_to_get, metric):
     if 'forecast' in arrays_to_get:
         forecast_time = get_forecast_time(config_file)
         forecast_training_time = get_forecast_training_time(config_file)
-        params = get_params_arima_metric(file=config_file, metric=metric)
         time_series_training = get_values(server=server, query=query, minutes=forecast_training_time)
+        params = get_params_arima_metric(file=config_file, metric=metric)
 
-        forecasts = []
-        for param in params:
-            name = list(param.keys())[0]
-            p = param[name]['p']
-            d = param[name]['d']
-            q = param[name]['q']
-            trend = param[name]['trend']
-
-            arima = get_arima_forecast(series=time_series_training, p=p, d=d, q=q, forecast=forecast_time,
-                                       trend=trend)
-            set_arima = [trend, arima]
-            forecasts.append(set_arima)
+        forecasts = get_forecast_array(params=params, time_series=time_series_training, forecast_time=forecast_time)
 
         for set_arima in forecasts:
             array_names.append("forecast:" + set_arima[0])

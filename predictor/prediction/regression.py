@@ -1,5 +1,7 @@
 from api_calls.general_api_calls import get_actual_value, get_query_regression, itct_actual_forced, get_values, \
                                         adapt_time_series
+from file_loader.config_loader import get_server, get_app, get_datacenter, get_kubernetes_namespace, \
+                                      get_monitoring_time_span, get_regression_info
 
 
 # Using the model information, it checks all the actual values of the model and it calculates the regression of it to
@@ -10,12 +12,7 @@ from api_calls.general_api_calls import get_actual_value, get_query_regression, 
 # app: the app to check
 # datacenter: the datacenter to check
 # kubernetes_namespace = kubernetes information to do the query
-from file_loader.config_loader import get_server, get_app, get_datacenter, get_kubernetes_namespace, \
-    get_monitoring_time_span, get_regression_info
-
-
-def get_regression(server, case, variable_to_predict, app, datacenter, kubernetes_namespace):
-    print(variable_to_predict)
+def get_regression_actual(server, case, variable_to_predict, app, datacenter, kubernetes_namespace):
     prediction = 0
     # For each model
     for model in case[variable_to_predict]["metrics"]:

@@ -34,6 +34,40 @@ def generate_data_chart(data, name):
     return url
 
 
+# Generates the url of the chart to be displayed
+# data: string with the data to be displayed in the chart
+# name: name of the chart
+# max_y: max value of axis Y
+# min_y: min value of axis Y
+def generate_url_chart(data, name, max_y, min_y):
+    base_url = "https://image-charts.com/chart"
+    type_chart = "?cht=lc"
+    size = "&chs=700x200"
+
+    data_url = "&chd=a:" + data
+
+    axis = "&chxt=x,y&chxs=0,s|1,s"
+    range_chart = "&chxr=1," + min_y + "," + max_y
+    title_chart = "&chtt=" + name
+
+    chart_extras = axis + range_chart + title_chart
+
+    url = base_url + type_chart + size + chart_extras + data_url
+    return url
+
+
+# Transforms a list to a string to put it into the URL generator
+# values: values to be transformed to a string
+def list_to_str(values):
+    value_str = ""
+    for value in values:
+        value_str += str(value) + ","
+
+    # removing last character of string because of extra comma
+    value_str = value_str[:-1]
+    return value_str
+
+
 def generate_data_multichart(array_data, array_names, time):
     data = "&chd=a:"
     index = 0
@@ -71,22 +105,9 @@ def generate_data_multichart(array_data, array_names, time):
     return data
 
 
-# Transforms a list to a string to put it into the URL generator
-# values: values to be transformed to a string
-def list_to_str(values):
-    value_str = ""
-    for value in values:
-        value_str += str(value) + ","
-
-    # removing last character of string because of extra comma
-    value_str = value_str[:-1]
-    return value_str
-
-
 def generate_url_multichart(array_data, array_names, name, time):
     base_url = "https://image-charts.com/chart"
     type_chart = "?cht=lxy"
-    #type_chart = "?cht=lc"
     size = "&chs=700x200"
     data = generate_data_multichart(array_data=array_data, array_names=array_names, time=time)
     max_y = None
@@ -120,26 +141,4 @@ def generate_url_multichart(array_data, array_names, name, time):
     chart_extras = axis + range_chart + title_chart + legend
     url = base_url + type_chart + size + chart_extras + data
 
-    return url
-
-
-# Generates the url of the chart to be displayed
-# data: string with the data to be displayed in the chart
-# name: name of the chart
-# max_y: max value of axis Y
-# min_y: min value of axis Y
-def generate_url_chart(data, name, max_y, min_y):
-    base_url = "https://image-charts.com/chart"
-    type_chart = "?cht=lc"
-    size = "&chs=700x200"
-
-    data_url = "&chd=a:" + data
-
-    axis = "&chxt=x,y&chxs=0,s|1,s"
-    range_chart = "&chxr=1," + min_y + "," + max_y
-    title_chart = "&chtt=" + name
-
-    chart_extras = axis + range_chart + title_chart
-
-    url = base_url + type_chart + size + chart_extras + data_url
     return url

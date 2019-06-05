@@ -1,12 +1,10 @@
 import requests
+from file_loader.config_loader import get_app, get_datacenter, get_kubernetes_namespace, get_regression_info
 
 
 # Giving a server and a query, it gets you the actual value of the query
 # Server: the server where we have to query
 # Query: The query to be executed
-from file_loader.config_loader import get_app, get_datacenter, get_kubernetes_namespace, get_regression_info
-
-
 def get_actual_value(server, query):
     response = requests.get(server + '/api/v1/query', params={'query': query + "[2m]"})
     if len(response.json()['data']['result']) == 0:
