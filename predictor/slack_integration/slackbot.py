@@ -108,7 +108,7 @@ def get_correct_url(arrays_to_get, metric):
             forecasts.append(set_arima)
 
         for set_arima in forecasts:
-            array_names.append(set_arima[0])
+            array_names.append("forecast:" + set_arima[0])
             multi_data.append(set_arima[1])
 
     url = generate_url_multichart(array_data=multi_data, array_names=array_names, name=metric,

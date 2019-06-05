@@ -34,9 +34,18 @@ def generate_data_chart(data, name):
     return url
 
 
-def generate_data_multichart(array_data, time):
+def generate_data_multichart(array_data, array_names, time):
     data = "&chd=a:"
+    index = 0
     for array in array_data:
+
+        if 'forecast' in array_names[index]:
+            data += list_to_str(range(time, time+time))
+        else:
+            data += list_to_str(range(0, time))
+
+        data += "|"
+
         if isinstance(array[0], list):
             data_parsed = adapt_time_series(array)
             values = data_parsed[1]
@@ -57,6 +66,7 @@ def generate_data_multichart(array_data, time):
             array = array[start:length]
             data += list_to_str(array)
         data += "|"
+        index += 1
     data = data[:-1]
     return data
 
@@ -75,9 +85,10 @@ def list_to_str(values):
 
 def generate_url_multichart(array_data, array_names, name, time):
     base_url = "https://image-charts.com/chart"
-    type_chart = "?cht=lc"
+    type_chart = "?cht=lxy"
+    #type_chart = "?cht=lc"
     size = "&chs=700x200"
-    data = generate_data_multichart(array_data=array_data, time=time)
+    data = generate_data_multichart(array_data=array_data, array_names=array_names, time=time)
     max_y = None
     min_y = None
 
@@ -107,7 +118,6 @@ def generate_url_multichart(array_data, array_names, name, time):
     legend = legend[:-1]
 
     chart_extras = axis + range_chart + title_chart + legend
-
     url = base_url + type_chart + size + chart_extras + data
 
     return url
