@@ -299,7 +299,6 @@ async def ask_regression_forecast_data(**payload):
 
 @slack.RTMClient.run_on(event='message')
 async def ask_actual_regression_forecast_data(**payload):
-    config_file = "predictor/configuration.yaml"
     data = payload['data']
     if 'regression' in data['text'].lower() and 'forecast' in data['text'].lower() and \
             'actual' in data['text'].lower():
