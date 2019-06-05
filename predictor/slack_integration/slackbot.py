@@ -68,7 +68,7 @@ def select_metric(data):
     return metric
 
 
-def get_correct_url(arrays_to_get, metric):
+def get_url_image(arrays_to_get, metric):
     config_file = "predictor/configuration.yaml"
 
     server = get_server(config_file)
@@ -117,195 +117,31 @@ def get_correct_url(arrays_to_get, metric):
     return url
 
 
-@slack.RTMClient.run_on(event='message')
-async def ask_actual_data(**payload):
-    data = payload['data']
-    if 'actual' in data['text'].lower() and not ('forecast' in data['text'].lower()) and \
-            not ('regression' in data['text'].lower()):
+def select_arrays_to_get(data):
+    arrays_to_get = []
+    if 'actual' in data['text'].lower():
+        arrays_to_get.append('actual')
 
-        arrays_to_get = ['actual']
-        metric = select_metric(data)
-        url = get_correct_url(arrays_to_get, metric)
+    if 'forecast' in data['text'].lower():
+        arrays_to_get.append('forecast')
 
-        channel_id = data.get("channel")
-        webclient = payload['web_client']
-        webclient.chat_postMessage(
-            channel=channel_id,
-            text=metric,
-            blocks=[
-                {
-                    "type": "image",
-                    "title": {
-                        "type": "plain_text",
-                        "text": metric
-                    },
-                    "block_id": "image4",
-                    "image_url": url,
-                    "alt_text": metric
-                }
-            ]
-        )
+    if 'regression' in data['text'].lower():
+        arrays_to_get.append('regression')
+
+    return arrays_to_get
 
 
 @slack.RTMClient.run_on(event='message')
-async def ask_forecast(**payload):
+async def ask_charts(**payload):
     data = payload['data']
-    if 'forecast' in data['text'].lower() and not ('actual' in data['text'].lower()) and \
-            not ('regression' in data['text'].lower()):
 
-        arrays_to_get = ['forecast']
-        metric = select_metric(data)
-        url = get_correct_url(arrays_to_get, metric)
+    arrays_to_get = select_arrays_to_get(data)
+    metric = select_metric(data)
+    print(metric)
+    print(arrays_to_get)
 
-        channel_id = data.get("channel")
-        webclient = payload['web_client']
-        webclient.chat_postMessage(
-            channel=channel_id,
-            text=metric,
-            blocks=[
-                {
-                    "type": "image",
-                    "title": {
-                        "type": "plain_text",
-                        "text": metric
-                    },
-                    "block_id": "image4",
-                    "image_url": url,
-                    "alt_text": metric
-                }
-            ]
-        )
-
-
-@slack.RTMClient.run_on(event='message')
-async def ask_regression(**payload):
-    data = payload['data']
-    if 'regression' in data['text'].lower() and not ('actual' in data['text'].lower()) and \
-            not ('forecast' in data['text'].lower()):
-        arrays_to_get = ['regression']
-        metric = select_metric(data)
-        url = get_correct_url(arrays_to_get, metric)
-
-        channel_id = data.get("channel")
-        webclient = payload['web_client']
-        webclient.chat_postMessage(
-            channel=channel_id,
-            text=metric,
-            blocks=[
-                {
-                    "type": "image",
-                    "title": {
-                        "type": "plain_text",
-                        "text": metric
-                    },
-                    "block_id": "image4",
-                    "image_url": url,
-                    "alt_text": metric
-                }
-            ]
-        )
-
-
-@slack.RTMClient.run_on(event='message')
-async def ask_actual_regression_data(**payload):
-    data = payload['data']
-    if 'actual' in data['text'].lower() and 'regression' in data['text'].lower() and \
-            not ('forecast' in data['text'].lower()):
-
-        arrays_to_get = ['actual', 'regression']
-        metric = select_metric(data)
-        url = get_correct_url(arrays_to_get, metric)
-
-        channel_id = data.get("channel")
-        webclient = payload['web_client']
-        webclient.chat_postMessage(
-            channel=channel_id,
-            text=metric,
-            blocks=[
-                {
-                    "type": "image",
-                    "title": {
-                        "type": "plain_text",
-                        "text": metric
-                    },
-                    "block_id": "image4",
-                    "image_url": url,
-                    "alt_text": metric
-                }
-            ]
-        )
-
-
-@slack.RTMClient.run_on(event='message')
-async def ask_actual_forecast_data(**payload):
-    data = payload['data']
-    if 'actual' in data['text'].lower() and 'forecast' in data['text'].lower() and \
-            not ('regression' in data['text'].lower()):
-
-        arrays_to_get = ['actual', 'forecast']
-        metric = select_metric(data)
-        url = get_correct_url(arrays_to_get, metric)
-
-        channel_id = data.get("channel")
-        webclient = payload['web_client']
-        webclient.chat_postMessage(
-            channel=channel_id,
-            text=metric,
-            blocks=[
-                {
-                    "type": "image",
-                    "title": {
-                        "type": "plain_text",
-                        "text": metric
-                    },
-                    "block_id": "image4",
-                    "image_url": url,
-                    "alt_text": metric
-                }
-            ]
-        )
-
-
-@slack.RTMClient.run_on(event='message')
-async def ask_regression_forecast_data(**payload):
-    config_file = "predictor/configuration.yaml"
-    data = payload['data']
-    if 'regression' in data['text'].lower() and 'forecast' in data['text'].lower() and \
-            not ('actual' in data['text'].lower()):
-
-        arrays_to_get = ['forecast', 'regression']
-        metric = select_metric(data)
-        url = get_correct_url(arrays_to_get, metric)
-
-        channel_id = data.get("channel")
-        webclient = payload['web_client']
-        webclient.chat_postMessage(
-            channel=channel_id,
-            text=metric,
-            blocks=[
-                {
-                    "type": "image",
-                    "title": {
-                        "type": "plain_text",
-                        "text": metric
-                    },
-                    "block_id": "image4",
-                    "image_url": url,
-                    "alt_text": metric
-                }
-            ]
-        )
-
-
-@slack.RTMClient.run_on(event='message')
-async def ask_actual_regression_forecast_data(**payload):
-    data = payload['data']
-    if 'regression' in data['text'].lower() and 'forecast' in data['text'].lower() and \
-            'actual' in data['text'].lower():
-
-        arrays_to_get = ['actual', 'regression', 'forecast']
-        metric = select_metric(data)
-        url = get_correct_url(arrays_to_get, metric)
+    if metric != "" and arrays_to_get != []:
+        url = get_url_image(arrays_to_get, metric)
 
         channel_id = data.get("channel")
         webclient = payload['web_client']
