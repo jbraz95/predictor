@@ -5,7 +5,7 @@ from api_calls.general_api_calls import get_values, get_query_actual_search
 from file_loader.config_loader import get_server, get_monitoring_time_span, get_params_arima_metric, get_forecast_time,\
      get_forecast_training_time
 from generate_images.image_generator import generate_url_multichart
-from prediction.arima import get_arima_forecast, get_forecast_array
+from prediction.arima import get_forecast_array
 from prediction.regression import get_regression_array_search
 
 
@@ -126,8 +126,6 @@ async def ask_charts(**payload):
 
     arrays_to_get = select_arrays_to_get(data)
     metric = select_metric(data)
-    print(metric)
-    print(arrays_to_get)
 
     if metric != "" and arrays_to_get != []:
         url = get_url_image(arrays_to_get, metric)

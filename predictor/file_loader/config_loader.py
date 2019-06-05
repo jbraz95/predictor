@@ -20,6 +20,14 @@ def get_slack_token(file):
     return load_file(file)["slack"]["token"]
 
 
+def get_monitoring_regression_percentage(file):
+    return float(load_file(file)["alarming"]["regression_percentage"])
+
+
+def get_monitoring_forecast_percentage(file):
+    return float(load_file(file)["alarming"]["forecast_percentage"])
+
+
 def get_slack_channel(file):
     return load_file(file)["slack"]["channel"]
 

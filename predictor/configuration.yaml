@@ -12,6 +12,10 @@ monitoring:
   time_span: 60
   time_span_sleep: 5
 
+alarming:
+  regression_percentage: 0.15
+  forecast_percentage: 0.05
+
 arima:
   forecast_time: 60
   forecast_training_time: 300
