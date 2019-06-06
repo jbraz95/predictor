@@ -2,8 +2,8 @@ import asyncio
 import slack
 
 from api_calls.general_api_calls import get_values, get_query_actual_search
-from file_loader.config_loader import get_server, get_monitoring_time_span, get_params_arima_metric, get_forecast_time,\
-     get_forecast_training_time
+from file_loader.config_loader import get_server, get_monitoring_time_span, get_params_arima_metric, get_forecast_time, \
+    get_forecast_training_time, modify_pause_alert
 from generate_images.image_generator import generate_url_multichart
 from prediction.arima import get_forecast_array
 from prediction.regression import get_regression_array_search
@@ -147,6 +147,51 @@ async def ask_charts(**payload):
                     "alt_text": metric
                 }
             ]
+        )
+
+
+@slack.RTMClient.run_on(event='message')
+async def ask_help(**payload):
+    data = payload['data']
+
+    if 'help' in data['text'].lower():
+        text = "Welcome to the predictorBot! These are the instructions for using it:\n" \
+               "Alarms: the bot will inform you when some anomaly occurs in the task-manager. " \
+               "You can stop these alarms by saying 'stop alarms'. You can resume then by saying 'resume alarms'\n" \
+               "Charts: You can ask for the actual charts at any moment. For doing so you only have to say what do you" \
+               "want to see (actual, regression, forecast or a mix of the three of them) and the name of the task type " \
+               "(basic preparation, toa, pmt, etc...)"
+
+        channel_id = data.get("channel")
+        webclient = payload['web_client']
+        webclient.chat_postMessage(
+            channel=channel_id,
+            text=text
+        )
+
+
+@slack.RTMClient.run_on(event='message')
+async def modify_pause(**payload):
+    data = payload['data']
+    config_file = "predictor/configuration.yaml"
+    inform = False
+
+    if 'stop' in data['text'].lower() and 'alarms' in data['text'].lower():
+        modify_pause_alert(config_file, True)
+        inform = True
+
+    elif 'resume' in data['text'].lower() and 'alarms' in data['text'].lower():
+        modify_pause_alert(config_file, False)
+        inform = True
+
+    if inform:
+        message = "The alarm system has been modified"
+
+        channel_id = data.get("channel")
+        webclient = payload['web_client']
+        webclient.chat_postMessage(
+            channel=channel_id,
+            text=message
         )
 
 

@@ -51,9 +51,9 @@ def monitor(config_file):
                                                             app=app, datacenter=datacenter,
                                                             kubernetes_namespace=kubernetes_namespace)
             print("The number of tasks should be: " + str(actual_value_regression))
-            if check_alarm_percentage(actual_value, actual_value_regression, regression_percentage):
+            if check_alarm_percentage(actual_value, actual_value_regression, regression_percentage, config_file):
                 problem_text = "The alarm is sent because there is a big difference between the expected value and " \
-                               "the actual one. Expected: " + str(actual_value_regression) + ". Actual value: " \
+                               "the current one. Expected: " + str(actual_value_regression) + ". Current value: " \
                                + str(actual_value)
                 send_alarm(token=token, channel=slack_channel, metric_name=metric, problem_array=['actual', 'regression'],
                            problem_text=problem_text)
@@ -74,7 +74,7 @@ def monitor(config_file):
                 max_forecast = max(forecast[1])
                 min_forecast = min(forecast[1])
                 if check_alarm_percentage(new_value=max_forecast, original_value=min_forecast,
-                                          percentage_change=forecast_percentage):
+                                          percentage_change=forecast_percentage, config_file=config_file):
                     forecast_alarm = True
             if forecast_alarm:
                 problem_text = "The alarm is sent because the forecast of this metric is growing very fast!"

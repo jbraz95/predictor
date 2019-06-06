@@ -1,231 +1,227 @@
-server:
-  url: http://prometheus.xite.com:9090
-
-slack:
-  token: xoxb-428326618882-651131019078-j3m1goldPEUVJvlTVu0sQ6re
-  channel: CCKHS9DBJ
-
-monitoring:
-  datacenter: "'atlas-xcms-eu-west1'"
-  app: "'task-manager'"
-  kubernetes_namespace: "'production-task-manager'"
-  time_span: 60
-  time_span_sleep: 5
-
-alarming:
-  regression_percentage: 0.15
+alerting:
   forecast_percentage: 0.05
-
+  paused: false
+  regression_percentage: 0.15
 arima:
   forecast_time: 60
   forecast_training_time: 300
   metrics:
-    - incoming_task_count_total-BASIC_PREPARATION:
-        - constant_yes:
-            p: 4
-            d: 1
-            q: 0
-            trend: 'c'
-        - constant_no:
-            p: 0
-            d: 1
-            q: 13
-            trend: 'nc'
-    - incoming_task_count_total-CREATE_JPEGS:
-        - constant_yes:
-            p: 6
-            d: 1
-            q: 0
-            trend: 'c'
-        - constant_no:
-            p: 0
-            d: 1
-            q: 8
-            trend: 'nc'
-    - incoming_task_count_total-FUBO:
-        - constant_yes:
-            p: 1
-            d: 1
-            q: 0
-            trend: 'c'
-        - constant_no:
-            p: 0
-            d: 1
-            q: 1
-            trend: 'nc'
-    - incoming_task_count_total-PMT:
-        - constant_yes:
-            p: 6
-            d: 1
-            q: 0
-            trend: 'c'
-        - constant_no:
-            p: 0
-            d: 1
-            q: 13
-            trend: 'nc'
-    - incoming_task_count_total-TOA:
-        - constant_yes:
-            p: 4
-            d: 1
-            q: 0
-            trend: 'c'
-        - constant_no:
-            p: 0
-            d: 1
-            q: 10
-            trend: 'nc'
-    - incoming_task_count_total-TOA_4K:
-        - constant_yes:
-            p: 1
-            d: 1
-            q: 0
-            trend: 'c'
-        - constant_no:
-            p: 0
-            d: 1
-            q: 1
-            trend: 'nc'
-    - incoming_task_count_total-VESET_BELGIUM:
-        - constant_yes:
-            p: 2
-            d: 1
-            q: 0
-            trend: 'c'
-        - constant_no:
-            p: 0
-            d: 1
-            q: 3
-            trend: 'nc'
-    - task_in_failure:
-        - constant_yes:
-            p: 13
-            d: 0
-            q: 0
-            trend: 'c'
-
-regression:
   - incoming_task_count_total-BASIC_PREPARATION:
-      predict: "incoming_task_count_total"
-      metrics:
-        - incoming_event_count_total:
-            event_type: "FINISHED"
-            value: "-1.9427715755"
-            exp: "1"
-        - incoming_event_count_total:
-            event_type: "STARTED"
-            value: "+2.8701723231"
-            exp: "1"
-        - incoming_event_count_total:
-            event_type: "TERMINATED"
-            value: "-0.1042482924"
-            exp: "1"
-      constant: "+4.9257723939"
-      task_type: "BASIC_PREPARATION"
+    - constant_yes:
+        d: 1
+        p: 4
+        q: 0
+        trend: c
+    - constant_no:
+        d: 1
+        p: 0
+        q: 13
+        trend: nc
   - incoming_task_count_total-CREATE_JPEGS:
-      predict: "incoming_task_count_total"
-      metrics:
-        - incoming_event_count_total:
-            event_type: "FINISHED"
-            value: "-1.1012672705"
-            exp: "1"
-        - incoming_event_count_total:
-            event_type: "STARTED"
-            value: "+2.0970134380"
-            exp: "1"
-        - incoming_event_count_total:
-            event_type: "TERMINATED"
-            value: "-0.5041718980"
-            exp: "2"
-      constant: "+1.3642873561"
-      task_type: "CREATE_JPEGS"
+    - constant_yes:
+        d: 1
+        p: 6
+        q: 0
+        trend: c
+    - constant_no:
+        d: 1
+        p: 0
+        q: 8
+        trend: nc
   - incoming_task_count_total-FUBO:
-      predict: "incoming_task_count_total"
-      metrics:
-        - incoming_event_count_total:
-            event_type: "FINISHED"
-            value: "-1.6098391394"
-            exp: "1"
-        - incoming_event_count_total:
-            event_type: "STARTED"
-            value: "+2.7462404654"
-            exp: "1"
-      constant: "-7.8718054068"
-      task_type: "FUBO"
+    - constant_yes:
+        d: 1
+        p: 1
+        q: 0
+        trend: c
+    - constant_no:
+        d: 1
+        p: 0
+        q: 1
+        trend: nc
   - incoming_task_count_total-PMT:
-      predict: "incoming_task_count_total"
-      metrics:
-        - incoming_event_count_total:
-            event_type: "FINISHED"
-            value: "-1.0587647440"
-            exp: "1"
-        - incoming_event_count_total:
-            event_type: "STARTED"
-            value: "+1.6666665789"
-            exp: "1"
-        - incoming_event_count_total:
-            event_type: "TERMINATED"
-            value: "+0.7555271460"
-            exp: "1"
-      constant: "+2.2319223380"
-      task_type: "PMT"
+    - constant_yes:
+        d: 1
+        p: 6
+        q: 0
+        trend: c
+    - constant_no:
+        d: 1
+        p: 0
+        q: 13
+        trend: nc
   - incoming_task_count_total-TOA:
-      predict: "incoming_task_count_total"
-      metrics:
-        - incoming_event_count_total:
-            event_type: "FINISHED"
-            value: "-1.1716673056"
-            exp: "1"
-        - incoming_event_count_total:
-            event_type: "STARTED"
-            value: "+1.9749673030"
-            exp: "1"
-        - incoming_event_count_total:
-            event_type: "TERMINATED"
-            value: "+3.7246558313 "
-            exp: "1"
-      constant: "+2.4275736945"
-      task_type: "TOA"
+    - constant_yes:
+        d: 1
+        p: 4
+        q: 0
+        trend: c
+    - constant_no:
+        d: 1
+        p: 0
+        q: 10
+        trend: nc
   - incoming_task_count_total-TOA_4K:
-      predict: "incoming_task_count_total"
-      metrics:
-        - incoming_event_count_total:
-            event_type: "FINISHED"
-            value: "+0.5782614032"
-            exp: "1"
-        - incoming_event_count_total:
-            event_type: "STARTED"
-            value: "+0.3926033457"
-            exp: "1"
-        - incoming_event_count_total:
-            event_type: "TERMINATED"
-            value: "-1.3018056615"
-            exp: "1"
-      constant: "-1.9996214927"
-      task_type: "TOA_4K"
+    - constant_yes:
+        d: 1
+        p: 1
+        q: 0
+        trend: c
+    - constant_no:
+        d: 1
+        p: 0
+        q: 1
+        trend: nc
   - incoming_task_count_total-VESET_BELGIUM:
-      predict: "incoming_task_count_total"
-      metrics:
-        - incoming_event_count_total:
-            event_type: "FINISHED"
-            value: "0.3502647401"
-            exp: "1"
-        - incoming_event_count_total:
-            event_type: "STARTED"
-            value: "+0.6948983163"
-            exp: "1"
-        - incoming_event_count_total:
-            event_type: "TERMINATED"
-            value: "-4.9593665539"
-            exp: "1"
-      constant: "-3.6225320092"
-      task_type: "VESET_BELGIUM"
+    - constant_yes:
+        d: 1
+        p: 2
+        q: 0
+        trend: c
+    - constant_no:
+        d: 1
+        p: 0
+        q: 3
+        trend: nc
   - task_in_failure:
-      predict: "task_in_failure"
-      metrics:
-        - incoming_event_count_total:
-            event_type: "ERROR"
-            value: "+0.3588034606"
-            exp: "1"
-      constant: "52.0885583682"
-      task_type: "BASIC_PREPARATION"
+    - constant_yes:
+        d: 0
+        p: 13
+        q: 0
+        trend: c
+monitoring:
+  app: '''task-manager'''
+  datacenter: '''atlas-xcms-eu-west1'''
+  kubernetes_namespace: '''production-task-manager'''
+  time_span: 60
+  time_span_sleep: 5
+regression:
+- incoming_task_count_total-BASIC_PREPARATION:
+    constant: '+4.9257723939'
+    metrics:
+    - incoming_event_count_total:
+        event_type: FINISHED
+        exp: '1'
+        value: '-1.9427715755'
+    - incoming_event_count_total:
+        event_type: STARTED
+        exp: '1'
+        value: '+2.8701723231'
+    - incoming_event_count_total:
+        event_type: TERMINATED
+        exp: '1'
+        value: '-0.1042482924'
+    predict: incoming_task_count_total
+    task_type: BASIC_PREPARATION
+- incoming_task_count_total-CREATE_JPEGS:
+    constant: '+1.3642873561'
+    metrics:
+    - incoming_event_count_total:
+        event_type: FINISHED
+        exp: '1'
+        value: '-1.1012672705'
+    - incoming_event_count_total:
+        event_type: STARTED
+        exp: '1'
+        value: '+2.0970134380'
+    - incoming_event_count_total:
+        event_type: TERMINATED
+        exp: '2'
+        value: '-0.5041718980'
+    predict: incoming_task_count_total
+    task_type: CREATE_JPEGS
+- incoming_task_count_total-FUBO:
+    constant: '-7.8718054068'
+    metrics:
+    - incoming_event_count_total:
+        event_type: FINISHED
+        exp: '1'
+        value: '-1.6098391394'
+    - incoming_event_count_total:
+        event_type: STARTED
+        exp: '1'
+        value: '+2.7462404654'
+    predict: incoming_task_count_total
+    task_type: FUBO
+- incoming_task_count_total-PMT:
+    constant: '+2.2319223380'
+    metrics:
+    - incoming_event_count_total:
+        event_type: FINISHED
+        exp: '1'
+        value: '-1.0587647440'
+    - incoming_event_count_total:
+        event_type: STARTED
+        exp: '1'
+        value: '+1.6666665789'
+    - incoming_event_count_total:
+        event_type: TERMINATED
+        exp: '1'
+        value: '+0.7555271460'
+    predict: incoming_task_count_total
+    task_type: PMT
+- incoming_task_count_total-TOA:
+    constant: '+2.4275736945'
+    metrics:
+    - incoming_event_count_total:
+        event_type: FINISHED
+        exp: '1'
+        value: '-1.1716673056'
+    - incoming_event_count_total:
+        event_type: STARTED
+        exp: '1'
+        value: '+1.9749673030'
+    - incoming_event_count_total:
+        event_type: TERMINATED
+        exp: '1'
+        value: '+3.7246558313 '
+    predict: incoming_task_count_total
+    task_type: TOA
+- incoming_task_count_total-TOA_4K:
+    constant: '-1.9996214927'
+    metrics:
+    - incoming_event_count_total:
+        event_type: FINISHED
+        exp: '1'
+        value: '+0.5782614032'
+    - incoming_event_count_total:
+        event_type: STARTED
+        exp: '1'
+        value: '+0.3926033457'
+    - incoming_event_count_total:
+        event_type: TERMINATED
+        exp: '1'
+        value: '-1.3018056615'
+    predict: incoming_task_count_total
+    task_type: TOA_4K
+- incoming_task_count_total-VESET_BELGIUM:
+    constant: '-3.6225320092'
+    metrics:
+    - incoming_event_count_total:
+        event_type: FINISHED
+        exp: '1'
+        value: '0.3502647401'
+    - incoming_event_count_total:
+        event_type: STARTED
+        exp: '1'
+        value: '+0.6948983163'
+    - incoming_event_count_total:
+        event_type: TERMINATED
+        exp: '1'
+        value: '-4.9593665539'
+    predict: incoming_task_count_total
+    task_type: VESET_BELGIUM
+- task_in_failure:
+    constant: '52.0885583682'
+    metrics:
+    - incoming_event_count_total:
+        event_type: ERROR
+        exp: '1'
+        value: '+0.3588034606'
+    predict: task_in_failure
+    task_type: BASIC_PREPARATION
+server:
+  url: http://prometheus.xite.com:9090
+slack:
+  channel: CCKHS9DBJ
+  token: xoxb-428326618882-651131019078-j3m1goldPEUVJvlTVu0sQ6re

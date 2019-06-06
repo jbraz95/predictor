@@ -12,6 +12,24 @@ def load_file(file):
         print("Oops!", sys.exc_info()[0], "occured.")
 
 
+def write_file(file, file_doc):
+    try:
+        with open(file, 'w') as f:
+            yaml.dump(file_doc, f)
+    except yaml.parser.ParserError:
+        print("Oops!", sys.exc_info()[0], "occured.")
+
+
+def modify_pause_alert(file, new_value):
+    file_doc = load_file(file)
+
+    file_doc["alerting"]["paused"] = new_value
+
+    write_file(file, file_doc)
+
+    return 1
+
+
 def get_server(file):
     return load_file(file)["server"]["url"]
 
@@ -21,11 +39,15 @@ def get_slack_token(file):
 
 
 def get_monitoring_regression_percentage(file):
-    return float(load_file(file)["alarming"]["regression_percentage"])
+    return float(load_file(file)["alerting"]["regression_percentage"])
 
 
 def get_monitoring_forecast_percentage(file):
-    return float(load_file(file)["alarming"]["forecast_percentage"])
+    return float(load_file(file)["alerting"]["forecast_percentage"])
+
+
+def get_alarm_pause_status(file):
+    return bool(load_file(file)["alerting"]["paused"])
 
 
 def get_slack_channel(file):
