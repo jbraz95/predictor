@@ -1,7 +1,7 @@
 from api_calls.general_api_calls import get_actual_value, get_query_regression, itct_actual_forced, get_values, \
-                                        adapt_time_series
+    adapt_time_series, get_query_actual_search
 from file_loader.config_loader import get_server, get_app, get_datacenter, get_kubernetes_namespace, \
-                                      get_monitoring_time_span, get_regression_info
+    get_monitoring_time_span, get_regression_info, modify_manual_error
 
 
 # Using the model information, it checks all the actual values of the model and it calculates the regression of it to
@@ -32,11 +32,29 @@ def get_regression_actual(server, case, variable_to_predict, app, datacenter, ku
     forced_cases = float(get_actual_value(server=server, query=query_forced)[1])
     prediction -= forced_cases
 
+    prediction += float(case[variable_to_predict]["manual_error"])
+
     if prediction < 0:
         prediction = 0
 
     prediction = round(prediction, 0)
     return prediction
+
+
+def get_regression_actual_search(config, metric):
+    server = get_server(config)
+    regression_info = get_regression_info(config)
+    for case in regression_info:
+        for metric_case in case:
+            if metric_case == metric:
+                case_selected = case
+
+    app = get_app(config)
+    datacenter = get_datacenter(config)
+    kubernetes_namespace = get_kubernetes_namespace(config)
+
+    return get_regression_actual(server=server, case=case_selected, variable_to_predict=metric, app=app, datacenter=datacenter,
+                                kubernetes_namespace=kubernetes_namespace)
 
 
 # Using the model information, it checks all the values of the model and it calculates the regression of it to
@@ -101,3 +119,16 @@ def get_regression_array_search(config, metric):
 
     return get_regression_array(server=server, case=case_selected, variable_to_predict=metric, app=app, datacenter=datacenter,
                                 kubernetes_namespace=kubernetes_namespace, time=time)
+
+
+def reset_regression(config, metric):
+    actual_regression = get_regression_actual_search(config, metric)
+    actual_query = get_query_actual_search(config, metric)
+    server = get_server(config)
+    actual_value = float(get_actual_value(server, actual_query)[1])
+
+    difference = actual_value - actual_regression
+
+    modify_manual_error(config, metric, difference)
+
+    return difference

@@ -98,6 +98,7 @@ monitoring:
 regression:
 - incoming_task_count_total-BASIC_PREPARATION:
     constant: '+4.9257723939'
+    manual_error: -312.0
     metrics:
     - incoming_event_count_total:
         event_type: FINISHED
@@ -115,6 +116,7 @@ regression:
     task_type: BASIC_PREPARATION
 - incoming_task_count_total-CREATE_JPEGS:
     constant: '+1.3642873561'
+    manual_error: 0
     metrics:
     - incoming_event_count_total:
         event_type: FINISHED
@@ -132,6 +134,7 @@ regression:
     task_type: CREATE_JPEGS
 - incoming_task_count_total-FUBO:
     constant: '-7.8718054068'
+    manual_error: 0
     metrics:
     - incoming_event_count_total:
         event_type: FINISHED
@@ -145,6 +148,7 @@ regression:
     task_type: FUBO
 - incoming_task_count_total-PMT:
     constant: '+2.2319223380'
+    manual_error: 0
     metrics:
     - incoming_event_count_total:
         event_type: FINISHED
@@ -162,6 +166,7 @@ regression:
     task_type: PMT
 - incoming_task_count_total-TOA:
     constant: '+2.4275736945'
+    manual_error: 0
     metrics:
     - incoming_event_count_total:
         event_type: FINISHED
@@ -179,6 +184,7 @@ regression:
     task_type: TOA
 - incoming_task_count_total-TOA_4K:
     constant: '-1.9996214927'
+    manual_error: 0
     metrics:
     - incoming_event_count_total:
         event_type: FINISHED
@@ -196,6 +202,7 @@ regression:
     task_type: TOA_4K
 - incoming_task_count_total-VESET_BELGIUM:
     constant: '-3.6225320092'
+    manual_error: 0
     metrics:
     - incoming_event_count_total:
         event_type: FINISHED
@@ -213,6 +220,7 @@ regression:
     task_type: VESET_BELGIUM
 - task_in_failure:
     constant: '52.0885583682'
+    manual_error: 0
     metrics:
     - incoming_event_count_total:
         event_type: ERROR

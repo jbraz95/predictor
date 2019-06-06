@@ -27,7 +27,21 @@ def modify_pause_alert(file, new_value):
 
     write_file(file, file_doc)
 
-    return 1
+
+def modify_manual_error(file, metric, value):
+    file_doc = load_file(file)
+
+    regression_info = file_doc["regression"]
+
+    index = -1
+
+    for metric_info in regression_info:
+        index += 1
+        for metric_name in metric_info:
+            if metric_name == metric:
+                file_doc["regression"][index][metric_name]["manual_error"] = value
+
+    write_file(file, file_doc)
 
 
 def get_server(file):

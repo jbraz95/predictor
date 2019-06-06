@@ -6,7 +6,7 @@ from file_loader.config_loader import get_server, get_monitoring_time_span, get_
     get_forecast_training_time, modify_pause_alert
 from generate_images.image_generator import generate_url_multichart
 from prediction.arima import get_forecast_array
-from prediction.regression import get_regression_array_search
+from prediction.regression import get_regression_array_search, reset_regression
 
 
 # Function that sends a message to slack
@@ -186,6 +186,25 @@ async def modify_pause(**payload):
 
     if inform:
         message = "The alarm system has been modified"
+
+        channel_id = data.get("channel")
+        webclient = payload['web_client']
+        webclient.chat_postMessage(
+            channel=channel_id,
+            text=message
+        )
+
+
+@slack.RTMClient.run_on(event='message')
+async def ask_reset_regression(**payload):
+    data = payload['data']
+    config_file = "predictor/configuration.yaml"
+
+    if 'resetregression' in data['text'].lower():
+        metric = select_metric(data)
+        value = reset_regression(config_file, metric)
+
+        message = "We are adding this constant: " + str(value)
 
         channel_id = data.get("channel")
         webclient = payload['web_client']
