@@ -2,7 +2,7 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="e1348665-6f09-4c06-82a2-28e58aa5d7f4" name="Default Changelist" comment="Little refactorization before continuing with the code">
-      <change beforePath="$PROJECT_DIR$/slack_integration/slackbot.py" beforeDir="false" afterPath="$PROJECT_DIR$/slack_integration/slackbot.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
     </list>
     <ignored path="$PROJECT_DIR$/venv/" />
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
@@ -270,7 +270,7 @@
       <workItem from="1559648469950" duration="13103000" />
       <workItem from="1559720987043" duration="16514000" />
       <workItem from="1559744223762" duration="1870000" />
-      <workItem from="1559807703893" duration="7908000" />
+      <workItem from="1559807703893" duration="8368000" />
     </task>
     <task id="LOCAL-00001" summary="Little refactorization before continuing with the code">
       <created>1559115846974</created>
@@ -283,7 +283,7 @@
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="128689000" />
+    <option name="totallyTimeSpent" value="129149000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="0" y="0" width="1440" height="900" extended-state="0" />
