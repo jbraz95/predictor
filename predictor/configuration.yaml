@@ -1,5 +1,5 @@
 alerting:
-  forecast_percentage: 0.05
+  forecast_percentage: 0.01
   paused: false
   regression_percentage: 0.15
 arima:
@@ -98,7 +98,7 @@ monitoring:
 regression:
 - incoming_task_count_total-BASIC_PREPARATION:
     constant: '+4.9257723939'
-    manual_error: -312.0
+    manual_error: 0.0
     metrics:
     - incoming_event_count_total:
         event_type: FINISHED
@@ -184,7 +184,7 @@ regression:
     task_type: TOA
 - incoming_task_count_total-TOA_4K:
     constant: '-1.9996214927'
-    manual_error: 0
+    manual_error: 6.0
     metrics:
     - incoming_event_count_total:
         event_type: FINISHED
@@ -220,7 +220,7 @@ regression:
     task_type: VESET_BELGIUM
 - task_in_failure:
     constant: '52.0885583682'
-    manual_error: 0
+    manual_error: 49.0
     metrics:
     - incoming_event_count_total:
         event_type: ERROR

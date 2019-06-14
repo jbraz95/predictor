@@ -44,6 +44,20 @@ def modify_manual_error(file, metric, value):
     write_file(file, file_doc)
 
 
+def get_manual_error(file, metric):
+    file_doc = load_file(file)
+    regression_info = file_doc["regression"]
+    index = -1
+
+    for metric_info in regression_info:
+        index += 1
+        for metric_name in metric_info:
+            if metric_name == metric:
+                value = file_doc["regression"][index][metric_name]["manual_error"]
+
+    return value
+
+
 def get_server(file):
     return load_file(file)["server"]["url"]
 

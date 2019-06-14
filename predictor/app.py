@@ -46,6 +46,11 @@ def monitor(config_file):
             actual_value = float(get_actual_value(server=server, query=query)[1])
             print("The number of tasks is: " + str(actual_value))
 
+            manual_error = get_manual_error(config_file, metric)
+            print("The manual error is: " + str(manual_error))
+
+            print("The number of tasks with the manual error is: " + str(actual_value+manual_error))
+
             # Regression
             actual_value_regression = get_regression_actual(server=server, case=case, variable_to_predict=metric,
                                                             app=app, datacenter=datacenter,

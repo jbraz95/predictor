@@ -46,6 +46,15 @@ def send_image(token, channel, message, image_url):
     )
 
 
+def get_subtype_bot(data):
+    if "subtype" in data:
+        subtype = data['subtype']
+    else:
+        subtype = ""
+
+    return subtype
+
+
 def select_metric(data):
     metric = ""
     if 'basic' and 'preparation' in data['text'].lower():
@@ -123,11 +132,12 @@ def select_arrays_to_get(data):
 @slack.RTMClient.run_on(event='message')
 async def ask_charts(**payload):
     data = payload['data']
+    subtype = get_subtype_bot(data)
 
     arrays_to_get = select_arrays_to_get(data)
     metric = select_metric(data)
 
-    if metric != "" and arrays_to_get != []:
+    if metric != "" and arrays_to_get != [] and subtype != "bot_message":
         url = get_url_image(arrays_to_get, metric)
 
         channel_id = data.get("channel")
@@ -153,8 +163,9 @@ async def ask_charts(**payload):
 @slack.RTMClient.run_on(event='message')
 async def ask_help(**payload):
     data = payload['data']
+    subtype = get_subtype_bot(data)
 
-    if 'help' in data['text'].lower():
+    if 'help' in data['text'].lower() and subtype != "bot_message":
         text = "Welcome to the predictorBot! These are the instructions for using it:\n" \
                "Alarms: the bot will inform you when some anomaly occurs in the task-manager. " \
                "You can stop these alarms by saying 'stop alarms'. You can resume then by saying 'resume alarms'\n" \
@@ -176,14 +187,16 @@ async def ask_help(**payload):
 @slack.RTMClient.run_on(event='message')
 async def modify_pause(**payload):
     data = payload['data']
+    subtype = get_subtype_bot(data)
+
     config_file = "predictor/configuration.yaml"
     inform = False
 
-    if 'stop' in data['text'].lower() and 'alarms' in data['text'].lower():
+    if 'stop' in data['text'].lower() and 'alarms' in data['text'].lower() and subtype != "bot_message":
         modify_pause_alert(config_file, True)
         inform = True
 
-    elif 'resume' in data['text'].lower() and 'alarms' in data['text'].lower():
+    elif 'resume' in data['text'].lower() and 'alarms' in data['text'].lower() and subtype != "bot_message":
         modify_pause_alert(config_file, False)
         inform = True
 
@@ -202,8 +215,9 @@ async def modify_pause(**payload):
 async def ask_reset_regression(**payload):
     data = payload['data']
     config_file = "predictor/configuration.yaml"
+    subtype = get_subtype_bot(data)
 
-    if 'resetregression' in data['text'].lower():
+    if 'resetregression' in data['text'].lower() and subtype != "bot_message":
         metric = select_metric(data)
         value = reset_regression(config_file, metric)
 
