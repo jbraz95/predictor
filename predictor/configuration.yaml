@@ -1,6 +1,6 @@
 alerting:
-  forecast_percentage: 0.01
-  paused: false
+  forecast_percentage: 0.05
+  paused: true
   regression_percentage: 0.15
 arima:
   forecast_time: 60
@@ -9,24 +9,24 @@ arima:
   - incoming_task_count_total-BASIC_PREPARATION:
     - constant_yes:
         d: 1
-        p: 4
-        q: 0
+        p: 5
+        q: 4
         trend: c
     - constant_no:
         d: 1
-        p: 0
-        q: 13
+        p: 5
+        q: 4
         trend: nc
   - incoming_task_count_total-CREATE_JPEGS:
     - constant_yes:
         d: 1
         p: 6
-        q: 0
+        q: 7
         trend: c
     - constant_no:
         d: 1
-        p: 0
-        q: 8
+        p: 6
+        q: 7
         trend: nc
   - incoming_task_count_total-FUBO:
     - constant_yes:
@@ -43,23 +43,23 @@ arima:
     - constant_yes:
         d: 1
         p: 6
-        q: 0
+        q: 4
         trend: c
     - constant_no:
         d: 1
-        p: 0
-        q: 13
+        p: 6
+        q: 4
         trend: nc
   - incoming_task_count_total-TOA:
     - constant_yes:
         d: 1
-        p: 4
-        q: 0
+        p: 3
+        q: 3
         trend: c
     - constant_no:
         d: 1
-        p: 0
-        q: 10
+        p: 3
+        q: 3
         trend: nc
   - incoming_task_count_total-TOA_4K:
     - constant_yes:
@@ -76,17 +76,17 @@ arima:
     - constant_yes:
         d: 1
         p: 2
-        q: 0
+        q: 3
         trend: c
     - constant_no:
         d: 1
-        p: 0
+        p: 2
         q: 3
         trend: nc
   - task_in_failure:
     - constant_yes:
         d: 0
-        p: 13
+        p: 1
         q: 0
         trend: c
 monitoring:
@@ -202,7 +202,7 @@ regression:
     task_type: TOA_4K
 - incoming_task_count_total-VESET_BELGIUM:
     constant: '-3.6225320092'
-    manual_error: 0
+    manual_error: 3.0
     metrics:
     - incoming_event_count_total:
         event_type: FINISHED
@@ -220,7 +220,7 @@ regression:
     task_type: VESET_BELGIUM
 - task_in_failure:
     constant: '52.0885583682'
-    manual_error: 49.0
+    manual_error: 65.0
     metrics:
     - incoming_event_count_total:
         event_type: ERROR

@@ -49,8 +49,6 @@ def monitor(config_file):
             manual_error = get_manual_error(config_file, metric)
             print("The manual error is: " + str(manual_error))
 
-            print("The number of tasks with the manual error is: " + str(actual_value+manual_error))
-
             # Regression
             actual_value_regression = get_regression_actual(server=server, case=case, variable_to_predict=metric,
                                                             app=app, datacenter=datacenter,
@@ -92,12 +90,18 @@ def run_prediction(config_file):
     time_span = get_monitoring_time_span(config_file)
     time_span_sleep = get_monitoring_time_span_sleep(config_file)
 
-    while True:
-        if check_time(previous_time, time_span=time_span):
-            previous_time = time.time()
-            monitor(config_file=config_file)
-        else:
-            time.sleep(time_span_sleep)
+    try:
+        while True:
+            if check_time(previous_time, time_span=time_span):
+                previous_time = time.time()
+                monitor(config_file=config_file)
+            else:
+                time.sleep(time_span_sleep)
+    except Exception as e:
+        print(e)
+        time.sleep(time_span_sleep)
+        pred = threading.Thread(target=run_prediction, args=(config_file,))
+        pred.start()
 
 
 def run_slack(config_file):
