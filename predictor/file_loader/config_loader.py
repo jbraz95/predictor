@@ -78,6 +78,10 @@ def get_alarm_pause_status(file):
     return bool(load_file(file)["alerting"]["paused"])
 
 
+def get_alarm_minimum_difference(file):
+    return int(load_file(file)["alerting"]["regression_min_difference"])
+
+
 def get_slack_channel(file):
     return load_file(file)["slack"]["channel"]
 

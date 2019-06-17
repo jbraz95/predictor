@@ -1,11 +1,16 @@
 import math
 
-from api_calls.general_api_calls import adapt_time_series
-
+from api_calls.general_api_calls import adapt_time_series, get_query_actual_search, get_values
 
 # It generates a chart for timeseries (the timeseries that have not been adapted)
 # timeseries: array of a timeseries to be adapted
 # name: name of the chart
+from file_loader.config_loader import get_server, get_monitoring_time_span, get_forecast_time, \
+    get_forecast_training_time, get_params_arima_metric
+from prediction.arima import get_forecast_array
+from prediction.regression import get_regression_array_search
+
+
 def generate_timeseries_chart(timeseries, name):
     data_parsed = adapt_time_series(timeseries)
     values = data_parsed[1]
@@ -140,5 +145,43 @@ def generate_url_multichart(array_data, array_names, name, time):
 
     chart_extras = axis + range_chart + title_chart + legend
     url = base_url + type_chart + size + chart_extras + data
+
+    return url
+
+
+def get_url_image(arrays_to_get, metric):
+    config_file = "predictor/configuration.yaml"
+
+    server = get_server(config_file)
+    time = get_monitoring_time_span(config_file)
+    query = get_query_actual_search(config=config_file, metric=metric)
+
+    multi_data = []
+    array_names = []
+
+    if 'actual' in arrays_to_get:
+        actual = get_values(server=server, query=query, minutes=time)
+        multi_data.append(actual)
+        array_names.append('actual')
+
+    if 'regression' in arrays_to_get:
+        regression_array = get_regression_array_search(config=config_file, metric=metric)
+        multi_data.append(regression_array)
+        array_names.append('regression')
+
+    if 'forecast' in arrays_to_get:
+        forecast_time = get_forecast_time(config_file)
+        forecast_training_time = get_forecast_training_time(config_file)
+        time_series_training = get_values(server=server, query=query, minutes=forecast_training_time)
+        params = get_params_arima_metric(file=config_file, metric=metric)
+
+        forecasts = get_forecast_array(params=params, time_series=time_series_training, forecast_time=forecast_time)
+
+        for set_arima in forecasts:
+            array_names.append("forecast:" + set_arima[0])
+            multi_data.append(set_arima[1])
+
+    url = generate_url_multichart(array_data=multi_data, array_names=array_names, name=metric,
+                                  time=time)
 
     return url

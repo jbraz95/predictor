@@ -89,7 +89,8 @@ def get_regression_array(server, case, variable_to_predict, app, datacenter, kub
             prediction = [new + old for new, old in zip(actual_prediction, prediction)]
 
     constant = float(case[variable_to_predict]["constant"])
-    prediction = [i + constant for i in prediction]
+    manual_error = float(case[variable_to_predict]["manual_error"])
+    prediction = [i + constant + manual_error for i in prediction]
 
     query_forced = itct_actual_forced(app=app, datacenter=datacenter, case=case, metric_to_check=variable_to_predict,
                                       kubernetes_namespace=kubernetes_namespace)

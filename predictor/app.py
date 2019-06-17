@@ -54,7 +54,8 @@ def monitor(config_file):
                                                             app=app, datacenter=datacenter,
                                                             kubernetes_namespace=kubernetes_namespace)
             print("The number of tasks should be: " + str(actual_value_regression))
-            if check_alarm_percentage(actual_value, actual_value_regression, regression_percentage, config_file):
+            if check_alarm_percentage(new_value=actual_value, original_value=actual_value_regression,
+                                      percentage_change=regression_percentage, config_file=config_file):
                 problem_text = "The alarm is sent because there is a big difference between the expected value and " \
                                "the current one. Expected: " + str(actual_value_regression) + ". Current value: " \
                                + str(actual_value)

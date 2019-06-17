@@ -1,6 +1,7 @@
 alerting:
   forecast_percentage: 0.05
-  paused: true
+  paused: false
+  regression_min_difference: 25
   regression_percentage: 0.15
 arima:
   forecast_time: 60
@@ -98,7 +99,7 @@ monitoring:
 regression:
 - incoming_task_count_total-BASIC_PREPARATION:
     constant: '+4.9257723939'
-    manual_error: 0.0
+    manual_error: -33.0
     metrics:
     - incoming_event_count_total:
         event_type: FINISHED
@@ -220,7 +221,7 @@ regression:
     task_type: VESET_BELGIUM
 - task_in_failure:
     constant: '52.0885583682'
-    manual_error: 65.0
+    manual_error: 114.0
     metrics:
     - incoming_event_count_total:
         event_type: ERROR

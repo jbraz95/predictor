@@ -1,12 +1,9 @@
 import asyncio
 import slack
 
-from api_calls.general_api_calls import get_values, get_query_actual_search
-from file_loader.config_loader import get_server, get_monitoring_time_span, get_params_arima_metric, get_forecast_time, \
-    get_forecast_training_time, modify_pause_alert
-from generate_images.image_generator import generate_url_multichart
-from prediction.arima import get_forecast_array
-from prediction.regression import get_regression_array_search, reset_regression
+from file_loader.config_loader import modify_pause_alert
+from generate_images.image_generator import get_url_image
+from prediction.regression import reset_regression
 
 
 # Function that sends a message to slack
@@ -75,44 +72,6 @@ def select_metric(data):
         metric = "task_in_failure"
 
     return metric
-
-
-def get_url_image(arrays_to_get, metric):
-    config_file = "predictor/configuration.yaml"
-
-    server = get_server(config_file)
-    time = get_monitoring_time_span(config_file)
-    query = get_query_actual_search(config=config_file, metric=metric)
-
-    multi_data = []
-    array_names = []
-
-    if 'actual' in arrays_to_get:
-        actual = get_values(server=server, query=query, minutes=time)
-        multi_data.append(actual)
-        array_names.append('actual')
-
-    if 'regression' in arrays_to_get:
-        regression_array = get_regression_array_search(config=config_file, metric=metric)
-        multi_data.append(regression_array)
-        array_names.append('regression')
-
-    if 'forecast' in arrays_to_get:
-        forecast_time = get_forecast_time(config_file)
-        forecast_training_time = get_forecast_training_time(config_file)
-        time_series_training = get_values(server=server, query=query, minutes=forecast_training_time)
-        params = get_params_arima_metric(file=config_file, metric=metric)
-
-        forecasts = get_forecast_array(params=params, time_series=time_series_training, forecast_time=forecast_time)
-
-        for set_arima in forecasts:
-            array_names.append("forecast:" + set_arima[0])
-            multi_data.append(set_arima[1])
-
-    url = generate_url_multichart(array_data=multi_data, array_names=array_names, name=metric,
-                                  time=time)
-
-    return url
 
 
 def select_arrays_to_get(data):

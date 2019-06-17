@@ -1,9 +1,11 @@
-from file_loader.config_loader import get_alarm_pause_status
-from slack_integration.slackbot import send_image, send_message, get_url_image
+from file_loader.config_loader import get_alarm_pause_status, get_alarm_minimum_difference
+from slack_integration.slackbot import send_image, send_message
+from generate_images.image_generator import get_url_image
 
 
 def check_alarm_percentage(new_value, original_value, percentage_change, config_file):
     alarm_paused = get_alarm_pause_status(config_file)
+    min_diff = get_alarm_minimum_difference(config_file)
 
     if original_value == 0:
         percentage = 0
@@ -11,9 +13,11 @@ def check_alarm_percentage(new_value, original_value, percentage_change, config_
         increase = new_value - original_value
         percentage = (increase / original_value)
 
+    difference = abs(new_value - original_value)
+
     print("The difference between the new value and the original one is: " + str(percentage))
 
-    if (abs(percentage) > percentage_change) and not alarm_paused:
+    if (abs(percentage) > percentage_change) and (difference > min_diff) and (not alarm_paused):
         return True
     else:
         return False
