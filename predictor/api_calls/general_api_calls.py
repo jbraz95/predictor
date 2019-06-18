@@ -41,7 +41,7 @@ def get_values(server, query, minutes):
 # case: all the information about the metric to check (filters)
 # metric_to_check: metric that we want to study (for example incoming_task_count_total-FUBO)
 # namespace = kubernetes information to do the query
-def itct_actual(app, datacenter, case, metric_to_check, kubernetes_namespace):
+def itct_actual_query(app, datacenter, case, metric_to_check, kubernetes_namespace):
     task_type = case[metric_to_check]['task_type']
     metric = case[metric_to_check]['predict']
     query = metric + '{app=' + app + ',datacenter=' + datacenter + ',kubernetes_namespace=' + kubernetes_namespace + \
@@ -55,7 +55,7 @@ def itct_actual(app, datacenter, case, metric_to_check, kubernetes_namespace):
 # case: all the information about the metric to check (filters)
 # metric_to_check: metric that we want to study (for example incoming_task_count_total-FUBO)
 # namespace = kubernetes information to do the query
-def itct_actual_forced(app, datacenter, case, metric_to_check, kubernetes_namespace):
+def itct_actual_forced_query(app, datacenter, case, metric_to_check, kubernetes_namespace):
     task_type = case[metric_to_check]['task_type']
     metric = case[metric_to_check]['predict']
     query = metric + '{app=' + app + ',datacenter=' + datacenter + ',kubernetes_namespace=' + kubernetes_namespace + \
@@ -69,7 +69,7 @@ def itct_actual_forced(app, datacenter, case, metric_to_check, kubernetes_namesp
 # case: information about the metric to check (filters)
 # metric_to_check: metric that we want to study (for example incoming_task_count_total-FUBO)
 # namespace = kubernetes information to do the query
-def tif_actual(app, datacenter, case, metric_to_check, kubernetes_namespace):
+def tif_actual_query(app, datacenter, case, metric_to_check, kubernetes_namespace):
     metric = case[metric_to_check]['predict']
     query = metric + '{app=' + app + ',datacenter=' + datacenter + ',kubernetes_namespace=' + kubernetes_namespace + '}'
     return query
@@ -82,7 +82,7 @@ def tif_actual(app, datacenter, case, metric_to_check, kubernetes_namespace):
 # metric_to_check: metric that we want to study (for example incoming_task_count_total-FUBO)
 # namespace = kubernetes information to do the query
 def get_query_actual(app, datacenter, case, metric_to_check, kubernetes_namespace):
-    possible_metrics = {'incoming_task_count_total': itct_actual, 'task_in_failure': tif_actual}
+    possible_metrics = {'incoming_task_count_total': itct_actual_query, 'task_in_failure': tif_actual_query}
     metric = case[metric_to_check]['predict']
     result = possible_metrics[metric](app=app, datacenter=datacenter, case=case,
                                       metric_to_check=metric_to_check, kubernetes_namespace=kubernetes_namespace)
@@ -152,6 +152,21 @@ def get_query_regression(app, datacenter, case, variable_to_predict, metric, mod
                                                  variable_to_predict=variable_to_predict, metric=metric, model=model,
                                                  kubernetes_namespace=kubernetes_namespace)
     return result
+
+
+def get_query_regression_search(config, metric):
+    regression_info = get_regression_info(config)
+    for case in regression_info:
+        for metric_case in case:
+            if metric_case == metric:
+                case_selected = case
+
+    app = get_app(config)
+    datacenter = get_datacenter(config)
+    kubernetes_namespace = get_kubernetes_namespace(config)
+
+    return get_query_regression(app=app, datacenter=datacenter, case=case_selected, metric_to_check=metric,
+                                kubernetes_namespace=kubernetes_namespace)
 
 
 # It adapt the time series to a more easy to use format

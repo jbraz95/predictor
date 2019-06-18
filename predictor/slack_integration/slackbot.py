@@ -25,22 +25,30 @@ def send_message(token, channel, message):
 # image_url: url with the image to show
 def send_image(token, channel, message, image_url):
     client = slack.WebClient(token)
-    client.chat_postMessage(
-        channel=channel,
-        text=message,
-        blocks=[
-            {
-                "type": "image",
-                "title": {
-                    "type": "plain_text",
-                    "text": message
-                },
-                "block_id": "image4",
-                "image_url": image_url,
-                "alt_text": message
-            }
-        ]
-    )
+
+    try:
+        client.chat_postMessage(
+            channel=channel,
+            text=message,
+            blocks=[
+                {
+                    "type": "image",
+                    "title": {
+                        "type": "plain_text",
+                        "text": message
+                    },
+                    "block_id": "image4",
+                    "image_url": image_url,
+                    "alt_text": message
+                }
+            ]
+        )
+    except Exception as e:
+        print("EXCEPTION!!!!!!!! : " + e)
+        client.chat_postMessage(
+            channel=channel,
+            text="There was an error, try again"
+        )
 
 
 def get_subtype_bot(data):
@@ -79,7 +87,7 @@ def select_arrays_to_get(data):
     if 'actual' in data['text'].lower():
         arrays_to_get.append('actual')
 
-    if 'forecast' in data['text'].lower():
+    if 'forecast' in data['text'].lower() or 'prediction' in data['text'].lower():
         arrays_to_get.append('forecast')
 
     if 'regression' in data['text'].lower():
@@ -99,24 +107,33 @@ async def ask_charts(**payload):
     if metric != "" and arrays_to_get != [] and subtype != "bot_message":
         url = get_url_image(arrays_to_get, metric)
 
-        channel_id = data.get("channel")
-        webclient = payload['web_client']
-        webclient.chat_postMessage(
-            channel=channel_id,
-            text=metric,
-            blocks=[
-                {
-                    "type": "image",
-                    "title": {
-                        "type": "plain_text",
-                        "text": metric
-                    },
-                    "block_id": "image4",
-                    "image_url": url,
-                    "alt_text": metric
-                }
-            ]
-        )
+        try:
+            channel_id = data.get("channel")
+            webclient = payload['web_client']
+            webclient.chat_postMessage(
+                channel=channel_id,
+                text=metric,
+                blocks=[
+                    {
+                        "type": "image",
+                        "title": {
+                            "type": "plain_text",
+                            "text": metric
+                        },
+                        "block_id": "image4",
+                        "image_url": url,
+                        "alt_text": metric
+                    }
+                ]
+            )
+        except Exception as e:
+            print("EXCEPTION!!!!!!!! : " + e)
+            channel_id = data.get("channel")
+            webclient = payload['web_client']
+            webclient.chat_postMessage(
+                channel=channel_id,
+                text="There was an error, try again"
+            )
 
 
 @slack.RTMClient.run_on(event='message')

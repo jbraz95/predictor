@@ -1,7 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="e1348665-6f09-4c06-82a2-28e58aa5d7f4" name="Default Changelist" comment="" />
+    <list default="true" id="e1348665-6f09-4c06-82a2-28e58aa5d7f4" name="Default Changelist" comment="">
+      <change beforePath="$PROJECT_DIR$/.idea/dictionaries/Javi.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/dictionaries/Javi.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/api_calls/general_api_calls.py" beforeDir="false" afterPath="$PROJECT_DIR$/api_calls/general_api_calls.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app.py" beforeDir="false" afterPath="$PROJECT_DIR$/app.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/generate_images/image_generator.py" beforeDir="false" afterPath="$PROJECT_DIR$/generate_images/image_generator.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/prediction/regression.py" beforeDir="false" afterPath="$PROJECT_DIR$/prediction/regression.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/slack_integration/slackbot.py" beforeDir="false" afterPath="$PROJECT_DIR$/slack_integration/slackbot.py" afterDir="false" />
+    </list>
     <ignored path="$PROJECT_DIR$/venv/" />
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -14,11 +22,11 @@
   </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file pinned="false" current-in-tab="false">
+      <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/app.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="138">
-              <caret line="62" column="53" lean-forward="true" selection-start-line="62" selection-start-column="53" selection-end-line="62" selection-end-column="53" />
+            <state relative-caret-position="285">
+              <caret line="112" column="10" lean-forward="true" selection-start-line="112" selection-start-column="10" selection-end-line="112" selection-end-column="10" />
               <folding>
                 <element signature="e#0#66#0" expanded="true" />
               </folding>
@@ -27,46 +35,10 @@
         </entry>
       </file>
       <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/alarms/alarm_system.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="390">
-              <caret line="26" column="23" selection-start-line="26" selection-start-column="10" selection-end-line="26" selection-end-column="23" />
-              <folding>
-                <element signature="e#0#90#0" expanded="true" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/generate_images/image_generator.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="250">
-              <caret line="168" column="35" lean-forward="true" selection-start-line="168" selection-start-column="35" selection-end-line="168" selection-end-column="35" />
-              <folding>
-                <element signature="e#0#11#0" expanded="true" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/file_loader/config_loader.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="416">
-              <caret line="80" column="32" selection-start-line="80" selection-start-column="4" selection-end-line="80" selection-end-column="32" />
-              <folding>
-                <element signature="e#0#10#0" expanded="true" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/slack_integration/slackbot.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="135">
-              <caret line="76" selection-start-line="76" selection-end-line="76" />
+            <state relative-caret-position="193">
+              <caret line="135" column="13" lean-forward="true" selection-start-line="135" selection-start-column="13" selection-end-line="135" selection-end-column="13" />
               <folding>
                 <element signature="e#0#14#0" expanded="true" />
               </folding>
@@ -74,23 +46,14 @@
           </provider>
         </entry>
       </file>
-      <file pinned="false" current-in-tab="true">
-        <entry file="file://$PROJECT_DIR$/prediction/regression.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="383">
-              <caret line="91" column="17" selection-start-line="91" selection-start-column="17" selection-end-line="91" selection-end-column="17" />
-              <folding>
-                <element signature="e#0#160#0" expanded="true" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
       <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/configuration.yaml">
+        <entry file="file://$PROJECT_DIR$/alarms/alarm_system.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="288">
-              <caret line="227" column="16" lean-forward="true" selection-start-line="227" selection-start-column="16" selection-end-line="227" selection-end-column="16" />
+            <state relative-caret-position="362">
+              <caret line="26" column="23" selection-start-line="26" selection-start-column="10" selection-end-line="26" selection-end-column="23" />
+              <folding>
+                <element signature="e#0#90#0" expanded="true" />
+              </folding>
             </state>
           </provider>
         </entry>
@@ -107,7 +70,6 @@
   <component name="FindInProjectRecents">
     <findStrings>
       <find>generate_actual</find>
-      <find>forced</find>
       <find>adapt</find>
       <find>itct</find>
       <find>datacent</find>
@@ -124,6 +86,10 @@
       <find>manual_error</find>
       <find>alerting</find>
       <find>alarm</find>
+      <find>forced</find>
+      <find>regression_info</find>
+      <find>get_regression_array</find>
+      <find>slack</find>
     </findStrings>
   </component>
   <component name="Git.Settings">
@@ -139,15 +105,15 @@
       <list>
         <option value="$PROJECT_DIR$/prediction/arima.py" />
         <option value="$PROJECT_DIR$/alarms/alarm_regression.py" />
-        <option value="$PROJECT_DIR$/generate_images/image_generator.py" />
         <option value="$PROJECT_DIR$/slack_integration/slackbot_charts.py" />
-        <option value="$PROJECT_DIR$/api_calls/general_api_calls.py" />
         <option value="$PROJECT_DIR$/file_loader/config_loader.py" />
         <option value="$PROJECT_DIR$/alarms/alarm_system.py" />
-        <option value="$PROJECT_DIR$/app.py" />
         <option value="$PROJECT_DIR$/configuration.yaml" />
-        <option value="$PROJECT_DIR$/slack_integration/slackbot.py" />
+        <option value="$PROJECT_DIR$/generate_images/image_generator.py" />
         <option value="$PROJECT_DIR$/prediction/regression.py" />
+        <option value="$PROJECT_DIR$/slack_integration/slackbot.py" />
+        <option value="$PROJECT_DIR$/api_calls/general_api_calls.py" />
+        <option value="$PROJECT_DIR$/app.py" />
       </list>
     </option>
   </component>
@@ -172,6 +138,16 @@
               <item name="predictor" type="b2602c69:ProjectViewProjectNode" />
               <item name="predictor" type="462c0819:PsiDirectoryNode" />
               <item name="alarms" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="predictor" type="b2602c69:ProjectViewProjectNode" />
+              <item name="predictor" type="462c0819:PsiDirectoryNode" />
+              <item name="api_calls" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="predictor" type="b2602c69:ProjectViewProjectNode" />
+              <item name="predictor" type="462c0819:PsiDirectoryNode" />
+              <item name="file_loader" type="462c0819:PsiDirectoryNode" />
             </path>
             <path>
               <item name="predictor" type="b2602c69:ProjectViewProjectNode" />
@@ -265,6 +241,8 @@
       <workItem from="1559899922673" duration="1155000" />
       <workItem from="1560500689152" duration="11574000" />
       <workItem from="1560771574130" duration="5790000" />
+      <workItem from="1560843122291" duration="741000" />
+      <workItem from="1560846158624" duration="7569000" />
     </task>
     <task id="LOCAL-00001" summary="Little refactorization before continuing with the code">
       <created>1559115846974</created>
@@ -284,18 +262,18 @@
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="148184000" />
+    <option name="totallyTimeSpent" value="156494000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="0" y="0" width="1440" height="900" extended-state="0" />
     <editor active="true" />
     <layout>
-      <window_info content_ui="combo" id="Project" order="0" sideWeight="0.49910232" visible="true" weight="0.16738197" />
+      <window_info content_ui="combo" id="Project" order="0" sideWeight="0.49910232" visible="true" weight="0.17167382" />
       <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
       <window_info id="Favorites" order="2" sideWeight="0.50089765" side_tool="true" weight="0.2532189" />
       <window_info anchor="bottom" id="Message" order="0" />
       <window_info anchor="bottom" id="Find" order="1" weight="0.32891566" />
-      <window_info anchor="bottom" id="Run" order="2" sideWeight="0.49785408" weight="0.32891566" />
+      <window_info active="true" anchor="bottom" id="Run" order="2" sideWeight="0.49785408" visible="true" weight="0.32891566" />
       <window_info anchor="bottom" id="Debug" order="3" weight="0.4" />
       <window_info anchor="bottom" id="Cvs" order="4" weight="0.25" />
       <window_info anchor="bottom" id="Inspection" order="5" weight="0.4" />
@@ -375,7 +353,7 @@
   </component>
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
     <SUITE FILE_PATH="coverage/predictor$Prototype.coverage" NAME="predictor Coverage Results" MODIFIED="1558620822917" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/.." />
-    <SUITE FILE_PATH="coverage/predictor$predictor.coverage" NAME="predictor Coverage Results" MODIFIED="1560786361037" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/.." />
+    <SUITE FILE_PATH="coverage/predictor$predictor.coverage" NAME="predictor Coverage Results" MODIFIED="1560857012413" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/.." />
   </component>
   <component name="editorHistoryManager">
     <entry file="file://$PROJECT_DIR$/venv/lib/python3.7/site-packages/statsmodels/base/model.py">
@@ -389,36 +367,33 @@
       <provider selected="true" editor-type-id="text-editor" />
     </entry>
     <entry file="file://$PROJECT_DIR$/slack_integration/slackbot_charts.py" />
+    <entry file="file://$PROJECT_DIR$/venv/lib/python3.7/site-packages/slack/web/slack_response.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="202">
+          <caret line="173" selection-start-line="173" selection-end-line="173" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/configuration.yaml">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="1498">
+          <caret line="100" column="11" selection-start-line="100" selection-start-column="11" selection-end-line="100" selection-end-column="11" />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/api_calls/general_api_calls.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="225">
-          <caret line="16" column="26" selection-start-line="16" selection-start-column="26" selection-end-line="16" selection-end-column="26" />
+        <state relative-caret-position="474">
+          <caret line="169" lean-forward="true" selection-start-line="169" selection-end-line="169" />
           <folding>
             <element signature="e#0#15#0" expanded="true" />
           </folding>
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/prediction/arima.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="315">
-          <caret line="23" column="8" selection-start-line="23" selection-start-column="8" selection-end-line="25" selection-end-column="65" />
-          <folding>
-            <element signature="e#0#45#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/configuration.yaml">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="288">
-          <caret line="227" column="16" lean-forward="true" selection-start-line="227" selection-start-column="16" selection-end-line="227" selection-end-column="16" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/file_loader/config_loader.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="416">
+        <state relative-caret-position="-13">
           <caret line="80" column="32" selection-start-line="80" selection-start-column="4" selection-end-line="80" selection-end-column="32" />
           <folding>
             <element signature="e#0#10#0" expanded="true" />
@@ -426,10 +401,47 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/generate_images/image_generator.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="160">
+          <caret line="155" column="47" selection-start-line="155" selection-start-column="27" selection-end-line="155" selection-end-column="47" />
+          <folding>
+            <element signature="e#0#94#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/prediction/arima.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-13">
+          <caret line="14" lean-forward="true" selection-start-line="14" selection-end-line="14" />
+          <folding>
+            <element signature="e#0#45#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/prediction/regression.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="167">
+          <caret line="120" column="31" selection-start-line="120" selection-start-column="11" selection-end-line="120" selection-end-column="31" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/alarms/alarm_system.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="362">
+          <caret line="26" column="23" selection-start-line="26" selection-start-column="10" selection-end-line="26" selection-end-column="23" />
+          <folding>
+            <element signature="e#0#90#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/slack_integration/slackbot.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="135">
-          <caret line="76" selection-start-line="76" selection-end-line="76" />
+        <state relative-caret-position="193">
+          <caret line="135" column="13" lean-forward="true" selection-start-line="135" selection-start-column="13" selection-end-line="135" selection-end-column="13" />
           <folding>
             <element signature="e#0#14#0" expanded="true" />
           </folding>
@@ -438,40 +450,10 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/app.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="138">
-          <caret line="62" column="53" lean-forward="true" selection-start-line="62" selection-start-column="53" selection-end-line="62" selection-end-column="53" />
+        <state relative-caret-position="285">
+          <caret line="112" column="10" lean-forward="true" selection-start-line="112" selection-start-column="10" selection-end-line="112" selection-end-column="10" />
           <folding>
             <element signature="e#0#66#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/alarms/alarm_system.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="390">
-          <caret line="26" column="23" selection-start-line="26" selection-start-column="10" selection-end-line="26" selection-end-column="23" />
-          <folding>
-            <element signature="e#0#90#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/generate_images/image_generator.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="250">
-          <caret line="168" column="35" lean-forward="true" selection-start-line="168" selection-start-column="35" selection-end-line="168" selection-end-column="35" />
-          <folding>
-            <element signature="e#0#11#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/prediction/regression.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="383">
-          <caret line="91" column="17" selection-start-line="91" selection-start-column="17" selection-end-line="91" selection-end-column="17" />
-          <folding>
-            <element signature="e#0#160#0" expanded="true" />
           </folding>
         </state>
       </provider>

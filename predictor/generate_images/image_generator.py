@@ -1,16 +1,13 @@
-import math
-
 from api_calls.general_api_calls import adapt_time_series, get_query_actual_search, get_values
-
-# It generates a chart for timeseries (the timeseries that have not been adapted)
-# timeseries: array of a timeseries to be adapted
-# name: name of the chart
 from file_loader.config_loader import get_server, get_monitoring_time_span, get_forecast_time, \
     get_forecast_training_time, get_params_arima_metric
 from prediction.arima import get_forecast_array
 from prediction.regression import get_regression_array_search
 
 
+# It generates a chart for timeseries (the timeseries that have not been adapted)
+# timeseries: array of a timeseries to be adapted and then used in the chart
+# name: name of the chart
 def generate_timeseries_chart(timeseries, name):
     data_parsed = adapt_time_series(timeseries)
     values = data_parsed[1]
@@ -25,7 +22,7 @@ def generate_timeseries_chart(timeseries, name):
     return url
 
 
-# It generates a chart
+# It generates a chart with data
 # data: array of data to be put on the chart
 # name: name of the chart
 def generate_data_chart(data, name):
@@ -87,23 +84,16 @@ def generate_data_multichart(array_data, array_names, time):
 
         if isinstance(array[0], list):
             data_parsed = adapt_time_series(array)
-            values = data_parsed[1]
+            array = data_parsed[1]
 
-            length = len(values) - 1
-            start = length-time
-            if start < 0:
-                start = 0
+        length = len(array) - 1
+        start = length - time
+        if start < 0:
+            start = 0
 
-            values = values[start:length]
-            data += list_to_str(values)
-        else:
-            length = len(array) - 1
-            start = length - time
-            if start < 0:
-                start = 0
+        array = array[start:length]
+        data += list_to_str(array)
 
-            array = array[start:length]
-            data += list_to_str(array)
         data += "|"
         index += 1
     data = data[:-1]
@@ -121,12 +111,10 @@ def generate_url_multichart(array_data, array_names, name, time):
     for array in array_data:
         if isinstance(array[0], list):
             data_parsed = adapt_time_series(array)
-            values = data_parsed[1]
-            local_max_y = max(values)
-            local_min_y = min(values)
-        else:
-            local_max_y = max(array)
-            local_min_y = min(array)
+            array = data_parsed[1]
+
+        local_max_y = max(array)
+        local_min_y = min(array)
 
         if max_y is None or local_max_y > max_y:
             max_y = local_max_y

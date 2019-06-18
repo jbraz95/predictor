@@ -1,16 +1,17 @@
 from alarms.alarm_system import check_alarm_percentage, send_alarm
 from file_loader.config_loader import *
 from api_calls.general_api_calls import get_actual_value, get_query_actual, get_values
-from prediction.regression import get_regression_actual
+from prediction.regression import get_regression_actual, get_regression_actual_search
 from prediction.arima import get_forecast_array
 from slack_integration.slackbot import read_messages
 import time
 import threading
 
 
-# Check the time to know if we have to do a monitoring
+# Calculates the difference between previous_time and the actual time and checks if it's bigger than time_span
 # previous_time: timestamp of the last monitoring
 # time_span: time between checks
+# Output: Boolean indicating if the difference of times is bigger than time_span
 def check_time(previous_time, time_span):
     actual_time = time.time()
     if actual_time >= (previous_time+time_span):
@@ -23,17 +24,17 @@ def check_time(previous_time, time_span):
 # config_file: file with all the configuration for the monitoring
 def monitor(config_file):
     # Variables
-    app = get_app(config_file)
-    datacenter = get_datacenter(config_file)
-    server = get_server(config_file)
-    kubernetes_namespace = get_kubernetes_namespace(config_file)
-    token = get_slack_token(config_file)
-    slack_channel = get_slack_channel(config_file)
-    forecast_time = get_forecast_time(config_file)
-    forecast_training_time = get_forecast_training_time(config_file)
-    forecast_percentage = get_monitoring_forecast_percentage(config_file)
-    regression_percentage = get_monitoring_regression_percentage(config_file)
-    regression_info = get_regression_info(file=config_file)
+    app = get_app(config_file)                                                      # App to monitor
+    datacenter = get_datacenter(config_file)                                        # Datacenter to monitor
+    server = get_server(config_file)                                                # Server to monitor
+    kubernetes_namespace = get_kubernetes_namespace(config_file)                    # Namespace of kubernetes to monitor
+    token = get_slack_token(config_file)                                            # Slack token
+    slack_channel = get_slack_channel(config_file)                                  # Slack channel
+    forecast_time = get_forecast_time(config_file)                                  # How much time we forecast
+    forecast_training_time = get_forecast_training_time(config_file)                # Time for forecast training
+    forecast_percentage = get_monitoring_forecast_percentage(config_file)           # Max increase in forecast
+    regression_percentage = get_monitoring_regression_percentage(config_file)       # Max difference in regression
+    regression_info = get_regression_info(file=config_file)                         # Regression info
 
     for case in regression_info:
         for metric in case:
@@ -50,10 +51,10 @@ def monitor(config_file):
             print("The manual error is: " + str(manual_error))
 
             # Regression
-            actual_value_regression = get_regression_actual(server=server, case=case, variable_to_predict=metric,
-                                                            app=app, datacenter=datacenter,
-                                                            kubernetes_namespace=kubernetes_namespace)
+            actual_value_regression = get_regression_actual_search(config=config_file, metric=metric)
+
             print("The number of tasks should be: " + str(actual_value_regression))
+
             if check_alarm_percentage(new_value=actual_value, original_value=actual_value_regression,
                                       percentage_change=regression_percentage, config_file=config_file):
                 problem_text = "The alarm is sent because there is a big difference between the expected value and " \
@@ -67,23 +68,19 @@ def monitor(config_file):
             params = get_params_arima_metric(file=config_file, metric=metric)
             forecasts = get_forecast_array(params=params, time_series=time_series, forecast_time=forecast_time)
 
-            forecast_alarm = False
             for forecast in forecasts:
                 if forecast[0] == 'nc':
                     print("The next " + str(forecast_time) + " minutes will have these values (no constant): ")
                 else:
                     print("The next " + str(forecast_time) + " minutes will have these values (constant): ")
+                    max_forecast = max(forecast[1])
+                    min_forecast = min(forecast[1])
+                    if check_alarm_percentage(new_value=max_forecast, original_value=min_forecast,
+                                              percentage_change=forecast_percentage, config_file=config_file):
+                        problem_text = "The alarm is sent because the forecast of this metric is growing very fast!"
+                        send_alarm(token=token, channel=slack_channel, metric_name=metric,
+                                   problem_array=['actual', 'forecast'], problem_text=problem_text)
                 print(forecast[1])
-
-                max_forecast = max(forecast[1])
-                min_forecast = min(forecast[1])
-                if check_alarm_percentage(new_value=max_forecast, original_value=min_forecast,
-                                          percentage_change=forecast_percentage, config_file=config_file):
-                    forecast_alarm = True
-            if forecast_alarm:
-                problem_text = "The alarm is sent because the forecast of this metric is growing very fast!"
-                send_alarm(token=token, channel=slack_channel, metric_name=metric, problem_array=['actual', 'forecast'],
-                           problem_text=problem_text)
 
 
 def run_prediction(config_file):

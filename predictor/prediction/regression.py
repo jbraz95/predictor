@@ -1,4 +1,4 @@
-from api_calls.general_api_calls import get_actual_value, get_query_regression, itct_actual_forced, get_values, \
+from api_calls.general_api_calls import get_actual_value, get_query_regression, itct_actual_forced_query, get_values, \
     adapt_time_series, get_query_actual_search
 from file_loader.config_loader import get_server, get_app, get_datacenter, get_kubernetes_namespace, \
     get_monitoring_time_span, get_regression_info, modify_manual_error
@@ -27,8 +27,8 @@ def get_regression_actual(server, case, variable_to_predict, app, datacenter, ku
             prediction += mult * pow(actual_value, exp)
 
     prediction += float(case[variable_to_predict]["constant"])
-    query_forced = itct_actual_forced(app=app, datacenter=datacenter, case=case, metric_to_check=variable_to_predict,
-                                      kubernetes_namespace=kubernetes_namespace)
+    query_forced = itct_actual_forced_query(app=app, datacenter=datacenter, case=case, metric_to_check=variable_to_predict,
+                                            kubernetes_namespace=kubernetes_namespace)
     forced_cases = float(get_actual_value(server=server, query=query_forced)[1])
     prediction -= forced_cases
 
@@ -53,8 +53,8 @@ def get_regression_actual_search(config, metric):
     datacenter = get_datacenter(config)
     kubernetes_namespace = get_kubernetes_namespace(config)
 
-    return get_regression_actual(server=server, case=case_selected, variable_to_predict=metric, app=app, datacenter=datacenter,
-                                kubernetes_namespace=kubernetes_namespace)
+    return get_regression_actual(server=server, case=case_selected, variable_to_predict=metric, app=app,
+                                 datacenter=datacenter, kubernetes_namespace=kubernetes_namespace)
 
 
 # Using the model information, it checks all the values of the model and it calculates the regression of it to
@@ -92,8 +92,8 @@ def get_regression_array(server, case, variable_to_predict, app, datacenter, kub
     manual_error = float(case[variable_to_predict]["manual_error"])
     prediction = [i + constant + manual_error for i in prediction]
 
-    query_forced = itct_actual_forced(app=app, datacenter=datacenter, case=case, metric_to_check=variable_to_predict,
-                                      kubernetes_namespace=kubernetes_namespace)
+    query_forced = itct_actual_forced_query(app=app, datacenter=datacenter, case=case, metric_to_check=variable_to_predict,
+                                            kubernetes_namespace=kubernetes_namespace)
     forced_cases = adapt_time_series(get_values(server=server, query=query_forced, minutes=time))[1]
     if len(forced_cases) < time:
         last_value = forced_cases[len(forced_cases) - 1]
