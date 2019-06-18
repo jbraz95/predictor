@@ -100,7 +100,7 @@ monitoring:
 regression:
 - incoming_task_count_total-BASIC_PREPARATION:
     constant: '+4.9257723939'
-    manual_error: -33.0
+    manual_error: -30.0
     metrics:
     - incoming_event_count_total:
         event_type: FINISHED

@@ -123,6 +123,7 @@ def get_regression_array_search(config, metric):
 
 
 def reset_regression(config, metric):
+    modify_manual_error(config, metric, 0)
     actual_regression = get_regression_actual_search(config, metric)
     actual_query = get_query_actual_search(config, metric)
     server = get_server(config)

@@ -1,4 +1,4 @@
-from alarms.alarm_system import check_alarm_percentage, send_alarm
+from alarms.alarm_system import check_alarm_percentage, send_alarm, double_check_alarm
 from file_loader.config_loader import *
 from api_calls.general_api_calls import get_actual_value, get_query_actual, get_values
 from prediction.regression import get_regression_actual_search
@@ -62,7 +62,7 @@ def monitor(config_file):
 
             print("The number of tasks should be: " + str(actual_value_regression))
 
-            if check_alarm_percentage(new_value=actual_value, original_value=actual_value_regression,
+            if check_alarm_percentage(actual_value=actual_value, calculated_value=actual_value_regression,
                                       percentage_change=regression_percentage, config_file=config_file):
                 problem_text = "The alarm is sent because there is a big difference between the expected value and " \
                                "the current one. Expected: " + str(actual_value_regression) + ". Current value: " \
@@ -82,12 +82,22 @@ def monitor(config_file):
                     print("The next " + str(forecast_time) + " minutes will have these values (constant): ")
                     max_forecast = max(forecast[1])
                     min_forecast = min(forecast[1])
-                    if check_alarm_percentage(new_value=max_forecast, original_value=min_forecast,
+                    if check_alarm_percentage(actual_value=min_forecast, calculated_value=max_forecast,
                                               percentage_change=forecast_percentage, config_file=config_file):
                         problem_text = "The alarm is sent because the forecast of this metric is growing very fast!"
                         send_alarm(token=token, channel=slack_channel, metric_name=metric,
                                    problem_array=['actual', 'forecast'], problem_text=problem_text)
                 print(forecast[1])
+
+            if double_check_alarm(original_value=actual_value, regression_value=actual_value_regression,
+                                  regression_percentage=regression_percentage, forecasts=forecasts,
+                                  config_file=config_file):
+                problem_text = "The alarm is sent because there is a big difference between the expected value and " \
+                               "the current one and it doesn't seems like it's going to grow. Expected: " + \
+                               str(actual_value_regression) + ". Current value: " + str(actual_value)
+
+                send_alarm(token=token, channel=slack_channel, metric_name=metric,
+                           problem_array=['actual', 'forecast', 'regression'], problem_text=problem_text)
 
 
 def run_prediction(config_file):

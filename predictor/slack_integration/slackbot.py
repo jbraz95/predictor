@@ -91,7 +91,7 @@ def select_arrays_to_get(data):
     if 'forecast' in data['text'].lower() or 'prediction' in data['text'].lower():
         arrays_to_get.append('forecast')
 
-    if 'regression' in data['text'].lower():
+    if 'regression' in data['text'].lower() and not ('resetregression' in data['text'].lower()):
         arrays_to_get.append('regression')
 
     return arrays_to_get
