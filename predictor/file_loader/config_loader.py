@@ -28,6 +28,14 @@ def modify_pause_alert(file, new_value):
     write_file(file, file_doc)
 
 
+def modify_pause_time(file, new_value):
+    file_doc = load_file(file)
+
+    file_doc["alerting"]["paused_time"] = new_value
+
+    write_file(file, file_doc)
+
+
 def modify_manual_error(file, metric, value):
     file_doc = load_file(file)
 
@@ -76,6 +84,10 @@ def get_monitoring_forecast_percentage(file):
 
 def get_alarm_pause_status(file):
     return bool(load_file(file)["alerting"]["paused"])
+
+
+def get_paused_time(file):
+    return float(load_file(file)["alerting"]["paused_time"])
 
 
 def get_alarm_minimum_difference(file):

@@ -2,12 +2,9 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="e1348665-6f09-4c06-82a2-28e58aa5d7f4" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/dictionaries/Javi.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/dictionaries/Javi.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/api_calls/general_api_calls.py" beforeDir="false" afterPath="$PROJECT_DIR$/api_calls/general_api_calls.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app.py" beforeDir="false" afterPath="$PROJECT_DIR$/app.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/generate_images/image_generator.py" beforeDir="false" afterPath="$PROJECT_DIR$/generate_images/image_generator.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/prediction/regression.py" beforeDir="false" afterPath="$PROJECT_DIR$/prediction/regression.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/configuration.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/configuration.yaml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/file_loader/config_loader.py" beforeDir="false" afterPath="$PROJECT_DIR$/file_loader/config_loader.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/slack_integration/slackbot.py" beforeDir="false" afterPath="$PROJECT_DIR$/slack_integration/slackbot.py" afterDir="false" />
     </list>
     <ignored path="$PROJECT_DIR$/venv/" />
@@ -22,11 +19,11 @@
   </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file pinned="false" current-in-tab="true">
+      <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/app.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="285">
-              <caret line="112" column="10" lean-forward="true" selection-start-line="112" selection-start-column="10" selection-end-line="112" selection-end-column="10" />
+            <state relative-caret-position="214">
+              <caret line="19" column="74" lean-forward="true" selection-start-line="19" selection-start-column="74" selection-end-line="19" selection-end-column="74" />
               <folding>
                 <element signature="e#0#66#0" expanded="true" />
               </folding>
@@ -34,13 +31,34 @@
           </provider>
         </entry>
       </file>
+      <file pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/configuration.yaml">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="90">
+              <caret line="6" column="6" lean-forward="true" selection-start-line="6" selection-start-column="6" selection-end-line="6" selection-end-column="6" />
+            </state>
+          </provider>
+        </entry>
+      </file>
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/slack_integration/slackbot.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="193">
-              <caret line="135" column="13" lean-forward="true" selection-start-line="135" selection-start-column="13" selection-end-line="135" selection-end-column="13" />
+            <state relative-caret-position="333">
+              <caret line="189" column="56" lean-forward="true" selection-start-line="189" selection-start-column="56" selection-end-line="189" selection-end-column="56" />
               <folding>
                 <element signature="e#0#14#0" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/file_loader/config_loader.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="229">
+              <caret line="84" column="4" lean-forward="true" selection-start-line="84" selection-start-column="4" selection-end-line="84" selection-end-column="32" />
+              <folding>
+                <element signature="e#0#10#0" expanded="true" />
               </folding>
             </state>
           </provider>
@@ -106,14 +124,14 @@
         <option value="$PROJECT_DIR$/prediction/arima.py" />
         <option value="$PROJECT_DIR$/alarms/alarm_regression.py" />
         <option value="$PROJECT_DIR$/slack_integration/slackbot_charts.py" />
-        <option value="$PROJECT_DIR$/file_loader/config_loader.py" />
         <option value="$PROJECT_DIR$/alarms/alarm_system.py" />
-        <option value="$PROJECT_DIR$/configuration.yaml" />
         <option value="$PROJECT_DIR$/generate_images/image_generator.py" />
         <option value="$PROJECT_DIR$/prediction/regression.py" />
-        <option value="$PROJECT_DIR$/slack_integration/slackbot.py" />
         <option value="$PROJECT_DIR$/api_calls/general_api_calls.py" />
+        <option value="$PROJECT_DIR$/file_loader/config_loader.py" />
         <option value="$PROJECT_DIR$/app.py" />
+        <option value="$PROJECT_DIR$/configuration.yaml" />
+        <option value="$PROJECT_DIR$/slack_integration/slackbot.py" />
       </list>
     </option>
   </component>
@@ -242,7 +260,7 @@
       <workItem from="1560500689152" duration="11574000" />
       <workItem from="1560771574130" duration="5790000" />
       <workItem from="1560843122291" duration="741000" />
-      <workItem from="1560846158624" duration="7569000" />
+      <workItem from="1560846158624" duration="11536000" />
     </task>
     <task id="LOCAL-00001" summary="Little refactorization before continuing with the code">
       <created>1559115846974</created>
@@ -262,7 +280,7 @@
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="156494000" />
+    <option name="totallyTimeSpent" value="160461000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="0" y="0" width="1440" height="900" extended-state="0" />
@@ -353,7 +371,7 @@
   </component>
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
     <SUITE FILE_PATH="coverage/predictor$Prototype.coverage" NAME="predictor Coverage Results" MODIFIED="1558620822917" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/.." />
-    <SUITE FILE_PATH="coverage/predictor$predictor.coverage" NAME="predictor Coverage Results" MODIFIED="1560857012413" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/.." />
+    <SUITE FILE_PATH="coverage/predictor$predictor.coverage" NAME="predictor Coverage Results" MODIFIED="1560861700417" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/.." />
   </component>
   <component name="editorHistoryManager">
     <entry file="file://$PROJECT_DIR$/venv/lib/python3.7/site-packages/statsmodels/base/model.py">
@@ -374,29 +392,12 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/configuration.yaml">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1498">
-          <caret line="100" column="11" selection-start-line="100" selection-start-column="11" selection-end-line="100" selection-end-column="11" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/api_calls/general_api_calls.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="474">
           <caret line="169" lean-forward="true" selection-start-line="169" selection-end-line="169" />
           <folding>
             <element signature="e#0#15#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/file_loader/config_loader.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-13">
-          <caret line="80" column="32" selection-start-line="80" selection-start-column="4" selection-end-line="80" selection-end-column="32" />
-          <folding>
-            <element signature="e#0#10#0" expanded="true" />
           </folding>
         </state>
       </provider>
@@ -438,23 +439,40 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/app.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="214">
+          <caret line="19" column="74" lean-forward="true" selection-start-line="19" selection-start-column="74" selection-end-line="19" selection-end-column="74" />
+          <folding>
+            <element signature="e#0#66#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/slack_integration/slackbot.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="193">
-          <caret line="135" column="13" lean-forward="true" selection-start-line="135" selection-start-column="13" selection-end-line="135" selection-end-column="13" />
+        <state relative-caret-position="333">
+          <caret line="189" column="56" lean-forward="true" selection-start-line="189" selection-start-column="56" selection-end-line="189" selection-end-column="56" />
           <folding>
             <element signature="e#0#14#0" expanded="true" />
           </folding>
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/app.py">
+    <entry file="file://$PROJECT_DIR$/file_loader/config_loader.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="285">
-          <caret line="112" column="10" lean-forward="true" selection-start-line="112" selection-start-column="10" selection-end-line="112" selection-end-column="10" />
+        <state relative-caret-position="229">
+          <caret line="84" column="4" lean-forward="true" selection-start-line="84" selection-start-column="4" selection-end-line="84" selection-end-column="32" />
           <folding>
-            <element signature="e#0#66#0" expanded="true" />
+            <element signature="e#0#10#0" expanded="true" />
           </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/configuration.yaml">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="90">
+          <caret line="6" column="6" lean-forward="true" selection-start-line="6" selection-start-column="6" selection-end-line="6" selection-end-column="6" />
         </state>
       </provider>
     </entry>

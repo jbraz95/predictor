@@ -1,7 +1,7 @@
 from alarms.alarm_system import check_alarm_percentage, send_alarm
 from file_loader.config_loader import *
 from api_calls.general_api_calls import get_actual_value, get_query_actual, get_values
-from prediction.regression import get_regression_actual, get_regression_actual_search
+from prediction.regression import get_regression_actual_search
 from prediction.arima import get_forecast_array
 from slack_integration.slackbot import read_messages
 import time
@@ -12,8 +12,15 @@ import threading
 # previous_time: timestamp of the last monitoring
 # time_span: time between checks
 # Output: Boolean indicating if the difference of times is bigger than time_span
-def check_time(previous_time, time_span):
+def check_time(previous_time, time_span, config_file):
     actual_time = time.time()
+    paused_time = get_paused_time(config_file)
+    alarm_paused = get_alarm_pause_status(config_file)
+
+    if (actual_time >= paused_time) and (paused_time > 0) and alarm_paused:
+        modify_pause_alert(config_file, False)
+        modify_pause_time(file=config_file, new_value=0)
+
     if actual_time >= (previous_time+time_span):
         return True
     else:
@@ -90,7 +97,7 @@ def run_prediction(config_file):
 
     try:
         while True:
-            if check_time(previous_time, time_span=time_span):
+            if check_time(previous_time, time_span=time_span, config_file=config_file):
                 previous_time = time.time()
                 monitor(config_file=config_file)
             else:

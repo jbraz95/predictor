@@ -1,7 +1,8 @@
 import asyncio
 import slack
+import time
 
-from file_loader.config_loader import modify_pause_alert
+from file_loader.config_loader import modify_pause_alert, modify_pause_time
 from generate_images.image_generator import get_url_image
 from prediction.regression import reset_regression
 
@@ -96,6 +97,17 @@ def select_arrays_to_get(data):
     return arrays_to_get
 
 
+def get_time_pause_alert(data):
+    info = data['text'].lower()
+
+    a = info.find('pause alarms ')
+    a_length = len('pause alarms ')
+    b = info.find(' minutes')
+    time_pause = int(info[a+a_length:b])
+
+    return time_pause
+
+
 @slack.RTMClient.run_on(event='message')
 async def ask_charts(**payload):
     data = payload['data']
@@ -170,15 +182,24 @@ async def modify_pause(**payload):
 
     if 'stop' in data['text'].lower() and 'alarms' in data['text'].lower() and subtype != "bot_message":
         modify_pause_alert(config_file, True)
+        message = "The alarm system has been stopped"
         inform = True
 
     elif 'resume' in data['text'].lower() and 'alarms' in data['text'].lower() and subtype != "bot_message":
         modify_pause_alert(config_file, False)
+        modify_pause_time(file=config_file, new_value=0)
         inform = True
+        message = "The alarm system has been resumed"
+
+    elif 'pause' in data['text'].lower() and 'alarms' in data['text'].lower() and subtype != "bot_message":
+        time_pause_user = get_time_pause_alert(data)
+        time_pause = time_pause_user * 60 + time.time()
+        modify_pause_time(file=config_file, new_value=time_pause)
+        modify_pause_alert(config_file, True)
+        inform = True
+        message = "We are going to pause alarms for: " + str(time_pause_user) + " minutes"
 
     if inform:
-        message = "The alarm system has been modified"
-
         channel_id = data.get("channel")
         webclient = payload['web_client']
         webclient.chat_postMessage(
