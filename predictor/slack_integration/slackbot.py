@@ -156,7 +156,8 @@ async def ask_help(**payload):
     if 'help' in data['text'].lower() and subtype != "bot_message":
         text = "Welcome to the predictorBot! These are the instructions for using it:\n" \
                "Alarms: the bot will inform you when some anomaly occurs in the task-manager. " \
-               "You can stop these alarms by saying 'stop alarms'. You can resume then by saying 'resume alarms'\n" \
+               "You can stop these alarms by saying 'stop alarms'. You can resume then by saying 'resume alarms'" \
+                "You can also stop temporarily alarms by typing 'pause alarms X minutes'\n" \
                "Resetting alarms: If you want to reset the regression of one alarm (to stop errors in a precise" \
                "task_type metric, you only have to type 'resetregresion' plus the name of the task_type. Per example:" \
                "'resetregression basic preparation'. This will add a constant to the metric and will 'reset it'\n" \
