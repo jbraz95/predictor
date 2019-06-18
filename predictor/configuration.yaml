@@ -136,7 +136,7 @@ regression:
     task_type: CREATE_JPEGS
 - incoming_task_count_total-FUBO:
     constant: '-7.8718054068'
-    manual_error: 0
+    manual_error: 0.0
     metrics:
     - incoming_event_count_total:
         event_type: FINISHED

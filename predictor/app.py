@@ -1,7 +1,7 @@
 from alarms.alarm_system import check_alarm_percentage, send_alarm, double_check_alarm
 from file_loader.config_loader import *
 from api_calls.general_api_calls import get_actual_value, get_query_actual, get_values
-from prediction.regression import get_regression_actual_search
+from prediction.regression import get_regression_actual_search, reset_regression
 from prediction.arima import get_forecast_array
 from slack_integration.slackbot import read_messages
 import time
@@ -53,6 +53,10 @@ def monitor(config_file):
             # Actual value
             actual_value = float(get_actual_value(server=server, query=query)[1])
             print("The number of tasks is: " + str(actual_value))
+
+            if actual_value < 2:
+                print("it feels like there was a reset here")
+                reset_regression(config=config_file,metric=metric)
 
             manual_error = get_manual_error(config_file, metric)
             print("The manual error is: " + str(manual_error))
