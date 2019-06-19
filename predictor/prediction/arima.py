@@ -25,7 +25,22 @@ def get_arima_forecast(series, p, d, q, forecast, trend):
             length = len(series_adapted) - 1
             forecast_result = [series_adapted[length]] * forecast
 
-    return around(forecast_result)
+    forecast_result = clean_arima(forecast_result)
+
+    return forecast_result
+
+
+def clean_arima(forecast):
+    previous_val = 0
+    new_forecast = []
+    for value in forecast:
+        if value < previous_val:
+            new_forecast.append(round(previous_val))
+        else:
+            new_forecast.append(round(value))
+            previous_val = value
+
+    return new_forecast
 
 
 def get_forecast_array(params, time_series, forecast_time):
