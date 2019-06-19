@@ -1,4 +1,4 @@
-from alarms.alarm_system import check_alarm_percentage, send_alarm, double_check_alarm
+from alarms.alarm_system import check_alarm_percentage, send_alarm, double_check_alarm, double_forecast_check
 from file_loader.config_loader import *
 from api_calls.general_api_calls import get_actual_value, get_query_actual, get_values
 from prediction.regression import get_regression_actual_search, reset_regression
@@ -56,7 +56,7 @@ def monitor(config_file):
 
             if actual_value < 2:
                 print("it feels like there was a reset here")
-                reset_regression(config=config_file,metric=metric)
+                reset_regression(config=config_file, metric=metric)
 
             manual_error = get_manual_error(config_file, metric)
             print("The manual error is: " + str(manual_error))
@@ -79,20 +79,31 @@ def monitor(config_file):
             params = get_params_arima_metric(file=config_file, metric=metric)
             forecasts = get_forecast_array(params=params, time_series=time_series, forecast_time=forecast_time)
 
+            nc_alarm = False
+            c_alarm = True
             for forecast in forecasts:
                 if forecast[0] == 'nc':
                     print("The next " + str(forecast_time) + " minutes will have these values (no constant): ")
+                    max_forecast = max(forecast[1])
+                    min_forecast = min(forecast[1])
+                    if check_alarm_percentage(actual_value=min_forecast, calculated_value=max_forecast,
+                                              percentage_change=forecast_percentage, config_file=config_file):
+                        nc_alarm = True
                 else:
                     print("The next " + str(forecast_time) + " minutes will have these values (constant): ")
                     max_forecast = max(forecast[1])
                     min_forecast = min(forecast[1])
                     if check_alarm_percentage(actual_value=min_forecast, calculated_value=max_forecast,
                                               percentage_change=forecast_percentage, config_file=config_file):
-                        problem_text = "The alarm is sent because the forecast of this metric is growing very fast!"
-                        send_alarm(token=token, channel=slack_channel, metric_name=metric,
-                                   problem_array=['actual', 'forecast'], problem_text=problem_text)
+                        c_alarm = True
                 print(forecast[1])
 
+            if nc_alarm and c_alarm:
+                problem_text = "The alarm is sent because the forecast of this metric is growing very fast!"
+                send_alarm(token=token, channel=slack_channel, metric_name=metric,
+                           problem_array=['actual', 'forecast'], problem_text=problem_text)
+
+            # Double check alarm
             if double_check_alarm(original_value=actual_value, regression_value=actual_value_regression,
                                   regression_percentage=regression_percentage, forecasts=forecasts,
                                   config_file=config_file):
@@ -102,6 +113,12 @@ def monitor(config_file):
 
                 send_alarm(token=token, channel=slack_channel, metric_name=metric,
                            problem_array=['actual', 'forecast', 'regression'], problem_text=problem_text)
+
+            # Double forecast alarm
+            if double_forecast_check(original_values=, forecast_values, forecast_percentage, config_file):
+                problem_text = "anomalous forecast"
+                send_alarm(token=token, channel=slack_channel, metric_name=metric,
+                           problem_array=['actual', 'forecast'], problem_text=problem_text)
 
 
 def run_prediction(config_file):

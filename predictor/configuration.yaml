@@ -3,7 +3,7 @@ alerting:
   paused: false
   paused_time: 0
   regression_min_difference: 25
-  regression_percentage: 0.15
+  regression_percentage: 0.05
 arima:
   forecast_time: 60
   forecast_training_time: 300

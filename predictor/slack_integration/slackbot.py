@@ -45,7 +45,8 @@ def send_image(token, channel, message, image_url):
             ]
         )
     except Exception as e:
-        print("EXCEPTION!!!!!!!! : " + e)
+        print("EXCEPTION!!!!!!!! : ")
+        print(e)
         client.chat_postMessage(
             channel=channel,
             text="There was an error, try again"
@@ -139,7 +140,8 @@ async def ask_charts(**payload):
                 ]
             )
         except Exception as e:
-            print("EXCEPTION!!!!!!!! : " + e)
+            print("EXCEPTION!!!!!!!!")
+            print(e)
             channel_id = data.get("channel")
             webclient = payload['web_client']
             webclient.chat_postMessage(

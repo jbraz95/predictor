@@ -40,6 +40,12 @@ def double_check_alarm(original_value, regression_value, regression_percentage, 
         return False
 
 
+def double_forecast_check(original_values, forecast_values, forecast_percentage, config_file):
+
+
+    return False
+
+
 def send_alarm(token, channel, metric_name, problem_array, problem_text):
     url = get_url_image(arrays_to_get=problem_array, metric=metric_name)
 
