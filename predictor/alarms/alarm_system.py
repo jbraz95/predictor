@@ -14,96 +14,102 @@ def calculate_percentage(a, b):
 
 def check_alarm_percentage(actual_value, calculated_value, percentage_change, config_file):
     alarm_paused = get_alarm_pause_status(config_file)
-    min_diff = get_alarm_minimum_difference(config_file)
 
-    percentage = calculate_percentage(actual_value, calculated_value)
+    if not alarm_paused:
+        min_diff = get_alarm_minimum_difference(config_file)
 
-    difference = abs(actual_value - calculated_value)
+        percentage = calculate_percentage(actual_value, calculated_value)
 
-    print("The difference between the new value and the original one is: " + str(percentage))
+        difference_number = abs(actual_value - calculated_value)
 
-    if (abs(percentage) > percentage_change) and (difference > min_diff) and (not alarm_paused):
-        return True
-    else:
-        return False
+        print("The difference between the new value and the original one is: " + str(percentage))
+
+        if (abs(percentage) > percentage_change) and (difference_number > min_diff) and (not alarm_paused):
+            return True
+
+    return False
 
 
 def alarm_forecast(forecasts, config_file):
-    forecast_time = get_forecast_time(config_file)                                  # How much time we forecast
-    forecast_percentage = get_monitoring_forecast_percentage(config_file)           # Max increase in forecast
+    alarm_paused = get_alarm_pause_status(config_file)
 
-    nc_alarm = False
-    c_alarm = False
+    if not alarm_paused:
+        forecast_time = get_forecast_time(config_file)                                  # How much time we forecast
+        forecast_percentage = get_monitoring_forecast_percentage(config_file)           # Max increase in forecast
 
-    for forecast in forecasts:
-        if forecast[0] == 'nc':
-            print("The next " + str(forecast_time) + " minutes will have these values (no constant): ")
+        alarm = True
+        for forecast in forecasts:
+            if forecast[0] == 'nc':
+                print("The next " + str(forecast_time) + " minutes will have these values (no constant): ")
+            else:
+                print("The next " + str(forecast_time) + " minutes will have these values (constant): ")
+
             max_forecast = max(forecast[1])
             min_forecast = min(forecast[1])
-            print(max_forecast)
-            print(min_forecast)
+            print(forecast[1])
             if check_alarm_percentage(actual_value=max_forecast, calculated_value=min_forecast,
                                       percentage_change=forecast_percentage, config_file=config_file):
-                nc_alarm = True
-        else:
-            print("The next " + str(forecast_time) + " minutes will have these values (constant): ")
-            max_forecast = max(forecast[1])
-            min_forecast = min(forecast[1])
-            if check_alarm_percentage(actual_value=max_forecast, calculated_value=min_forecast,
-                                      percentage_change=forecast_percentage, config_file=config_file):
-                c_alarm = True
-        print(forecast[1])
+                alarm = alarm and True
+            else:
+                alarm = alarm and False
 
-    if nc_alarm and c_alarm:
-        return True
-    else:
-        return False
+        return alarm
+
+    return False
 
 
 def double_check_alarm(original_value, regression_value, regression_percentage, forecasts, config_file):
-    regression_anomaly = check_alarm_percentage(actual_value=original_value, calculated_value=regression_value,
-                                                percentage_change=regression_percentage, config_file=config_file)
+    alarm_paused = get_alarm_pause_status(config_file)
 
-    forecast_anomaly = False
-    for forecast in forecasts:
-        min_forecast = min(forecast[1])
-        max_forecast = max(forecast[1])
-        if (abs(max_forecast) - abs(min_forecast)) == 0:
-            forecast_anomaly = True
+    if not alarm_paused:
+        regression_anomaly = check_alarm_percentage(actual_value=original_value, calculated_value=regression_value,
+                                                    percentage_change=regression_percentage, config_file=config_file)
 
-    if regression_anomaly and forecast_anomaly:
-        return True
-    else:
-        return False
-
-
-def double_forecast_check(metric, forecasts, config_file):
-    forecast_percentage = get_monitoring_forecast_percentage(config_file)
-    forecast_time = get_forecast_time(config_file)
-    server = get_server(config_file)
-    query = get_query_actual_search(metric=metric, config=config_file)
-
-    actual_values = adapt_time_series(get_values(server, query, forecast_time))
-    max_actual = max(actual_values[1])
-    min_actual = min(actual_values[1])
-    difference_actual = calculate_percentage(max_actual, min_actual)
-
-    if difference_actual > forecast_percentage:
         forecast_anomaly = True
         for forecast in forecasts:
             min_forecast = min(forecast[1])
             max_forecast = max(forecast[1])
-            difference_forecast = calculate_percentage(max_forecast, min_forecast)
-
-            if difference_forecast > difference_actual:
+            if (abs(max_forecast) - abs(min_forecast)) == 0:
                 forecast_anomaly = forecast_anomaly and True
             else:
                 forecast_anomaly = forecast_anomaly and False
 
-        if forecast_anomaly:
+        if regression_anomaly and forecast_anomaly:
             return True
-        else:
-            return False
+
+    return False
+
+
+def double_forecast_check(metric, forecasts, config_file):
+    alarm_paused = get_alarm_pause_status(config_file)
+
+    if not alarm_paused:
+        forecast_percentage = get_monitoring_forecast_percentage(config_file)
+        forecast_time = get_forecast_time(config_file)
+        server = get_server(config_file)
+        query = get_query_actual_search(metric=metric, config=config_file)
+
+        actual_values = adapt_time_series(get_values(server, query, forecast_time))
+        max_actual = max(actual_values[1])
+        min_actual = min(actual_values[1])
+        difference_actual = calculate_percentage(max_actual, min_actual)
+
+        if difference_actual > forecast_percentage:
+            forecast_anomaly = True
+            for forecast in forecasts:
+                min_forecast = min(forecast[1])
+                max_forecast = max(forecast[1])
+                difference_forecast = calculate_percentage(max_forecast, min_forecast)
+
+                if difference_forecast > difference_actual:
+                    forecast_anomaly = forecast_anomaly and True
+                else:
+                    forecast_anomaly = forecast_anomaly and False
+
+            if forecast_anomaly:
+                return True
+
+    return False
 
 
 def send_alarm(token, channel, metric_name, problem_array, problem_text):
