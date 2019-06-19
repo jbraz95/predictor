@@ -31,10 +31,11 @@ def get_arima_forecast(series, p, d, q, forecast, trend):
 
 
 def clean_arima(forecast):
-    previous_val = 0
+    og_value = forecast[0]
+    previous_val = forecast[0]
     new_forecast = []
     for value in forecast:
-        if value < previous_val:
+        if value < og_value:
             new_forecast.append(round(previous_val))
         else:
             new_forecast.append(round(value))
