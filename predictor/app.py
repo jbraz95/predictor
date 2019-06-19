@@ -93,10 +93,10 @@ def monitor(config_file):
                            problem_array=['actual', 'forecast', 'regression'], problem_text=problem_text)
 
             # Double forecast alarm
-            # if double_forecast_check(original_values=, forecast_values, forecast_percentage, config_file):
-             #   problem_text = "anomalous forecast"
-             #   send_alarm(token=token, channel=slack_channel, metric_name=metric,
-             #              problem_array=['actual', 'forecast'], problem_text=problem_text)
+            if double_forecast_check(metric, forecasts, config_file):
+                problem_text = "anomalous forecast"
+                send_alarm(token=token, channel=slack_channel, metric_name=metric,
+                           problem_array=['actual', 'forecast'], problem_text=problem_text)
 
 
 def run_prediction(config_file):
@@ -104,18 +104,18 @@ def run_prediction(config_file):
     time_span = get_monitoring_time_span(config_file)
     time_span_sleep = get_monitoring_time_span_sleep(config_file)
 
-    try:
-        while True:
-            if check_time(previous_time, time_span=time_span, config_file=config_file):
-                previous_time = time.time()
-                monitor(config_file=config_file)
-            else:
-                time.sleep(time_span_sleep)
-    except Exception as e:
-        print(e)
-        time.sleep(time_span_sleep)
-        pred = threading.Thread(target=run_prediction, args=(config_file,))
-        pred.start()
+    #try:
+    while True:
+        if check_time(previous_time, time_span=time_span, config_file=config_file):
+            previous_time = time.time()
+            monitor(config_file=config_file)
+        else:
+            time.sleep(time_span_sleep)
+    #except Exception as e:
+     #   print(e)
+     #   time.sleep(time_span_sleep)
+     #   pred = threading.Thread(target=run_prediction, args=(config_file,))
+     #   pred.start()
 
 
 def run_slack(config_file):
