@@ -8,6 +8,7 @@ from prediction.regression import get_regression_array_search
 # It generates a chart for timeseries (the timeseries that have not been adapted)
 # timeseries: array of a timeseries to be adapted and then used in the chart
 # name: name of the chart
+# The output is an url that redirects yot to the chart
 def generate_timeseries_chart(timeseries, name):
     data_parsed = adapt_time_series(timeseries)
     values = data_parsed[1]
@@ -25,6 +26,7 @@ def generate_timeseries_chart(timeseries, name):
 # It generates a chart with data
 # data: array of data to be put on the chart
 # name: name of the chart
+# The output is an url that redirects yot to the chart
 def generate_data_chart(data, name):
     values_str = list_to_str(data)
 
@@ -41,6 +43,7 @@ def generate_data_chart(data, name):
 # name: name of the chart
 # max_y: max value of axis Y
 # min_y: min value of axis Y
+# The output is an url that redirects yot to the chart
 def generate_url_chart(data, name, max_y, min_y):
     base_url = "https://image-charts.com/chart"
     type_chart = "?cht=lc"
@@ -60,6 +63,7 @@ def generate_url_chart(data, name, max_y, min_y):
 
 # Transforms a list to a string to put it into the URL generator
 # values: values to be transformed to a string
+# The output is a string with the values of the list
 def list_to_str(values):
     value_str = ""
     for value in values:
@@ -68,6 +72,7 @@ def list_to_str(values):
     # removing last character of string because of extra comma
     value_str = value_str[:-1]
     return value_str
+
 
 
 def generate_data_multichart(array_data, array_names, time):

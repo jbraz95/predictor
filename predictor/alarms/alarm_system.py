@@ -1,10 +1,11 @@
 from api_calls.general_api_calls import get_query_actual_search, get_values, adapt_time_series
 from file_loader.config_loader import get_alarm_pause_status, get_alarm_minimum_difference, get_forecast_time, \
-    get_monitoring_forecast_percentage, get_server
+     get_monitoring_forecast_percentage, get_server
 from slack_integration.slackbot import send_image, send_message
 from generate_images.image_generator import get_url_image
 
 
+# Calculates the percentage of how much a has increased over b
 def calculate_percentage(a, b):
     if b != 0:
         return (a - b)/b
@@ -12,24 +13,37 @@ def calculate_percentage(a, b):
         return a
 
 
+# If the alerts are activated, it will check if the difference between the two values(actual_value and calculated_value)
+# are bigger than the minimum difference and if the percentage increase is bigget than percentage_change,
+# and if so return a True boolean
+# actual_value = the actual value
+# calculated_value = the calculated value
+# percentage_change = maximum difference in percentage between actual_value and calculated_value (p.e. 20%)
+# config_file = configuration file for the rest of parameters
 def check_alarm_percentage(actual_value, calculated_value, percentage_change, config_file):
-    alarm_paused = get_alarm_pause_status(config_file)
+    alarm_paused = get_alarm_pause_status(config_file)                          # status of the alarms: activated or no
 
     if not alarm_paused:
-        min_diff = get_alarm_minimum_difference(config_file)
-
         percentage = calculate_percentage(actual_value, calculated_value)
 
+        # We also want to see what is the numerical difference between 2 values. The difference between 4 and 5 is a 25%
+        # but it will not be an anomaly.
         difference_number = abs(actual_value - calculated_value)
+        min_diff = get_alarm_minimum_difference(config_file)
 
         print("The difference between the new value and the original one is: " + str(percentage))
 
-        if (abs(percentage) > percentage_change) and (difference_number > min_diff) and (not alarm_paused):
+        if (abs(percentage) > percentage_change) and (difference_number > min_diff):
             return True
 
     return False
 
 
+# An alarm to study if the forecast is giving a trend that is growing faster than indicated in the configuration file.
+# We will get both forecasts, with constant(c) and without(nc), and if both are growing too fast we will send a True
+# boolean.
+# forecasts: set of forecast (with and without constant) for a metric
+# config_file: file with all the parameters and configurations
 def alarm_forecast(forecasts, config_file):
     alarm_paused = get_alarm_pause_status(config_file)
 
@@ -58,6 +72,13 @@ def alarm_forecast(forecasts, config_file):
     return False
 
 
+# Alarm that is going to check if there is an anomaly in the regression and in the forecast, and if both are true then
+# it will output a True boolean.
+# Original_value = actual value of the metric
+# regression_value = calculated value in the regression
+# regression_percentage = maximum percentage difference between original and regression value
+# forecasts = sets of forecasts of the metric (constant and no constants)
+# config_file = file with all extra info for configuration
 def double_check_alarm(original_value, regression_value, regression_percentage, forecasts, config_file):
     alarm_paused = get_alarm_pause_status(config_file)
 
@@ -80,6 +101,11 @@ def double_check_alarm(original_value, regression_value, regression_percentage, 
     return False
 
 
+# Alarm that double checks the forecast. See if during the past the metric has been growing fast and also sees if the
+# forecast predicts to do the same in the next minutes. If so, returns a True Boolean
+# Metric: the metric to study
+# forecasts: the forecasts of the metric
+# config_file: the file with the configuration and extra information
 def double_forecast_check(metric, forecasts, config_file):
     alarm_paused = get_alarm_pause_status(config_file)
 
@@ -112,6 +138,12 @@ def double_forecast_check(metric, forecasts, config_file):
     return False
 
 
+# This function sends an alarm with a graph that shows the anomaly
+# token: slack token
+# channel: to which channel you send the alarm
+# metric_name: name of the metric with an anomaly
+# problem_array: array with the graphs that have to be sent (actual, regression and/or forecast)
+# problem_text: text describing the anomaly.
 def send_alarm(token, channel, metric_name, problem_array, problem_text):
     url = get_url_image(arrays_to_get=problem_array, metric=metric_name)
 

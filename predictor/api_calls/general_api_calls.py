@@ -5,6 +5,7 @@ from file_loader.config_loader import get_app, get_datacenter, get_kubernetes_na
 # Giving a server and a query, it gets you the actual value of the query
 # Server: the server where we have to query
 # Query: The query to be executed
+# Returns the actual value of the metric
 def get_actual_value(server, query):
     response = requests.get(server + '/api/v1/query', params={'query': query + "[2m]"})
     if len(response.json()['data']['result']) == 0:
@@ -23,6 +24,7 @@ def get_actual_value(server, query):
 # Server: the server where we have to query
 # Query: The query to be executed
 # Minutes: Time in minutes that we want to get
+# Return the actual values of the metric
 def get_values(server, query, minutes):
     time_range = "["+str(minutes)+"m]"
     response = requests.get(server + '/api/v1/query', params={'query': query + time_range})
@@ -41,6 +43,7 @@ def get_values(server, query, minutes):
 # case: all the information about the metric to check (filters)
 # metric_to_check: metric that we want to study (for example incoming_task_count_total-FUBO)
 # namespace = kubernetes information to do the query
+# Returns the query
 def itct_actual_query(app, datacenter, case, metric_to_check, kubernetes_namespace):
     task_type = case[metric_to_check]['task_type']
     metric = case[metric_to_check]['predict']
@@ -55,6 +58,7 @@ def itct_actual_query(app, datacenter, case, metric_to_check, kubernetes_namespa
 # case: all the information about the metric to check (filters)
 # metric_to_check: metric that we want to study (for example incoming_task_count_total-FUBO)
 # namespace = kubernetes information to do the query
+# Returns the query
 def itct_actual_forced_query(app, datacenter, case, metric_to_check, kubernetes_namespace):
     task_type = case[metric_to_check]['task_type']
     metric = case[metric_to_check]['predict']
@@ -69,6 +73,7 @@ def itct_actual_forced_query(app, datacenter, case, metric_to_check, kubernetes_
 # case: information about the metric to check (filters)
 # metric_to_check: metric that we want to study (for example incoming_task_count_total-FUBO)
 # namespace = kubernetes information to do the query
+# Returns the query
 def tif_actual_query(app, datacenter, case, metric_to_check, kubernetes_namespace):
     metric = case[metric_to_check]['predict']
     query = metric + '{app=' + app + ',datacenter=' + datacenter + ',kubernetes_namespace=' + kubernetes_namespace + '}'
@@ -81,6 +86,7 @@ def tif_actual_query(app, datacenter, case, metric_to_check, kubernetes_namespac
 # case: information about the metric to check (filters)
 # metric_to_check: metric that we want to study (for example incoming_task_count_total-FUBO)
 # namespace = kubernetes information to do the query
+# Returns the query
 def get_query_actual(app, datacenter, case, metric_to_check, kubernetes_namespace):
     possible_metrics = {'incoming_task_count_total': itct_actual_query, 'task_in_failure': tif_actual_query}
     metric = case[metric_to_check]['predict']
@@ -89,6 +95,10 @@ def get_query_actual(app, datacenter, case, metric_to_check, kubernetes_namespac
     return result
 
 
+# It will give you the query for knowing its actual value
+# config: configuration file to get all the parameters
+# metric: name of the metric
+# Returns the query
 def get_query_actual_search(config, metric):
     regression_info = get_regression_info(config)
     for case in regression_info:
@@ -112,6 +122,7 @@ def get_query_actual_search(config, metric):
 # metric: metric from the model to study
 # model: model containing metrics that will predict variable_to_predict
 # namespace = kubernetes information to do the query
+# Returns the query
 def itct_query_regression(app, datacenter, case, variable_to_predict, metric, model, kubernetes_namespace):
     task_type = case[variable_to_predict]['task_type']
     event_type = model[metric]['event_type']
@@ -128,6 +139,7 @@ def itct_query_regression(app, datacenter, case, variable_to_predict, metric, mo
 # metric: metric from the model to study
 # model: model containing metrics that will predict variable_to_predict
 # namespace = kubernetes information to do the query
+# Returns the query
 def tif_query_regression(app, datacenter, case, variable_to_predict, metric, model, kubernetes_namespace):
     task_type = case[variable_to_predict]['task_type']
     event_type = model[metric]['event_type']
@@ -145,6 +157,7 @@ def tif_query_regression(app, datacenter, case, variable_to_predict, metric, mod
 # metric: metric from the model to study
 # model: model containing metrics that will predict variable_to_predict
 # namespace = kubernetes information to do the query
+# Returns the query
 def get_query_regression(app, datacenter, case, variable_to_predict, metric, model, kubernetes_namespace):
     possible_metrics = {'incoming_task_count_total': itct_query_regression, 'task_in_failure': tif_query_regression}
     metric_to_predict = case[variable_to_predict]['predict']
@@ -154,6 +167,10 @@ def get_query_regression(app, datacenter, case, variable_to_predict, metric, mod
     return result
 
 
+# It will give you the query for knowing its regression value
+# config: configuration file to get all the parameters
+# metric: name of the metric
+# Returns the query
 def get_query_regression_search(config, metric):
     regression_info = get_regression_info(config)
     for case in regression_info:
@@ -171,6 +188,8 @@ def get_query_regression_search(config, metric):
 
 # It adapt the time series to a more easy to use format
 # series: timeseries to be adapted
+# Returns the time series in an array that the first value is going to be the time and the second the values of the
+# metrics in these times
 def adapt_time_series(series):
     value_series = []
     time_series = []
