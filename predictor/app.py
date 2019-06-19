@@ -115,10 +115,10 @@ def monitor(config_file):
                            problem_array=['actual', 'forecast', 'regression'], problem_text=problem_text)
 
             # Double forecast alarm
-            if double_forecast_check(original_values=, forecast_values, forecast_percentage, config_file):
-                problem_text = "anomalous forecast"
-                send_alarm(token=token, channel=slack_channel, metric_name=metric,
-                           problem_array=['actual', 'forecast'], problem_text=problem_text)
+            # if double_forecast_check(original_values=, forecast_values, forecast_percentage, config_file):
+             #   problem_text = "anomalous forecast"
+             #   send_alarm(token=token, channel=slack_channel, metric_name=metric,
+             #              problem_array=['actual', 'forecast'], problem_text=problem_text)
 
 
 def run_prediction(config_file):
