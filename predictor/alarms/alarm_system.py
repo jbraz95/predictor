@@ -1,4 +1,5 @@
-from file_loader.config_loader import get_alarm_pause_status, get_alarm_minimum_difference
+from file_loader.config_loader import get_alarm_pause_status, get_alarm_minimum_difference, get_forecast_time, \
+    get_forecast_training_time, get_monitoring_forecast_percentage
 from slack_integration.slackbot import send_image, send_message
 from generate_images.image_generator import get_url_image
 
@@ -18,6 +19,36 @@ def check_alarm_percentage(actual_value, calculated_value, percentage_change, co
     print("The difference between the new value and the original one is: " + str(percentage))
 
     if (abs(percentage) > percentage_change) and (difference > min_diff) and (not alarm_paused):
+        return True
+    else:
+        return False
+
+
+def alarm_forecast(forecasts, config_file):
+    forecast_time = get_forecast_time(config_file)                                  # How much time we forecast
+    forecast_percentage = get_monitoring_forecast_percentage(config_file)           # Max increase in forecast
+
+    nc_alarm = False
+    c_alarm = True
+
+    for forecast in forecasts:
+        if forecast[0] == 'nc':
+            print("The next " + str(forecast_time) + " minutes will have these values (no constant): ")
+            max_forecast = max(forecast[1])
+            min_forecast = min(forecast[1])
+            if check_alarm_percentage(actual_value=min_forecast, calculated_value=max_forecast,
+                                      percentage_change=forecast_percentage, config_file=config_file):
+                nc_alarm = True
+        else:
+            print("The next " + str(forecast_time) + " minutes will have these values (constant): ")
+            max_forecast = max(forecast[1])
+            min_forecast = min(forecast[1])
+            if check_alarm_percentage(actual_value=min_forecast, calculated_value=max_forecast,
+                                      percentage_change=forecast_percentage, config_file=config_file):
+                c_alarm = True
+        print(forecast[1])
+
+    if nc_alarm and c_alarm:
         return True
     else:
         return False
