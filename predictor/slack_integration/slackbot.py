@@ -53,6 +53,9 @@ def send_image(token, channel, message, image_url):
         )
 
 
+# Gets the subtype of the user sending the message. Used to know if the message is sent by the bot or not.
+# data: the message information
+# Output: the subtype of the user sending the message (if available)
 def get_subtype_bot(data):
     if "subtype" in data:
         subtype = data['subtype']
@@ -62,6 +65,9 @@ def get_subtype_bot(data):
     return subtype
 
 
+# Given some data from an user message, we will extract which metrics he's interested in getting information from.
+# data: the message information
+# output: the metric selected by the user
 def select_metric(data):
     metric = ""
     if 'basic' and 'preparation' in data['text'].lower():
@@ -84,6 +90,10 @@ def select_metric(data):
     return metric
 
 
+# Given a message from a user, we will study which information he wants to get from a metric (the actual information,
+# the forecast or the regression information).
+# data: the message information
+# output: an array with the information to get (regression, forecast and/or actual)
 def select_arrays_to_get(data):
     arrays_to_get = []
     if 'actual' in data['text'].lower():
@@ -98,6 +108,9 @@ def select_arrays_to_get(data):
     return arrays_to_get
 
 
+# This function will parse the minutes the user wants to stop the alerts
+# data: the message information
+# output: the time the alerts have to pause (in minutes)
 def get_time_pause_alert(data):
     info = data['text'].lower()
 
@@ -109,11 +122,14 @@ def get_time_pause_alert(data):
     return time_pause
 
 
+# This function will receive messages from slack and see if they are asking for a chart. If so, a message with that
+# information will be sent
 @slack.RTMClient.run_on(event='message')
 async def ask_charts(**payload):
     data = payload['data']
     subtype = get_subtype_bot(data)
 
+    # get which metrics we want and what information we want from them
     arrays_to_get = select_arrays_to_get(data)
     metric = select_metric(data)
 
@@ -150,6 +166,8 @@ async def ask_charts(**payload):
             )
 
 
+# This function will receive messages from slack and see if they are asking for help. If so, a message with that
+# information will be sent
 @slack.RTMClient.run_on(event='message')
 async def ask_help(**payload):
     data = payload['data']
@@ -175,6 +193,8 @@ async def ask_help(**payload):
         )
 
 
+# This function will receive messages from slack and see if they are asking for pausing or resume the alarms. If so, the
+# alarm system will be modified and we will inform the user
 @slack.RTMClient.run_on(event='message')
 async def modify_pause(**payload):
     data = payload['data']
@@ -210,7 +230,8 @@ async def modify_pause(**payload):
             text=message
         )
 
-
+# This function will receive messages from slack and see if they are asking for resetting the regression. If so, the
+# regression will be reset and the user will be informed
 @slack.RTMClient.run_on(event='message')
 async def ask_reset_regression(**payload):
     data = payload['data']
@@ -231,6 +252,8 @@ async def ask_reset_regression(**payload):
         )
 
 
+# Starts the reading messages process
+# token: the slack token
 def read_messages(token):
     print("SlackBot Running")
     loop = asyncio.new_event_loop()

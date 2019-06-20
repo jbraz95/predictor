@@ -3,15 +3,17 @@ from alarms.alarm_system import check_alarm_percentage, send_alarm, double_check
 from file_loader.config_loader import *
 from api_calls.general_api_calls import get_actual_value, get_query_actual, get_values
 from prediction.regression import get_regression_actual_search, reset_regression
-from prediction.arima import get_forecast_array
+from prediction.arima import get_forecasts_array
 from slack_integration.slackbot import read_messages
 import time
 import threading
 
 
-# Calculates the difference between previous_time and the actual time and checks if it's bigger than time_span
+# Calculates the difference between previous_time and the actual time and checks if it's bigger than time_span. Also it
+# will control if its time to activate the alarm system (because of a temporal disabling) and it will do it if necessary
 # previous_time: timestamp of the last monitoring
 # time_span: time between checks
+# config_file: file with the configuration of the server
 # Output: Boolean indicating if the difference of times is bigger than time_span
 def check_time(previous_time, time_span, config_file):
     actual_time = time.time()
@@ -43,10 +45,12 @@ def monitor(config_file):
     regression_percentage = get_monitoring_regression_percentage(config_file)       # Max difference in regression
     regression_info = get_regression_info(file=config_file)                         # Regression info
 
+    # We have cases, each one of them having a name (metric)
     for case in regression_info:
         for metric in case:
             print("----------------Name of metric: " + metric + "----------------")
 
+            # We get the query for this metric
             query = get_query_actual(app=app, datacenter=datacenter, case=case, metric_to_check=metric,
                                      kubernetes_namespace=kubernetes_namespace)
 
@@ -54,6 +58,8 @@ def monitor(config_file):
             actual_value = float(get_actual_value(server=server, query=query)[1])
             print("The number of tasks is: " + str(actual_value))
 
+            # If the actual value is small, it will probably mean that a reset was done in the metrics. So we reset our
+            # manual errors for the prediction too
             if actual_value < 2:
                 print("it feels like there was a reset here")
                 reset_regression(config=config_file, metric=metric)
@@ -63,6 +69,7 @@ def monitor(config_file):
 
             print("The number of tasks should be: " + str(actual_value_regression))
 
+            # If the difference between the regression estimation and the actual value is big, we alert the admins
             if check_alarm_percentage(actual_value=actual_value, calculated_value=actual_value_regression,
                                       percentage_change=regression_percentage, config_file=config_file):
                 problem_text = "The alarm is sent because there is a big difference between the expected value and " \
@@ -74,14 +81,16 @@ def monitor(config_file):
             # Forecast
             time_series = get_values(server=server, query=query, minutes=forecast_training_time)
             params = get_params_arima_metric(file=config_file, metric=metric)
-            forecasts = get_forecast_array(params=params, time_series=time_series, forecast_time=forecast_time)
+            forecasts = get_forecasts_array(params=params, time_series=time_series, forecast_time=forecast_time)
 
+            # If the forecast grows very fast, we alert the admins
             if alarm_forecast(forecasts=forecasts, config_file=config_file):
                 problem_text = "The alarm is sent because the forecast of this metric is growing very fast!"
                 send_alarm(token=token, channel=slack_channel, metric_name=metric,
                            problem_array=['actual', 'forecast'], problem_text=problem_text)
 
-            # Double check alarm
+            # An alarm that is going to check if there is a big gap between the regression and the actual value, and
+            # if the metric is not growing.
             if double_check_alarm(original_value=actual_value, regression_value=actual_value_regression,
                                   regression_percentage=regression_percentage, forecasts=forecasts,
                                   config_file=config_file):
@@ -92,13 +101,17 @@ def monitor(config_file):
                 send_alarm(token=token, channel=slack_channel, metric_name=metric,
                            problem_array=['actual', 'forecast', 'regression'], problem_text=problem_text)
 
-            # Double forecast alarm
+            # This alarm will check if both the previous values and the future ones are growing in a fast pace, and
+            # alert if this happens
             if double_forecast_check(metric, forecasts, config_file):
-                problem_text = "anomalous forecast"
+                problem_text = "The alarm is sent because the forecast of this metric is growing fast, even faster " \
+                               "than previously"
                 send_alarm(token=token, channel=slack_channel, metric_name=metric,
                            problem_array=['actual', 'forecast'], problem_text=problem_text)
 
 
+# We will do a loop monitoring all the metrics indicated in config_file. Each X seconds this will be done, depending
+# how is specified in the config_file
 def run_prediction(config_file):
     previous_time = 0
     time_span = get_monitoring_time_span(config_file)
@@ -118,6 +131,7 @@ def run_prediction(config_file):
         pred.start()
 
 
+# We start the slack bot
 def run_slack(config_file):
     try:
         token = get_slack_token(config_file)
@@ -126,6 +140,8 @@ def run_slack(config_file):
         print(e)
 
 
+# We start the program. We create an independent thread that will monitor the metrics and we start reading messages in
+# slack
 def run():
     try:
         config_file = "predictor/configuration.yaml"

@@ -1,5 +1,4 @@
 from statsmodels.tsa.arima_model import ARIMA
-from numpy import around
 from api_calls.general_api_calls import adapt_time_series
 
 
@@ -9,6 +8,7 @@ from api_calls.general_api_calls import adapt_time_series
 # d: parameter to difference the timeseries
 # q: parameter of MA (moving average)
 # trend: 'nc' = no constant | 'c' = constant
+# Output: The forecast of that series
 def get_arima_forecast(series, p, d, q, forecast, trend):
     series_adapted = adapt_time_series(series)[1]
     forecast_result = []
@@ -30,6 +30,12 @@ def get_arima_forecast(series, p, d, q, forecast, trend):
     return forecast_result
 
 
+# This function will "clean" our arima information. As in this case our metric never decreases we will remove datapoints
+# where the forecast is lower than the initial point. Like this we will not see forecast that predict a lower value
+# for the metric than the actual value. We will also round the values as the metric should only show integers and not
+# float values.
+# forecast: the forecast of a metric
+# Output: a clean and rounded version of the forecast
 def clean_arima(forecast):
     og_value = forecast[0]
     previous_val = forecast[0]
@@ -44,7 +50,12 @@ def clean_arima(forecast):
     return new_forecast
 
 
-def get_forecast_array(params, time_series, forecast_time):
+# This function will output the forecast given the parameters, the time series and the time to be forecasted.
+# params: the parameters for the arima prediction
+# time_series: the time series to study past behaviour and predict future values
+# forecast_time: how much time we are going to forecast in the future
+# output: and array of arrays. Each array will have the trend of it (constant/no constant) and the values
+def get_forecasts_array(params, time_series, forecast_time):
     forecasts = []
     for param in params:
         name = list(param.keys())[0]

@@ -12,6 +12,7 @@ from file_loader.config_loader import get_server, get_app, get_datacenter, get_k
 # app: the app to check
 # datacenter: the datacenter to check
 # kubernetes_namespace = kubernetes information to do the query
+# Output: the expected actual value (only one value, not an array)
 def get_regression_actual(server, case, variable_to_predict, app, datacenter, kubernetes_namespace):
     prediction = 0
     # For each model
@@ -26,12 +27,15 @@ def get_regression_actual(server, case, variable_to_predict, app, datacenter, ku
             exp = float(model[metric]["exp"])
             prediction += mult * pow(actual_value, exp)
 
+    # We get the information of forced queries (done manually) and we remove them from the prediction (as they are
+    # not related to the model)
     prediction += float(case[variable_to_predict]["constant"])
     query_forced = itct_actual_forced_query(app=app, datacenter=datacenter, case=case, metric_to_check=variable_to_predict,
                                             kubernetes_namespace=kubernetes_namespace)
     forced_cases = float(get_actual_value(server=server, query=query_forced)[1])
     prediction -= forced_cases
 
+    # We add the manual error (added to reset the variable)
     prediction += float(case[variable_to_predict]["manual_error"])
 
     if prediction < 0:
@@ -41,6 +45,11 @@ def get_regression_actual(server, case, variable_to_predict, app, datacenter, ku
     return prediction
 
 
+# This function will get you the supposed value of a metric without the need to search all the information of other
+# functions
+# Config: the configuration file to search information of the metric
+# Metric: the name of the metric
+# Output: the expected actual value (only one value, not an array)
 def get_regression_actual_search(config, metric):
     server = get_server(config)
     regression_info = get_regression_info(config)
@@ -66,35 +75,42 @@ def get_regression_actual_search(config, metric):
 # datacenter: the datacenter to check
 # kubernetes_namespace = kubernetes information to do the query
 # time: how many minutes in the past you are going to check
+# Output: an array with the last "time" minutes of expected values
 def get_regression_array(server, case, variable_to_predict, app, datacenter, kubernetes_namespace, time):
     prediction = [0] * time
     # For each model
     for model in case[variable_to_predict]["metrics"]:
-        # We check the values of all the metrics of the model and we calculate the prediction
+        # We check all the metrics of the model and we calculate the prediction
         for metric in model:
             query = get_query_regression(app=app, datacenter=datacenter, case=case,
                                          variable_to_predict=variable_to_predict, metric=metric, model=model,
                                          kubernetes_namespace=kubernetes_namespace)
             values = adapt_time_series(get_values(server, query, time))[1]
 
+            # We multiply the values according to the model
             exp = float(model[metric]["exp"])
             powered = [n**exp for n in values]
             mult = float(model[metric]["value"])
-
             actual_prediction = [i * mult for i in powered]
+
+            # if the prediction is smaller than requested, we extend it taking the last value
             if len(actual_prediction) < time:
                 last_value = actual_prediction[len(actual_prediction)-1]
                 actual_prediction += [last_value] * (time-len(actual_prediction))
 
+            # we add this metric to the previous ones
             prediction = [new + old for new, old in zip(actual_prediction, prediction)]
 
+    # We add the constant of the model and the manual error to the prediction
     constant = float(case[variable_to_predict]["constant"])
     manual_error = float(case[variable_to_predict]["manual_error"])
     prediction = [i + constant + manual_error for i in prediction]
 
+    # We remove the forced cases to the prediction as they are not related to the model
     query_forced = itct_actual_forced_query(app=app, datacenter=datacenter, case=case, metric_to_check=variable_to_predict,
                                             kubernetes_namespace=kubernetes_namespace)
     forced_cases = adapt_time_series(get_values(server=server, query=query_forced, minutes=time))[1]
+
     if len(forced_cases) < time:
         last_value = forced_cases[len(forced_cases) - 1]
         forced_cases += [last_value] * (time - len(forced_cases))
@@ -105,6 +121,11 @@ def get_regression_array(server, case, variable_to_predict, app, datacenter, kub
     return prediction
 
 
+# This function will get you the supposed values of a metric without the need to search all the information of other
+# functions
+# Config: the configuration file to search information of the metric
+# Metric: the name of the metric
+# Output: the expected values (An array)
 def get_regression_array_search(config, metric):
     server = get_server(config)
     regression_info = get_regression_info(config)
@@ -122,6 +143,11 @@ def get_regression_array_search(config, metric):
                                 kubernetes_namespace=kubernetes_namespace, time=time)
 
 
+# When there is an anomaly and it has been fixed, we have to reset the regression. To do so, we add a manual error to
+# the regression.
+# config: file with the configuration
+# metric: name of the metric to reset
+# output: the difference to reset the metric
 def reset_regression(config, metric):
     modify_manual_error(config, metric, 0)
     actual_regression = get_regression_actual_search(config, metric)
