@@ -3,7 +3,7 @@ from alarms.alarm_system import check_alarm_percentage, send_alarm, double_check
 from file_loader.config_loader import *
 from api_calls.general_api_calls import get_actual_value, get_query_actual, get_values
 from prediction.regression import get_regression_actual_search, reset_regression
-from prediction.arima import get_forecast_array
+from prediction.arima import get_forecasts_array
 from slack_integration.slackbot import read_messages
 import time
 import threading
@@ -81,7 +81,7 @@ def monitor(config_file):
             # Forecast
             time_series = get_values(server=server, query=query, minutes=forecast_training_time)
             params = get_params_arima_metric(file=config_file, metric=metric)
-            forecasts = get_forecast_array(params=params, time_series=time_series, forecast_time=forecast_time)
+            forecasts = get_forecasts_array(params=params, time_series=time_series, forecast_time=forecast_time)
 
             # If the forecast grows very fast, we alert the admins
             if alarm_forecast(forecasts=forecasts, config_file=config_file):

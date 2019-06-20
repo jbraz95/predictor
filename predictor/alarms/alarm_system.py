@@ -14,12 +14,13 @@ def calculate_percentage(a, b):
 
 
 # If the alerts are activated, it will check if the difference between the two values(actual_value and calculated_value)
-# are bigger than the minimum difference and if the percentage increase is bigget than percentage_change,
+# are bigger than the minimum difference and if the percentage increase is bigger than percentage_change,
 # and if so return a True boolean
 # actual_value = the actual value
 # calculated_value = the calculated value
 # percentage_change = maximum difference in percentage between actual_value and calculated_value (p.e. 20%)
 # config_file = configuration file for the rest of parameters
+# output: a boolean indicating if there is an alarm or not
 def check_alarm_percentage(actual_value, calculated_value, percentage_change, config_file):
     alarm_paused = get_alarm_pause_status(config_file)                          # status of the alarms: activated or no
 
@@ -44,6 +45,7 @@ def check_alarm_percentage(actual_value, calculated_value, percentage_change, co
 # boolean.
 # forecasts: set of forecast (with and without constant) for a metric
 # config_file: file with all the parameters and configurations
+# output: a boolean indicating if there is an alarm or not
 def alarm_forecast(forecasts, config_file):
     alarm_paused = get_alarm_pause_status(config_file)
 
@@ -79,6 +81,7 @@ def alarm_forecast(forecasts, config_file):
 # regression_percentage = maximum percentage difference between original and regression value
 # forecasts = sets of forecasts of the metric (constant and no constants)
 # config_file = file with all extra info for configuration
+# output: a boolean indicating if there is an alarm or not
 def double_check_alarm(original_value, regression_value, regression_percentage, forecasts, config_file):
     alarm_paused = get_alarm_pause_status(config_file)
 
@@ -106,6 +109,7 @@ def double_check_alarm(original_value, regression_value, regression_percentage, 
 # Metric: the metric to study
 # forecasts: the forecasts of the metric
 # config_file: the file with the configuration and extra information
+# output: a boolean indicating if there is an alarm or not
 def double_forecast_check(metric, forecasts, config_file):
     alarm_paused = get_alarm_pause_status(config_file)
 
