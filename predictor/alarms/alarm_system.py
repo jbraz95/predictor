@@ -21,13 +21,13 @@ def calculate_percentage(a, b):
 # percentage_change = maximum difference in percentage between actual_value and calculated_value (p.e. 20%)
 # config_file = configuration file for the rest of parameters
 # output: a boolean indicating if there is an alarm or not
-def check_alarm_percentage(actual_value, calculated_value, percentage_change, config_file):
+def check_alarm_percentage(actual_value, calculated_value, percentage_change, min_diff):
+
     percentage = calculate_percentage(actual_value, calculated_value)
 
     # We also want to see what is the numerical difference between 2 values. The difference between 4 and 5 is a 25%
     # but it will not be an anomaly.
     difference_number = abs(actual_value - calculated_value)
-    min_diff = get_alarm_minimum_difference(config_file)
 
     print("The difference between the new value and the original one is: " + str(percentage))
 
@@ -47,9 +47,10 @@ def alarm_regression(actual_value, calculated_value, config_file):
 
     if not alarm_paused:
         regression_percentage = get_monitoring_regression_percentage(config_file)
+        min_diff = get_alarm_minimum_difference(config_file)
 
         alarm = check_alarm_percentage(actual_value=actual_value, calculated_value=calculated_value,
-                                          percentage_change=regression_percentage, config_file=config_file)
+                                          percentage_change=regression_percentage, min_diff=min_diff)
 
         return alarm
     else:
@@ -80,7 +81,7 @@ def alarm_forecast(forecasts, config_file):
             min_forecast = min(forecast[1])
             print(forecast[1])
             if check_alarm_percentage(actual_value=max_forecast, calculated_value=min_forecast,
-                                      percentage_change=forecast_percentage, config_file=config_file):
+                                      percentage_change=forecast_percentage, min_diff=0):
                 alarm = alarm and True
             else:
                 alarm = alarm and False
@@ -102,8 +103,10 @@ def double_check_alarm(original_value, regression_value, regression_percentage, 
     alarm_paused = get_alarm_pause_status(config_file, "double_check")
 
     if not alarm_paused:
+        min_diff = get_alarm_minimum_difference(config_file)
+
         regression_anomaly = check_alarm_percentage(actual_value=original_value, calculated_value=regression_value,
-                                                    percentage_change=regression_percentage, config_file=config_file)
+                                                    percentage_change=regression_percentage, min_diff=min_diff)
 
         forecast_anomaly = True
         for forecast in forecasts:
