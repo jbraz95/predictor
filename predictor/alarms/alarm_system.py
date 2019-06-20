@@ -1,6 +1,6 @@
 from api_calls.general_api_calls import get_query_actual_search, get_values, adapt_time_series
 from file_loader.config_loader import get_alarm_pause_status, get_alarm_minimum_difference, get_forecast_time, \
-     get_monitoring_forecast_percentage, get_server
+    get_monitoring_forecast_percentage, get_server, get_monitoring_regression_percentage
 from slack_integration.slackbot import send_image, send_message
 from generate_images.image_generator import get_url_image
 
@@ -22,22 +22,38 @@ def calculate_percentage(a, b):
 # config_file = configuration file for the rest of parameters
 # output: a boolean indicating if there is an alarm or not
 def check_alarm_percentage(actual_value, calculated_value, percentage_change, config_file):
-    alarm_paused = get_alarm_pause_status(config_file)                          # status of the alarms: activated or no
+    percentage = calculate_percentage(actual_value, calculated_value)
+
+    # We also want to see what is the numerical difference between 2 values. The difference between 4 and 5 is a 25%
+    # but it will not be an anomaly.
+    difference_number = abs(actual_value - calculated_value)
+    min_diff = get_alarm_minimum_difference(config_file)
+
+    print("The difference between the new value and the original one is: " + str(percentage))
+
+    if (abs(percentage) > percentage_change) and (difference_number > min_diff):
+        return True
+    else:
+        return False
+
+
+# An alarm to study if the difference between the expected value and the actual value is very different
+# actual_value: the actual value of the metric
+# calculated_value: the expected value calculated by the regressive model
+# config_file: the configuration file with the necessary parameters
+# output: a boolean indicating if there is an alarm or not
+def alarm_regression(actual_value, calculated_value, config_file):
+    alarm_paused = get_alarm_pause_status(config_file, "regression")
 
     if not alarm_paused:
-        percentage = calculate_percentage(actual_value, calculated_value)
+        regression_percentage = get_monitoring_regression_percentage(config_file)
 
-        # We also want to see what is the numerical difference between 2 values. The difference between 4 and 5 is a 25%
-        # but it will not be an anomaly.
-        difference_number = abs(actual_value - calculated_value)
-        min_diff = get_alarm_minimum_difference(config_file)
+        alarm = check_alarm_percentage(actual_value=actual_value, calculated_value=calculated_value,
+                                          percentage_change=regression_percentage, config_file=config_file)
 
-        print("The difference between the new value and the original one is: " + str(percentage))
-
-        if (abs(percentage) > percentage_change) and (difference_number > min_diff):
-            return True
-
-    return False
+        return alarm
+    else:
+        return False
 
 
 # An alarm to study if the forecast is giving a trend that is growing faster than indicated in the configuration file.
@@ -47,7 +63,7 @@ def check_alarm_percentage(actual_value, calculated_value, percentage_change, co
 # config_file: file with all the parameters and configurations
 # output: a boolean indicating if there is an alarm or not
 def alarm_forecast(forecasts, config_file):
-    alarm_paused = get_alarm_pause_status(config_file)
+    alarm_paused = get_alarm_pause_status(config_file, "forecast")
 
     if not alarm_paused:
         forecast_time = get_forecast_time(config_file)                                  # How much time we forecast
@@ -70,8 +86,8 @@ def alarm_forecast(forecasts, config_file):
                 alarm = alarm and False
 
         return alarm
-
-    return False
+    else:
+        return False
 
 
 # Alarm that is going to check if there is an anomaly in the regression and in the forecast, and if both are true then
@@ -83,7 +99,7 @@ def alarm_forecast(forecasts, config_file):
 # config_file = file with all extra info for configuration
 # output: a boolean indicating if there is an alarm or not
 def double_check_alarm(original_value, regression_value, regression_percentage, forecasts, config_file):
-    alarm_paused = get_alarm_pause_status(config_file)
+    alarm_paused = get_alarm_pause_status(config_file, "double_check")
 
     if not alarm_paused:
         regression_anomaly = check_alarm_percentage(actual_value=original_value, calculated_value=regression_value,
@@ -100,8 +116,8 @@ def double_check_alarm(original_value, regression_value, regression_percentage, 
 
         if regression_anomaly and forecast_anomaly:
             return True
-
-    return False
+    else:
+        return False
 
 
 # Alarm that double checks the forecast. See if during the past the metric has been growing fast and also sees if the
@@ -111,7 +127,7 @@ def double_check_alarm(original_value, regression_value, regression_percentage, 
 # config_file: the file with the configuration and extra information
 # output: a boolean indicating if there is an alarm or not
 def double_forecast_check(metric, forecasts, config_file):
-    alarm_paused = get_alarm_pause_status(config_file)
+    alarm_paused = get_alarm_pause_status(config_file, "double_forecast")
 
     if not alarm_paused:
         forecast_percentage = get_monitoring_forecast_percentage(config_file)
@@ -138,8 +154,8 @@ def double_forecast_check(metric, forecasts, config_file):
 
             if forecast_anomaly:
                 return True
-
-    return False
+    else:
+        return False
 
 
 # This function sends an alarm with a graph that shows the anomaly

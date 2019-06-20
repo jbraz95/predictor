@@ -82,8 +82,13 @@ def get_monitoring_forecast_percentage(file):
     return float(load_file(file)["alerting"]["forecast_percentage"])
 
 
-def get_alarm_pause_status(file):
-    return bool(load_file(file)["alerting"]["paused"])
+def get_alarm_pause_status(file, alert):
+    general = bool(load_file(file)["alerting"]["paused"])
+
+    if alert is "general":
+        return general
+    else:
+        return general or bool(load_file(file)["alerting"]["alerts_paused"][alert])
 
 
 def get_paused_time(file):

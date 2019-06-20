@@ -1,5 +1,5 @@
 from alarms.alarm_system import check_alarm_percentage, send_alarm, double_check_alarm, double_forecast_check, \
-    alarm_forecast
+    alarm_forecast, alarm_regression
 from file_loader.config_loader import *
 from api_calls.general_api_calls import get_actual_value, get_query_actual, get_values
 from prediction.regression import get_regression_actual_search, reset_regression
@@ -18,7 +18,7 @@ import threading
 def check_time(previous_time, time_span, config_file):
     actual_time = time.time()
     paused_time = get_paused_time(config_file)
-    alarm_paused = get_alarm_pause_status(config_file)
+    alarm_paused = get_alarm_pause_status(config_file, "general")
 
     if (actual_time >= paused_time) and (paused_time > 0) and alarm_paused:
         modify_pause_alert(config_file, False)
@@ -70,8 +70,8 @@ def monitor(config_file):
             print("The number of tasks should be: " + str(actual_value_regression))
 
             # If the difference between the regression estimation and the actual value is big, we alert the admins
-            if check_alarm_percentage(actual_value=actual_value, calculated_value=actual_value_regression,
-                                      percentage_change=regression_percentage, config_file=config_file):
+            if alarm_regression(actual_value=actual_value, calculated_value=actual_value_regression,
+                                config_file=config_file):
                 problem_text = "The alarm is sent because there is a big difference between the expected value and " \
                                "the current one. Expected: " + str(actual_value_regression) + ". Current value: " \
                                + str(actual_value)

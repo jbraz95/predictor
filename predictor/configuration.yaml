@@ -1,4 +1,9 @@
 alerting:
+  alerts_paused:
+    double_check: false
+    double_forecast: false
+    forecast: false
+    regression: false
   forecast_percentage: 0.05
   paused: false
   paused_time: 0
