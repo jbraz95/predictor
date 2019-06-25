@@ -255,8 +255,11 @@ async def ask_reset_regression(**payload):
 # Starts the reading messages process
 # token: the slack token
 def read_messages(token):
-    print("SlackBot Running")
-    loop = asyncio.new_event_loop()
-    asyncio.set_event_loop(loop)
-    rtm_client = slack.RTMClient(token=token, run_async=True, loop=loop)
-    loop.run_until_complete(rtm_client.start())
+    while True:
+        print("SlackBot Running")
+        loop = asyncio.new_event_loop()
+        asyncio.set_event_loop(loop)
+        rtm_client = slack.RTMClient(token=token, run_async=True, loop=loop)
+        loop.run_until_complete(rtm_client.start())
+        print("Error in slackbot. Resetting in 3")
+        time.sleep(3)

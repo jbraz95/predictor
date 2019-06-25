@@ -125,7 +125,7 @@ def run_prediction(config_file):
             else:
                 time.sleep(time_span_sleep)
     except Exception as e:
-        print(e)
+        print("error prediction" + e)
         time.sleep(time_span_sleep)
         pred = threading.Thread(target=run_prediction, args=(config_file,))
         pred.start()
@@ -137,7 +137,8 @@ def run_slack(config_file):
         token = get_slack_token(config_file)
         read_messages(token=token)
     except Exception as e:
-        print(e)
+        print("error slack " + e)
+        run_slack(config_file)
 
 
 # We start the program. We create an independent thread that will monitor the metrics and we start reading messages in

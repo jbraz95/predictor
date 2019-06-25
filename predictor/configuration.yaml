@@ -7,7 +7,7 @@ alerting:
   forecast_percentage: 0.05
   paused: false
   paused_time: 0
-  regression_min_difference: 25
+  regression_min_difference: 10
   regression_percentage: 0.05
 arima:
   forecast_time: 60
@@ -104,44 +104,52 @@ monitoring:
   time_span_sleep: 5
 regression:
 - incoming_task_count_total-BASIC_PREPARATION:
-    constant: '+4.9257723939'
-    manual_error: -30.0
+    constant: '+0.1698370365'
+    manual_error: 78.0
     metrics:
     - incoming_event_count_total:
         event_type: FINISHED
         exp: '1'
-        value: '-1.9427715755'
+        value: '+0.6418051577'
     - incoming_event_count_total:
         event_type: STARTED
         exp: '1'
-        value: '+2.8701723231'
+        value: '+0.3548617659'
     - incoming_event_count_total:
         event_type: TERMINATED
         exp: '1'
-        value: '-0.1042482924'
+        value: '-1.0804571699'
+    - incoming_event_count_total:
+        event_type: ERROR
+        exp: '1'
+        value: '-1.2507085187'
     predict: incoming_task_count_total
     task_type: BASIC_PREPARATION
 - incoming_task_count_total-CREATE_JPEGS:
-    constant: '+1.3642873561'
+    constant: '-0.0237419063'
     manual_error: 0
     metrics:
     - incoming_event_count_total:
         event_type: FINISHED
         exp: '1'
-        value: '-1.1012672705'
+        value: '+1.1753293496'
     - incoming_event_count_total:
         event_type: STARTED
         exp: '1'
-        value: '+2.0970134380'
+        value: '-0.1714397297'
     - incoming_event_count_total:
         event_type: TERMINATED
-        exp: '2'
-        value: '-0.5041718980'
+        exp: '1'
+        value: '-2.9493092472'
+    - incoming_event_count_total:
+        event_type: ERROR
+        exp: '1'
+        value: '0.3570134778'
     predict: incoming_task_count_total
     task_type: CREATE_JPEGS
 - incoming_task_count_total-FUBO:
     constant: '-7.8718054068'
-    manual_error: 0.0
+    manual_error: 0
     metrics:
     - incoming_event_count_total:
         event_type: FINISHED
@@ -151,6 +159,14 @@ regression:
         event_type: STARTED
         exp: '1'
         value: '+2.7462404654'
+    - incoming_event_count_total:
+        event_type: TERMINATED
+        exp: '1'
+        value: '-2.9493092472'
+    - incoming_event_count_total:
+        event_type: ERROR
+        exp: '1'
+        value: '-1.3570134778'
     predict: incoming_task_count_total
     task_type: FUBO
 - incoming_task_count_total-PMT:
@@ -173,7 +189,7 @@ regression:
     task_type: PMT
 - incoming_task_count_total-TOA:
     constant: '+2.4275736945'
-    manual_error: 0
+    manual_error: -12.0
     metrics:
     - incoming_event_count_total:
         event_type: FINISHED
@@ -186,53 +202,65 @@ regression:
     - incoming_event_count_total:
         event_type: TERMINATED
         exp: '1'
-        value: '+3.7246558313 '
+        value: '+3.7246558313'
+    - incoming_event_count_total:
+        event_type: ERROR
+        exp: '1'
+        value: '+1.3570134778'
     predict: incoming_task_count_total
     task_type: TOA
 - incoming_task_count_total-TOA_4K:
-    constant: '-1.9996214927'
+    constant: '+0.0574014464'
     manual_error: 0.0
     metrics:
     - incoming_event_count_total:
         event_type: FINISHED
         exp: '1'
-        value: '+0.5782614032'
+        value: '+0.8299544263'
     - incoming_event_count_total:
         event_type: STARTED
         exp: '1'
-        value: '+0.3926033457'
+        value: '+0.0544166535'
     - incoming_event_count_total:
         event_type: TERMINATED
         exp: '1'
-        value: '-1.3018056615'
+        value: '-0.6298745827'
+    - incoming_event_count_total:
+        event_type: ERROR
+        exp: '1'
+        value: '+0.4048063982'
     predict: incoming_task_count_total
     task_type: TOA_4K
 - incoming_task_count_total-VESET_BELGIUM:
-    constant: '-3.6225320092'
+    constant: '-2.0462340711'
     manual_error: 3.0
     metrics:
     - incoming_event_count_total:
         event_type: FINISHED
         exp: '1'
-        value: '0.3502647401'
+        value: '+0.2795809316'
     - incoming_event_count_total:
         event_type: STARTED
         exp: '1'
-        value: '+0.6948983163'
+        value: '+0.7514808520'
     - incoming_event_count_total:
         event_type: TERMINATED
         exp: '1'
-        value: '-4.9593665539'
+        value: '-4.7513967377'
+    - incoming_event_count_total:
+        event_type: ERROR
+        exp: '1'
+        value: '-0.7936176176'
     predict: incoming_task_count_total
     task_type: VESET_BELGIUM
 - task_in_failure:
-    constant: '52.0885583682'
-    manual_error: 114.0
+    constant: '82.4726007449'
+    manual_error: -18.0
     metrics:
     - incoming_event_count_total:
         event_type: ERROR
         exp: '1'
-        value: '+0.3588034606'
+        value: '+3.0159812487'
     predict: task_in_failure
     task_type: BASIC_PREPARATION
 server:
