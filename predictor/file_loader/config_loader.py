@@ -127,6 +127,20 @@ def get_regression_info(file):
     return load_file(file)['regression']
 
 
+def get_regression_info_metric(file, metric_searched):
+    regression_info = load_file(file)['regression']
+    number_case = 0
+
+    for case in regression_info:
+        for metric in case:
+            if metric == metric_searched:
+                return regression_info[number_case][metric_searched]
+            else:
+                number_case += 1
+
+    return ""
+
+
 def get_forecast_time(file):
     return load_file(file)["arima"]["forecast_time"]
 

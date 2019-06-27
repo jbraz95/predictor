@@ -15,6 +15,9 @@ import threading
 # time_span: time between checks
 # config_file: file with the configuration of the server
 # Output: Boolean indicating if the difference of times is bigger than time_span
+from testing.testing_cases import test_cases
+
+
 def check_time(previous_time, time_span, config_file):
     actual_time = time.time()
     paused_time = get_paused_time(config_file)
@@ -42,7 +45,6 @@ def monitor(config_file):
     slack_channel = get_slack_channel(config_file)                                  # Slack channel
     forecast_time = get_forecast_time(config_file)                                  # How much time we forecast
     forecast_training_time = get_forecast_training_time(config_file)                # Time for forecast training
-    regression_percentage = get_monitoring_regression_percentage(config_file)       # Max difference in regression
     regression_info = get_regression_info(file=config_file)                         # Regression info
 
     # We have cases, each one of them having a name (metric)
@@ -84,7 +86,7 @@ def monitor(config_file):
             forecasts = get_forecasts_array(params=params, time_series=time_series, forecast_time=forecast_time)
 
             # If the forecast grows very fast, we alert the admins
-            if alarm_forecast(forecasts=forecasts, config_file=config_file):
+            if alarm_forecast(forecasts=forecasts, config_file=config_file, mode='c'):
                 problem_text = "The alarm is sent because the forecast of this metric is growing very fast!"
                 send_alarm(token=token, channel=slack_channel, metric_name=metric,
                            problem_array=['actual', 'forecast'], problem_text=problem_text)
@@ -92,8 +94,7 @@ def monitor(config_file):
             # An alarm that is going to check if there is a big gap between the regression and the actual value, and
             # if the metric is not growing.
             if double_check_alarm(original_value=actual_value, regression_value=actual_value_regression,
-                                  regression_percentage=regression_percentage, forecasts=forecasts,
-                                  config_file=config_file):
+                                  forecasts=forecasts, mode="both", config_file=config_file):
                 problem_text = "The alarm is sent because there is a big difference between the expected value and " \
                                "the current one and it doesn't seems like it's going to grow. Expected: " + \
                                str(actual_value_regression) + ". Current value: " + str(actual_value)
@@ -103,7 +104,7 @@ def monitor(config_file):
 
             # This alarm will check if both the previous values and the future ones are growing in a fast pace, and
             # alert if this happens
-            if double_forecast_check(metric, forecasts, config_file):
+            if double_forecast_check(metric, forecasts, config_file, "c"):
                 problem_text = "The alarm is sent because the forecast of this metric is growing fast, even faster " \
                                "than previously"
                 send_alarm(token=token, channel=slack_channel, metric_name=metric,
@@ -134,21 +135,29 @@ def run_prediction(config_file):
 # We start the slack bot
 def run_slack(config_file):
     try:
-        token = get_slack_token(config_file)
-        read_messages(token=token)
+        while True:
+            token = get_slack_token(config_file)
+            read_messages(token=token)
+            print("Run slack restarting in 3")
+            time.sleep(3)
     except Exception as e:
         print("error slack " + e)
         run_slack(config_file)
 
 
 # We start the program. We create an independent thread that will monitor the metrics and we start reading messages in
-# slack
+# slack. If we want to test the tool, we will activate the boolean.
 def run():
-    try:
-        config_file = "predictor/configuration.yaml"
-        pred = threading.Thread(target=run_prediction, args=(config_file, ))
-        pred.start()
-        run_slack(config_file=config_file)
-    except Exception as e:
-        print("Error: unable to start thread")
-        print(e)
+    testing = True
+
+    if testing:
+        test_cases()
+    else:
+        try:
+            config_file = "predictor/configuration.yaml"
+            pred = threading.Thread(target=run_prediction, args=(config_file, ))
+            pred.start()
+            run_slack(config_file=config_file)
+        except Exception as e:
+            print("Error: unable to start thread")
+            print(e)

@@ -40,7 +40,6 @@ def check_alarm_percentage(actual_value, calculated_value, percentage_change, mi
 # An alarm to study if the difference between the expected value and the actual value is very different
 # actual_value: the actual value of the metric
 # calculated_value: the expected value calculated by the regressive model
-# config_file: the configuration file with the necessary parameters
 # output: a boolean indicating if there is an alarm or not
 def alarm_regression(actual_value, calculated_value, config_file):
     alarm_paused = get_alarm_pause_status(config_file, "regression")
@@ -58,12 +57,16 @@ def alarm_regression(actual_value, calculated_value, config_file):
 
 
 # An alarm to study if the forecast is giving a trend that is growing faster than indicated in the configuration file.
-# We will get both forecasts, with constant(c) and without(nc), and if both are growing too fast we will send a True
+# We will get both forecasts, with constant(c) and without(nc), and if C is growing too fast we will send a True
 # boolean.
 # forecasts: set of forecast (with and without constant) for a metric
 # config_file: file with all the parameters and configurations
+# mode: for what forecast they trigger
+#       c -> constant forecast
+#       nc -> No constant forecast
+#       both -> Both forecast
 # output: a boolean indicating if there is an alarm or not
-def alarm_forecast(forecasts, config_file):
+def alarm_forecast(forecasts, config_file, mode):
     alarm_paused = get_alarm_pause_status(config_file, "forecast")
 
     if not alarm_paused:
@@ -77,14 +80,16 @@ def alarm_forecast(forecasts, config_file):
             else:
                 print("The next " + str(forecast_time) + " minutes will have these values (constant): ")
 
-            max_forecast = max(forecast[1])
-            min_forecast = min(forecast[1])
+            if (forecast[0] == mode) or (mode == 'both'):
+                max_forecast = max(forecast[1])
+                min_forecast = min(forecast[1])
+                if check_alarm_percentage(actual_value=max_forecast, calculated_value=min_forecast,
+                                          percentage_change=forecast_percentage, min_diff=0):
+                    alarm = alarm and True
+                else:
+                    alarm = alarm and False
+
             print(forecast[1])
-            if check_alarm_percentage(actual_value=max_forecast, calculated_value=min_forecast,
-                                      percentage_change=forecast_percentage, min_diff=0):
-                alarm = alarm and True
-            else:
-                alarm = alarm and False
 
         return alarm
     else:
@@ -95,12 +100,16 @@ def alarm_forecast(forecasts, config_file):
 # it will output a True boolean.
 # Original_value = actual value of the metric
 # regression_value = calculated value in the regression
-# regression_percentage = maximum percentage difference between original and regression value
 # forecasts = sets of forecasts of the metric (constant and no constants)
 # config_file = file with all extra info for configuration
+# mode: for what forecast they trigger
+#       c -> constant forecast
+#       nc -> No constant forecast
+#       both -> Both forecast
 # output: a boolean indicating if there is an alarm or not
-def double_check_alarm(original_value, regression_value, regression_percentage, forecasts, config_file):
+def double_check_alarm(original_value, regression_value, forecasts, config_file, mode):
     alarm_paused = get_alarm_pause_status(config_file, "double_check")
+    regression_percentage = get_monitoring_regression_percentage(config_file)
 
     if not alarm_paused:
         min_diff = get_alarm_minimum_difference(config_file)
@@ -110,12 +119,13 @@ def double_check_alarm(original_value, regression_value, regression_percentage, 
 
         forecast_anomaly = True
         for forecast in forecasts:
-            min_forecast = min(forecast[1])
-            max_forecast = max(forecast[1])
-            if (abs(max_forecast) - abs(min_forecast)) == 0:
-                forecast_anomaly = forecast_anomaly and True
-            else:
-                forecast_anomaly = forecast_anomaly and False
+            if(forecast[0] == mode) or (mode == 'both'):
+                min_forecast = min(forecast[1])
+                max_forecast = max(forecast[1])
+                if (abs(max_forecast) - abs(min_forecast)) == 0:
+                    forecast_anomaly = forecast_anomaly and True
+                else:
+                    forecast_anomaly = forecast_anomaly and False
 
         if regression_anomaly and forecast_anomaly:
             return True
@@ -128,8 +138,12 @@ def double_check_alarm(original_value, regression_value, regression_percentage, 
 # Metric: the metric to study
 # forecasts: the forecasts of the metric
 # config_file: the file with the configuration and extra information
+# mode: for what forecast they trigger
+#       c -> constant forecast
+#       nc -> No constant forecast
+#       both -> Both forecast
 # output: a boolean indicating if there is an alarm or not
-def double_forecast_check(metric, forecasts, config_file):
+def double_forecast_check(metric, forecasts, config_file, mode):
     alarm_paused = get_alarm_pause_status(config_file, "double_forecast")
 
     if not alarm_paused:
@@ -146,14 +160,15 @@ def double_forecast_check(metric, forecasts, config_file):
         if difference_actual > forecast_percentage:
             forecast_anomaly = True
             for forecast in forecasts:
-                min_forecast = min(forecast[1])
-                max_forecast = max(forecast[1])
-                difference_forecast = calculate_percentage(max_forecast, min_forecast)
+                if (forecast[0] == mode) or (mode == 'both'):
+                    min_forecast = min(forecast[1])
+                    max_forecast = max(forecast[1])
+                    difference_forecast = calculate_percentage(max_forecast, min_forecast)
 
-                if difference_forecast > difference_actual:
-                    forecast_anomaly = forecast_anomaly and True
-                else:
-                    forecast_anomaly = forecast_anomaly and False
+                    if difference_forecast > difference_actual:
+                        forecast_anomaly = forecast_anomaly and True
+                    else:
+                        forecast_anomaly = forecast_anomaly and False
 
             if forecast_anomaly:
                 return True
