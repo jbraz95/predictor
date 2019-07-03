@@ -111,6 +111,10 @@ between the first and last value of the regression. If it's bigger the alarm
 will trigger.
 
 #### ARIMA
+* `arima: forecast_time`: the tool is going to generate a forecast for this time
+* `arima: forecast_training_time`: the tool will take this amount of values to
+generate a forecast
+* `metrics: ` -> The model for each metric
 
 arima:
   forecast_time: [INT]
