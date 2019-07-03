@@ -16,7 +16,7 @@ For doing so, we have to access the configuration file ('predictor/configuration
 ### Configuration File
 The configuration file has to be called `configuration.yaml` and use this schema
 
-alerting:
+`alerting:
   alerts_paused:
     double_check: [BOOLEAN]
     double_forecast: [BOOLEAN]
@@ -63,6 +63,6 @@ server:
   url: [SERVER URL - STRING]
 slack:
   channel: [SLACK CHANNEL - STRING]
-  token: [SLACK TOKEN - STRING]
+  token: [SLACK TOKEN - STRING]`
 
 ### Configuration parameters
