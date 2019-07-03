@@ -65,6 +65,7 @@ def alarm_regression(actual_value, calculated_value, config_file):
 #       c -> constant forecast
 #       nc -> No constant forecast
 #       both -> Both forecast
+#       any -> Any forecast
 # output: a boolean indicating if there is an alarm or not
 def alarm_forecast(forecasts, config_file, mode):
     alarm_paused = get_alarm_pause_status(config_file, "forecast")
@@ -75,12 +76,20 @@ def alarm_forecast(forecasts, config_file, mode):
 
         alarm = True
         for forecast in forecasts:
-            if forecast[0] == 'nc':
-                print("The next " + str(forecast_time) + " minutes will have these values (no constant): ")
-            else:
-                print("The next " + str(forecast_time) + " minutes will have these values (constant): ")
+            #if forecast[0] == 'nc':
+                #print("The next " + str(forecast_time) + " minutes will have these values (no constant): ")
+            #else:
+                #print("The next " + str(forecast_time) + " minutes will have these values (constant): ")
 
-            if (forecast[0] == mode) or (mode == 'both'):
+            if mode == 'any':
+                max_forecast = max(forecast[1])
+                min_forecast = min(forecast[1])
+                if check_alarm_percentage(actual_value=max_forecast, calculated_value=min_forecast,
+                                          percentage_change=forecast_percentage, min_diff=0):
+                    alarm = alarm or True
+                else:
+                    alarm = alarm or False
+            elif (forecast[0] == mode) or (mode == 'both'):
                 max_forecast = max(forecast[1])
                 min_forecast = min(forecast[1])
                 if check_alarm_percentage(actual_value=max_forecast, calculated_value=min_forecast,
@@ -89,7 +98,7 @@ def alarm_forecast(forecasts, config_file, mode):
                 else:
                     alarm = alarm and False
 
-            print(forecast[1])
+            # print(forecast[1])
 
         return alarm
     else:
@@ -106,6 +115,7 @@ def alarm_forecast(forecasts, config_file, mode):
 #       c -> constant forecast
 #       nc -> No constant forecast
 #       both -> Both forecast
+#       any -> Any of the two
 # output: a boolean indicating if there is an alarm or not
 def double_check_alarm(original_value, regression_value, forecasts, config_file, mode):
     alarm_paused = get_alarm_pause_status(config_file, "double_check")
@@ -119,7 +129,15 @@ def double_check_alarm(original_value, regression_value, forecasts, config_file,
 
         forecast_anomaly = True
         for forecast in forecasts:
-            if(forecast[0] == mode) or (mode == 'both'):
+            if mode == 'any':
+                max_forecast = max(forecast[1])
+                min_forecast = min(forecast[1])
+                if check_alarm_percentage(actual_value=max_forecast, calculated_value=min_forecast,
+                                          percentage_change=forecast_percentage, min_diff=0):
+                    alarm = alarm or True
+                else:
+                    alarm = alarm or False
+            elif(forecast[0] == mode) or (mode == 'both'):
                 min_forecast = min(forecast[1])
                 max_forecast = max(forecast[1])
                 if (abs(max_forecast) - abs(min_forecast)) == 0:
@@ -142,6 +160,7 @@ def double_check_alarm(original_value, regression_value, forecasts, config_file,
 #       c -> constant forecast
 #       nc -> No constant forecast
 #       both -> Both forecast
+#       any -> Any forecast
 # output: a boolean indicating if there is an alarm or not
 def double_forecast_check(metric, forecasts, config_file, mode):
     alarm_paused = get_alarm_pause_status(config_file, "double_forecast")
@@ -160,12 +179,20 @@ def double_forecast_check(metric, forecasts, config_file, mode):
         if difference_actual > forecast_percentage:
             forecast_anomaly = True
             for forecast in forecasts:
-                if (forecast[0] == mode) or (mode == 'both'):
+                if mode == 'any':
+                    max_forecast = max(forecast[1])
+                    min_forecast = min(forecast[1])
+                    if check_alarm_percentage(actual_value=max_forecast, calculated_value=min_forecast,
+                                              percentage_change=forecast_percentage, min_diff=0):
+                        alarm = alarm or True
+                    else:
+                        alarm = alarm or False
+                elif (forecast[0] == mode) or (mode == 'both'):
                     min_forecast = min(forecast[1])
                     max_forecast = max(forecast[1])
                     difference_forecast = calculate_percentage(max_forecast, min_forecast)
 
-                    if difference_forecast > difference_actual:
+                    if difference_forecast >= difference_actual:
                         forecast_anomaly = forecast_anomaly and True
                     else:
                         forecast_anomaly = forecast_anomaly and False

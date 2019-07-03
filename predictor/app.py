@@ -1,4 +1,4 @@
-from alarms.alarm_system import check_alarm_percentage, send_alarm, double_check_alarm, double_forecast_check, \
+from alarms.alarm_system import send_alarm, double_check_alarm, double_forecast_check, \
     alarm_forecast, alarm_regression
 from file_loader.config_loader import *
 from api_calls.general_api_calls import get_actual_value, get_query_actual, get_values
@@ -126,7 +126,8 @@ def run_prediction(config_file):
             else:
                 time.sleep(time_span_sleep)
     except Exception as e:
-        print("error prediction" + e)
+        print("error prediction")
+        print(e)
         time.sleep(time_span_sleep)
         pred = threading.Thread(target=run_prediction, args=(config_file,))
         pred.start()
@@ -148,7 +149,7 @@ def run_slack(config_file):
 # We start the program. We create an independent thread that will monitor the metrics and we start reading messages in
 # slack. If we want to test the tool, we will activate the boolean.
 def run():
-    testing = True
+    testing = False
 
     if testing:
         test_cases()

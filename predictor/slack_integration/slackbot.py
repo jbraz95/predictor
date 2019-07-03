@@ -174,16 +174,19 @@ async def ask_help(**payload):
     subtype = get_subtype_bot(data)
 
     if 'help' in data['text'].lower() and subtype != "bot_message":
-        text = "Welcome to the predictorBot! These are the instructions for using it:\n" \
-               "Alarms: the bot will inform you when some anomaly occurs in the task-manager. " \
-               "You can stop these alarms by saying 'stop alarms'. You can resume then by saying 'resume alarms'" \
-                "You can also stop temporarily alarms by typing 'pause alarms X minutes'\n" \
-               "Resetting alarms: If you want to reset the regression of one alarm (to stop errors in a precise" \
-               "task_type metric, you only have to type 'resetregresion' plus the name of the task_type. Per example:" \
-               "'resetregression basic preparation'. This will add a constant to the metric and will 'reset it'\n" \
-               "Charts: You can ask for the actual charts at any moment. For doing so you only have to say what do you" \
-               "want to see (actual, regression, forecast or a mix of the three of them) and the name of the task type " \
-               "(basic preparation, toa, pmt, etc...)"
+        text = "Welcome to the predictorBot! These are the instructions for using it:\n\n" \
+               "*Alarms*: the bot will inform you when some anomaly occurs in the task-manager.\n " \
+               "You can stop these alarms by writing _stop alarms_. \n" \
+               "You can resume then by writing _resume alarms_ \n" \
+               "You can also stop temporarily alarms by typing _pause alarms X minutes_ \n\n" \
+               "*Resetting alarms*: If you want to reset the regression of one alarm (to stop errors in a precise " \
+               "task_type metric, you only have to type _resetregresion_ plus the name of the task_type. \n" \
+               "Per example: _resetregression basic preparation_. This will add a constant to the metric and " \
+               "will 'reset it'\n\n" \
+               "*Charts*: You can ask for the actual charts at any moment. For doing so you only have to say what do " \
+               "you want to see (*actual*, *regression*, *forecast* or a mix of the three of them) and the name of " \
+               "the task type (*basic preparation*, *toa*, *pmt*, etc...). \n" \
+               "Per example: _actual forecast toa_"
 
         channel_id = data.get("channel")
         webclient = payload['web_client']

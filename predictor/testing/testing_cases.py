@@ -11,143 +11,150 @@ def test_cases():
     cases = [['case1', 'incoming_task_count_total-BASIC_PREPARATION']]
 
     for case, regression in cases:
+        print("----------------Testing " + case + "----------------")
         test_case(case, regression)
 
 
 def test_case(case, regression_name):
     file = "predictor/testing_data/" + case + "/" + case + ".csv"
     config_file = "predictor/configuration.yaml"
+    span = 1
 
-    #minutes_alarm_regression = test_regression(regression_name, file, config_file)
-    #print(minutes_alarm_regression)
+    minutes_alarm_regression = test_regression(regression_name, file, config_file, auto_reset=True)
+    print("----------------------TESTING REGRESSION WITH " + case + " ----------------------")
+    print("----------------------Minutes with anomalies: ----------------------")
+    print(minutes_alarm_regression)
+    print("----------------------Number of minutes with anomalies: ----------------------")
+    print(len(minutes_alarm_regression))
+    print("------------------------------------------------------------------")
 
-    span = 10
-    #minutes_alarm_forecast = test_forecast(regression_name, file, config_file, span)
-    #print("Minutes of alarm: " + str(minutes_alarm_forecast))
+    print("----------------------TESTING FORECAST-C WITH " + case + " ----------------------")
+    print("----------------------Minutes with anomalies: ----------------------")
+    minutes_alarm_forecast_c = test_forecast(regression_name, file, config_file, span, 'c')
+    print(minutes_alarm_forecast_c)
+    print("----------------------Number of minutes with anomalies: ----------------------")
+    print(len(minutes_alarm_forecast_c)*span)
+    print("------------------------------------------------------------------")
 
-    #minutes_double_check = test_double_check(regression_name, file, config_file, span)
-    #print("Minutes of alarm: " + str(minutes_double_check))
+    print("----------------------TESTING FORECAST-NC WITH " + case + " ----------------------")
+    print("----------------------Minutes with anomalies: ----------------------")
+    minutes_alarm_forecast_nc = test_forecast(regression_name, file, config_file, span, 'nc')
+    print(minutes_alarm_forecast_nc)
+    print("----------------------Number of minutes with anomalies: ----------------------")
+    print(len(minutes_alarm_forecast_nc)*span)
 
-    minutes_double_forecast_check = test_double_forecast_check(regression_name, file, config_file, span, 'c')
-    print("Minutes of alarm: " + str(minutes_double_forecast_check))
+    print("----------------------TESTING FORECAST-ANY WITH " + case + " ----------------------")
+    print("----------------------Minutes with anomalies: ----------------------")
+    minutes_alarm_forecast_any = minutes_alarm_forecast_c or minutes_alarm_forecast_nc
+    print(minutes_alarm_forecast_any)
+    print(len(minutes_alarm_forecast_any)*span)
+    print("------------------------------------------------------------------")
+
+    print("----------------------TESTING FORECAST-BOTH WITH " + case + " ----------------------")
+    print("----------------------Minutes with anomalies: ----------------------")
+    minutes_alarm_forecast_both = minutes_alarm_forecast_c and minutes_alarm_forecast_nc
+    print(minutes_alarm_forecast_both)
+    print("----------------------Number of minutes with anomalies: ----------------------")
+    print(len(minutes_alarm_forecast_both)*span)
+    print("------------------------------------------------------------------")
+
+    print("----------------------TESTING DOUBLE_CHECK-C WITH " + case + " ----------------------")
+    print("----------------------Minutes with anomalies: ----------------------")
+    minutes_double_check_c = test_double_check(minutes_alarm_regression, minutes_alarm_forecast_c)
+    print(minutes_double_check_c)
+    print("----------------------Number of minutes with anomalies: ----------------------")
+    print(len(minutes_double_check_c)*span)
+    print("------------------------------------------------------------------")
+
+    print("----------------------TESTING DOUBLE_CHECK-NC WITH " + case + " ----------------------")
+    print("----------------------Minutes with anomalies: ----------------------")
+    minutes_double_check_nc = test_double_check(minutes_alarm_regression, minutes_alarm_forecast_nc)
+    print(minutes_double_check_nc)
+    print("----------------------Number of minutes with anomalies: ----------------------")
+    print(len(minutes_double_check_nc)*span)
+    print("------------------------------------------------------------------")
+
+    print("----------------------TESTING DOUBLE_CHECK-ANY WITH " + case + " ----------------------")
+    print("----------------------Minutes with anomalies: ----------------------")
+    minutes_double_check_any = minutes_double_check_c or minutes_double_check_nc
+    print(minutes_double_check_any)
+    print("----------------------Number of minutes with anomalies: ----------------------")
+    print(len(minutes_double_check_any) * span)
+    print("------------------------------------------------------------------")
+
+    print("----------------------TESTING DOUBLE_CHECK-BOTH WITH " + case + " ----------------------")
+    print("----------------------Minutes with anomalies: ----------------------")
+    minutes_double_check_both = minutes_double_check_c and minutes_double_check_nc
+    print(minutes_double_check_both)
+    print("----------------------Number of minutes with anomalies: ----------------------")
+    print(len(minutes_double_check_both)*span)
+    print("------------------------------------------------------------------")
+
+    print("----------------------TESTING DOUBLE_FORECAST-C WITH " + case + " ----------------------")
+    print("----------------------Minutes with anomalies: ----------------------")
+    minutes_double_forecast_check_c = test_double_forecast(file, minutes_alarm_forecast_c, config_file)
+    print(minutes_double_forecast_check_c)
+    print("----------------------Number of minutes with anomalies: ----------------------")
+    print(len(minutes_double_forecast_check_c)*span)
+    print("------------------------------------------------------------------")
+
+    print("----------------------TESTING DOUBLE_FORECAST-NC WITH " + case + " ----------------------")
+    print("----------------------Minutes with anomalies: ----------------------")
+    minutes_double_forecast_check_nc = test_double_forecast(file, minutes_alarm_forecast_nc, config_file)
+    print(minutes_double_forecast_check_nc)
+    print("----------------------Number of minutes with anomalies: ----------------------")
+    print(len(minutes_double_forecast_check_nc)*span)
+    print("------------------------------------------------------------------")
+
+    print("----------------------TESTING DOUBLE_FORECAST-ANY WITH " + case + " ----------------------")
+    print("----------------------Minutes with anomalies: ----------------------")
+    minutes_double_forecast_check_any = minutes_double_forecast_check_c or minutes_double_forecast_check_nc
+    print(minutes_double_forecast_check_any)
+    print("----------------------Number of minutes with anomalies: ----------------------")
+    print(len(minutes_double_forecast_check_any)*span)
+    print("------------------------------------------------------------------")
+
+    print("----------------------TESTING DOUBLE_FORECAST-BOTH WITH " + case + " ----------------------")
+    print("----------------------Minutes with anomalies: ----------------------")
+    minutes_double_forecast_check_both = minutes_double_forecast_check_c and minutes_double_forecast_check_nc
+    print(minutes_double_forecast_check_both)
+    print("----------------------Number of minutes with anomalies: ----------------------")
+    print(len(minutes_double_forecast_check_both)*span)
+    print("------------------------------------------------------------------")
 
 
-def test_double_forecast_check(regression_name, file, config_file, span, mode):
+def test_double_forecast(file, minutes_alarm_forecast, config_file):
     time_series = prepare_timeseries(file, "ITCT")
-    params = get_params_arima_metric(file=config_file, metric=regression_name)
-    forecast_time = get_forecast_time(config_file)
     forecast_percentage = get_monitoring_forecast_percentage(config_file)
-    start = 0
-    finish = 60
-    anomaly_minutes = 0
+    anomaly_minutes = []
 
-    while finish <= len(time_series):
-        print("Minutes: " + str(start) + "-" + str(finish))
+    for minutes in minutes_alarm_forecast:
+        start = minutes - 60
+        finish = minutes
+
         time_series_reduced = time_series[start:finish]
         time_series_reduced_adapted = adapt_time_series(time_series_reduced)
         max_actual = max(time_series_reduced_adapted[1])
         min_actual = min(time_series_reduced_adapted[1])
         difference_actual = calculate_percentage(max_actual, min_actual)
-        print(difference_actual)
 
         if difference_actual > forecast_percentage:
-            print("Initially growing")
+            anomaly_minutes.append(finish)
 
-            forecast_anomaly = True
-            forecasts = get_forecasts_array(params=params, time_series=time_series_reduced,
-                                            forecast_time=forecast_time)
-
-            for forecast in forecasts:
-                if (forecast[0] == mode) or (mode == 'both'):
-                    min_forecast = min(forecast[1])
-                    max_forecast = max(forecast[1])
-                    difference_forecast = calculate_percentage(max_forecast, min_forecast)
-                    print(difference_forecast)
-
-                    if difference_forecast > difference_actual:
-                        forecast_anomaly = forecast_anomaly and True
-                        print("growing more")
-                    else:
-                        forecast_anomaly = forecast_anomaly and False
-                        print("not growing more")
-
-            if forecast_anomaly:
-                anomaly_minutes += span
-
-        start += span
-        finish += span
+    anomaly_minutes = anomaly_minutes and minutes_alarm_forecast
 
     return anomaly_minutes
 
 
-def test_double_check(regression_name, file, config_file, span):
-    minute = 0
-    time_series = prepare_timeseries(file, "ITCT")
-    start_timeseries = 0
-    end_timeseries = 60
-    forecast_time = get_forecast_time(config_file)
+def test_double_check(minutes_alarm_regression, minutes_alarm_forecast):
+    minutes_double_check = minutes_alarm_regression and minutes_alarm_forecast
+
+    return minutes_double_check
+
+
+def test_forecast(regression_name, file, config_file, span, mode):
     params = get_params_arima_metric(file=config_file, metric=regression_name)
-    anomaly_minutes = 0
-
-    with open(file, mode='r') as csv_file:
-        csv_reader = csv.DictReader(csv_file, delimiter=";")
-
-        # Each row is a minute
-        for row in csv_reader:
-            # If the minute coincides with the span
-            if minute % span == 0:
-                print("minute: " + str(minute))
-
-                # We get the variables
-                alarm = True
-                ITCT = float(row["ITCT"])
-                IECT_ERROR = float(row["IECT-ERROR"])
-                IECT_FINISHED = float(row["IECT-FINISHED"])
-                IECT_STARTED = float(row["IECT-STARTED"])
-                IECT_TERMINATED = float(row["IECT-TERMINATED"])
-
-                # We check the regression
-                regression_val = calculate_regression(error=IECT_ERROR, finished=IECT_FINISHED, started=IECT_STARTED,
-                                                      terminated=IECT_TERMINATED, metric_regression=regression_name)
-                if alarm_regression(actual_value=ITCT, calculated_value=regression_val, config_file=config_file):
-                    alarm = alarm and True
-                    print("alarm regression: yes")
-                else:
-                    alarm = alarm and False
-                    print("alarm regression: no")
-
-                # We check the forecast
-                time_series_reduced = time_series[start_timeseries:end_timeseries]
-                forecasts = get_forecasts_array(params=params, time_series=time_series_reduced,
-                                                forecast_time=forecast_time)
-
-                if alarm_forecast(forecasts=forecasts, config_file=config_file, mode='c'):
-                    alarm = alarm and True
-                    print("alarm forecast: yes")
-                else:
-                    alarm = alarm and False
-                    print("alarm forecast: no")
-
-                # We check both alarms
-                if alarm:
-                    print("general alarm: yes")
-                    anomaly_minutes += span
-                else:
-                    print("general alarm: no")
-
-                # We prepare variables for next iteration
-                start_timeseries += span
-                end_timeseries += span
-
-            minute += 1
-
-    return anomaly_minutes
-
-
-def test_forecast(regression_name, file, config_file, span):
-    # [[1561545165.181, '1254'], [1561545225.181, '1254'], [1561545285.181, '1254'],...]
-    params = get_params_arima_metric(file=config_file, metric=regression_name)
-    minutes_alarm = 0
+    minutes_alarm = []
 
     time_series = prepare_timeseries(file, "ITCT")
 
@@ -157,12 +164,12 @@ def test_forecast(regression_name, file, config_file, span):
     while finish <= len(time_series):
         time_series_reduced = time_series[start:finish]
         forecasts = get_forecasts_array(params=params, time_series=time_series_reduced, forecast_time=forecast_time)
-        if alarm_forecast(forecasts=forecasts, config_file=config_file, mode='c'):
-            print("alarma!")
-            minutes_alarm += span
+        if alarm_forecast(forecasts=forecasts, config_file=config_file, mode=mode):
+            minutes_alarm.append(finish)
 
         start += span
         finish += span
+        print(forecasts)
 
     return minutes_alarm
 
@@ -181,14 +188,15 @@ def prepare_timeseries(file, metric_name):
     return time_series
 
 
-def test_regression(regression_name, file, config_file):
-    print("Testing regression")
-    minutes_alarm = 0
+def test_regression(regression_name, file, config_file, auto_reset):
+    minutes_alarm = []
+    previous_regression = 0
 
     with open(file, mode='r') as csv_file:
         csv_reader = csv.DictReader(csv_file, delimiter=";")
 
         for row in csv_reader:
+            time = int(row["Time"])
             ITCT = float(row["ITCT"])
             IECT_ERROR = float(row["IECT-ERROR"])
             IECT_FINISHED = float(row["IECT-FINISHED"])
@@ -198,8 +206,14 @@ def test_regression(regression_name, file, config_file):
             regression_val = calculate_regression(error=IECT_ERROR, finished=IECT_FINISHED, started=IECT_STARTED,
                                                   terminated=IECT_TERMINATED, metric_regression=regression_name)
 
-            if alarm_regression(actual_value=ITCT, calculated_value=regression_val, config_file=config_file):
-                minutes_alarm += 1
+            if auto_reset:
+                if regression_val != previous_regression:
+                    if alarm_regression(actual_value=ITCT, calculated_value=regression_val, config_file=config_file):
+                        minutes_alarm.append(time)
+            elif alarm_regression(actual_value=ITCT, calculated_value=regression_val, config_file=config_file):
+                minutes_alarm.append(time)
+
+            previous_regression = regression_val
 
     return minutes_alarm
 

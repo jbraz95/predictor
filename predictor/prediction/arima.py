@@ -18,9 +18,13 @@ def get_arima_forecast(series, p, d, q, forecast, trend):
         model_fit = model.fit(disp=0, trend=trend)
         forecast_result = model_fit.forecast(steps=forecast)[0]
     except Exception as e:
-        pass
+        # pass
         # print(e)
         # print(forecast_result)
+        print("trying basic arima")
+        model = ARIMA(series_adapted, order=(1, 1, 1))
+        model_fit = model.fit(disp=0, trend=trend)
+        forecast_result = model_fit.forecast(steps=forecast)[0]
     finally:
         if len(forecast_result) == 0:
             length = len(series_adapted) - 1
