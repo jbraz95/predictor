@@ -96,3 +96,34 @@ slack:
 ```
 
 ### Configuration parameters
+In this section we will go through some parameters to explain what these means.
+
+#### Alerting
+* `alerting: alerts_paused: [name of alert]`: if that alarm is activated or not.
+* `alerting: forecast_percentage`: the maximum difference in percentage between
+the first and last value of the forecast. If it's bigger the alarm will trigger.
+* `alerting: paused`: if the alerting system is paused
+* `alerting: regression_min_difference`: the minimum difference in number between
+the expected value and the actual one. If the difference is smaller, the alarm
+will not trigger
+* `alerting: regression_percentage`: the maximum difference in percentage
+between the first and last value of the regression. If it's bigger the alarm
+will trigger.
+
+#### ARIMA
+
+arima:
+  forecast_time: [INT]
+  forecast_training_time: [INT]
+  metrics:
+  - [METRIC NAME]:
+    - constant_yes:
+        d: 1
+        p: 0
+        q: 1
+        trend: c
+    - constant_no:
+        d: 1
+        p: 0
+        q: 1
+        trend: nc
