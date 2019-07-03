@@ -17,7 +17,7 @@ The channel value we can find it by left clicking the name of the channel in the
 Slack app and clicking the option `Copy Link` and getting the ID from it
 (something similar to C81CGBPZ6)
 
-Finally we only have to run the program by typing `python3 app.py`
+Finally we only have to run the program by typing `python3 predictor`
 
 ## How to use
 Once installed we only have to wait for alarms or type commands.
