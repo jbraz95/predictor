@@ -92,7 +92,7 @@ server:
   url: [SERVER URL - STRING]
 slack:
   channel: [SLACK CHANNEL - STRING]
-  token: [SLACK TOKEN - STRING]>
+  token: [SLACK TOKEN - STRING]
 ```
 
 ### Configuration parameters
@@ -116,18 +116,21 @@ will trigger.
 generate a forecast
 * `metrics: ` -> The model for each metric
 
-arima:
-  forecast_time: [INT]
-  forecast_training_time: [INT]
-  metrics:
-  - [METRIC NAME]:
-    - constant_yes:
-        d: 1
-        p: 0
-        q: 1
-        trend: c
-    - constant_no:
-        d: 1
-        p: 0
-        q: 1
-        trend: nc
+#### Monitoring
+* `monitoring:app`: the app to monitor
+* `monitoring:datacenter`: the datacenter to monitor
+* `monitoring:kubernetes_namespace`: the kubernetes namespace to monitor
+* `monitoring:time_span`: each how many seconds we should monitor
+* `monitoring:time_span_sleep`: how many seconds we are going to wait between
+checks for `time_span`
+
+#### Regression
+* All model information
+
+#### Server
+* `server: url`: The URL of prometheus for getting the info
+
+#### Slack
+* `slack: channel`: the ID channel of slack where the tool is going to send the
+alerts
+* `slack: token`: the token of the slack workspace
