@@ -1,5 +1,19 @@
-# predictor
+# Task-Manager Anomaly Detector and Predictor
+Javier Bermejo Razquin Internship Prototype
 
+## How to install
+First we need to create an app in our Slack workspace. For doing so we go [here](https://api.slack.com/apps?new_app=1)
+Then we have to click in Bots and add a bot user.
+After that, we will install the app by clicking in 'Install your app to your workspace'
+Now we have the bot created, but we have to connect it to the program
+
+For doing so, we have to access the configuration file ('predictor/configuration.yaml') and modify the parameters
+
+## How to use
+
+
+## Configuration
+### Configuration File
 The configuration file has to be called `configuration.yaml` and use this schema
 
 alerting:
@@ -50,3 +64,5 @@ server:
 slack:
   channel: [SLACK CHANNEL - STRING]
   token: [SLACK TOKEN - STRING]
+
+### Configuration parameters
