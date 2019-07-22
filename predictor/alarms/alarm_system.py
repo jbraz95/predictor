@@ -1,6 +1,7 @@
 from api_calls.general_api_calls import get_query_actual_search, get_values, adapt_time_series
 from file_loader.config_loader import get_alarm_pause_status, get_alarm_minimum_difference, get_forecast_time, \
-    get_monitoring_forecast_percentage, get_server, get_monitoring_regression_percentage
+    get_monitoring_forecast_percentage, get_server, get_monitoring_regression_percentage, \
+    get_monitoring_forecast_percentage_nc
 from slack_integration.slackbot import send_image, send_message
 from generate_images.image_generator import get_url_image
 
@@ -72,7 +73,11 @@ def alarm_forecast(forecasts, config_file, mode):
 
     if not alarm_paused:
         forecast_time = get_forecast_time(config_file)                                  # How much time we forecast
-        forecast_percentage = get_monitoring_forecast_percentage(config_file)           # Max increase in forecast
+        if mode == "nc":
+            forecast_percentage = get_monitoring_forecast_percentage_nc(config_file)  # Max increase in forecast
+        else:
+            forecast_percentage = get_monitoring_forecast_percentage(config_file)  # Max increase in forecast
+
 
         alarm = True
         for forecast in forecasts:

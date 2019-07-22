@@ -8,7 +8,15 @@ from prediction.arima import get_forecasts_array
 
 
 def test_cases():
-    cases = [['case1', 'incoming_task_count_total-BASIC_PREPARATION']]
+    cases = [['case1', 'incoming_task_count_total-BASIC_PREPARATION'],
+             ['case2', 'incoming_task_count_total-BASIC_PREPARATION'],
+             ['case3', 'incoming_task_count_total-BASIC_PREPARATION'],
+             ['case4', 'incoming_task_count_total-BASIC_PREPARATION'],
+             ['case5', 'incoming_task_count_total-BASIC_PREPARATION'],
+             ['case6', 'incoming_task_count_total-BASIC_PREPARATION'],
+             ['case7', 'incoming_task_count_total-BASIC_PREPARATION']
+             ]
+    cases = [['case7', 'incoming_task_count_total-BASIC_PREPARATION']]
 
     for case, regression in cases:
         print("----------------Testing " + case + "----------------")
@@ -18,9 +26,9 @@ def test_cases():
 def test_case(case, regression_name):
     file = "predictor/testing_data/" + case + "/" + case + ".csv"
     config_file = "predictor/configuration.yaml"
-    span = 1
+    span = 5
 
-    minutes_alarm_regression = test_regression(regression_name, file, config_file, auto_reset=True)
+    minutes_alarm_regression = test_regression(regression_name, file, config_file, auto_reset=False)
     print("----------------------TESTING REGRESSION WITH " + case + " ----------------------")
     print("----------------------Minutes with anomalies: ----------------------")
     print(minutes_alarm_regression)
@@ -29,94 +37,95 @@ def test_case(case, regression_name):
     print("------------------------------------------------------------------")
 
     print("----------------------TESTING FORECAST-C WITH " + case + " ----------------------")
-    print("----------------------Minutes with anomalies: ----------------------")
     minutes_alarm_forecast_c = test_forecast(regression_name, file, config_file, span, 'c')
+    print("----------------------Minutes with anomalies: ----------------------")
     print(minutes_alarm_forecast_c)
     print("----------------------Number of minutes with anomalies: ----------------------")
     print(len(minutes_alarm_forecast_c)*span)
     print("------------------------------------------------------------------")
 
     print("----------------------TESTING FORECAST-NC WITH " + case + " ----------------------")
-    print("----------------------Minutes with anomalies: ----------------------")
     minutes_alarm_forecast_nc = test_forecast(regression_name, file, config_file, span, 'nc')
+    print("----------------------Minutes with anomalies: ----------------------")
     print(minutes_alarm_forecast_nc)
     print("----------------------Number of minutes with anomalies: ----------------------")
     print(len(minutes_alarm_forecast_nc)*span)
 
     print("----------------------TESTING FORECAST-ANY WITH " + case + " ----------------------")
+    minutes_alarm_forecast_any = sorted(set(minutes_alarm_forecast_c).union(minutes_alarm_forecast_nc))
     print("----------------------Minutes with anomalies: ----------------------")
-    minutes_alarm_forecast_any = minutes_alarm_forecast_c or minutes_alarm_forecast_nc
     print(minutes_alarm_forecast_any)
+    print("----------------------Number of minutes with anomalies: ----------------------")
     print(len(minutes_alarm_forecast_any)*span)
     print("------------------------------------------------------------------")
 
     print("----------------------TESTING FORECAST-BOTH WITH " + case + " ----------------------")
+    minutes_alarm_forecast_both = sorted(set(minutes_alarm_forecast_c).intersection(minutes_alarm_forecast_nc))
     print("----------------------Minutes with anomalies: ----------------------")
-    minutes_alarm_forecast_both = minutes_alarm_forecast_c and minutes_alarm_forecast_nc
     print(minutes_alarm_forecast_both)
     print("----------------------Number of minutes with anomalies: ----------------------")
     print(len(minutes_alarm_forecast_both)*span)
     print("------------------------------------------------------------------")
 
     print("----------------------TESTING DOUBLE_CHECK-C WITH " + case + " ----------------------")
-    print("----------------------Minutes with anomalies: ----------------------")
     minutes_double_check_c = test_double_check(minutes_alarm_regression, minutes_alarm_forecast_c)
+    print("----------------------Minutes with anomalies: ----------------------")
     print(minutes_double_check_c)
     print("----------------------Number of minutes with anomalies: ----------------------")
     print(len(minutes_double_check_c)*span)
     print("------------------------------------------------------------------")
 
     print("----------------------TESTING DOUBLE_CHECK-NC WITH " + case + " ----------------------")
-    print("----------------------Minutes with anomalies: ----------------------")
     minutes_double_check_nc = test_double_check(minutes_alarm_regression, minutes_alarm_forecast_nc)
+    print("----------------------Minutes with anomalies: ----------------------")
     print(minutes_double_check_nc)
     print("----------------------Number of minutes with anomalies: ----------------------")
     print(len(minutes_double_check_nc)*span)
     print("------------------------------------------------------------------")
 
     print("----------------------TESTING DOUBLE_CHECK-ANY WITH " + case + " ----------------------")
+    minutes_double_check_any = sorted(set(minutes_double_check_c).union(minutes_double_check_nc))
     print("----------------------Minutes with anomalies: ----------------------")
-    minutes_double_check_any = minutes_double_check_c or minutes_double_check_nc
     print(minutes_double_check_any)
     print("----------------------Number of minutes with anomalies: ----------------------")
     print(len(minutes_double_check_any) * span)
     print("------------------------------------------------------------------")
 
     print("----------------------TESTING DOUBLE_CHECK-BOTH WITH " + case + " ----------------------")
+    minutes_double_check_both = sorted(set(minutes_double_check_c).intersection(minutes_double_check_nc))
     print("----------------------Minutes with anomalies: ----------------------")
-    minutes_double_check_both = minutes_double_check_c and minutes_double_check_nc
     print(minutes_double_check_both)
     print("----------------------Number of minutes with anomalies: ----------------------")
     print(len(minutes_double_check_both)*span)
     print("------------------------------------------------------------------")
 
     print("----------------------TESTING DOUBLE_FORECAST-C WITH " + case + " ----------------------")
-    print("----------------------Minutes with anomalies: ----------------------")
     minutes_double_forecast_check_c = test_double_forecast(file, minutes_alarm_forecast_c, config_file)
+    print("----------------------Minutes with anomalies: ----------------------")
     print(minutes_double_forecast_check_c)
     print("----------------------Number of minutes with anomalies: ----------------------")
     print(len(minutes_double_forecast_check_c)*span)
     print("------------------------------------------------------------------")
 
     print("----------------------TESTING DOUBLE_FORECAST-NC WITH " + case + " ----------------------")
-    print("----------------------Minutes with anomalies: ----------------------")
     minutes_double_forecast_check_nc = test_double_forecast(file, minutes_alarm_forecast_nc, config_file)
+    print("----------------------Minutes with anomalies: ----------------------")
     print(minutes_double_forecast_check_nc)
     print("----------------------Number of minutes with anomalies: ----------------------")
     print(len(minutes_double_forecast_check_nc)*span)
     print("------------------------------------------------------------------")
 
     print("----------------------TESTING DOUBLE_FORECAST-ANY WITH " + case + " ----------------------")
+    minutes_double_forecast_check_any = sorted(set(minutes_double_forecast_check_c).union(minutes_double_forecast_check_nc))
     print("----------------------Minutes with anomalies: ----------------------")
-    minutes_double_forecast_check_any = minutes_double_forecast_check_c or minutes_double_forecast_check_nc
     print(minutes_double_forecast_check_any)
     print("----------------------Number of minutes with anomalies: ----------------------")
     print(len(minutes_double_forecast_check_any)*span)
     print("------------------------------------------------------------------")
 
     print("----------------------TESTING DOUBLE_FORECAST-BOTH WITH " + case + " ----------------------")
+    minutes_double_forecast_check_both = sorted(set(minutes_double_forecast_check_c).intersection(minutes_double_forecast_check_nc))
     print("----------------------Minutes with anomalies: ----------------------")
-    minutes_double_forecast_check_both = minutes_double_forecast_check_c and minutes_double_forecast_check_nc
     print(minutes_double_forecast_check_both)
     print("----------------------Number of minutes with anomalies: ----------------------")
     print(len(minutes_double_forecast_check_both)*span)
@@ -129,8 +138,8 @@ def test_double_forecast(file, minutes_alarm_forecast, config_file):
     anomaly_minutes = []
 
     for minutes in minutes_alarm_forecast:
-        start = minutes - 60
-        finish = minutes
+        start = int((minutes/60) - 60 + 1)
+        finish = int(minutes/60 + 1)
 
         time_series_reduced = time_series[start:finish]
         time_series_reduced_adapted = adapt_time_series(time_series_reduced)
@@ -164,11 +173,16 @@ def test_forecast(regression_name, file, config_file, span, mode):
     while finish <= len(time_series):
         time_series_reduced = time_series[start:finish]
         forecasts = get_forecasts_array(params=params, time_series=time_series_reduced, forecast_time=forecast_time)
+        adapted_finish = finish * 60
         if alarm_forecast(forecasts=forecasts, config_file=config_file, mode=mode):
-            minutes_alarm.append(finish)
+            print("ALAAARRRRMMMMM!!!!!!!")
+            minutes_alarm.append(adapted_finish)
+            print(minutes_alarm)
 
         start += span
         finish += span
+        print("For time:" + str(adapted_finish))
+        print(time_series_reduced)
         print(forecasts)
 
     return minutes_alarm
@@ -203,15 +217,18 @@ def test_regression(regression_name, file, config_file, auto_reset):
             IECT_STARTED = float(row["IECT-STARTED"])
             IECT_TERMINATED = float(row["IECT-TERMINATED"])
 
+            print(time)
             regression_val = calculate_regression(error=IECT_ERROR, finished=IECT_FINISHED, started=IECT_STARTED,
                                                   terminated=IECT_TERMINATED, metric_regression=regression_name)
 
             if auto_reset:
                 if regression_val != previous_regression:
                     if alarm_regression(actual_value=ITCT, calculated_value=regression_val, config_file=config_file):
+                        print("alarm!")
                         minutes_alarm.append(time)
             elif alarm_regression(actual_value=ITCT, calculated_value=regression_val, config_file=config_file):
                 minutes_alarm.append(time)
+                print("alarm!")
 
             previous_regression = regression_val
 

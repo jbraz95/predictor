@@ -81,6 +81,9 @@ def get_monitoring_regression_percentage(file):
 def get_monitoring_forecast_percentage(file):
     return float(load_file(file)["alerting"]["forecast_percentage"])
 
+def get_monitoring_forecast_percentage_nc(file):
+    return float(load_file(file)["alerting"]["forecast_percentage_nc"])
+
 
 def get_alarm_pause_status(file, alert):
     general = bool(load_file(file)["alerting"]["paused"])

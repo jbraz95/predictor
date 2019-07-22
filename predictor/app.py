@@ -149,7 +149,7 @@ def run_slack(config_file):
 # We start the program. We create an independent thread that will monitor the metrics and we start reading messages in
 # slack. If we want to test the tool, we will activate the boolean.
 def run():
-    testing = False
+    testing = True
 
     if testing:
         test_cases()
