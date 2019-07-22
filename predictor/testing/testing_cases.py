@@ -1,7 +1,7 @@
 import csv
 
 from alarms.alarm_system import calculate_percentage, alarm_regression, alarm_forecast
-from api_calls.general_api_calls import adapt_time_series
+from api.general_api_calls import adapt_time_series
 from file_loader.config_loader import get_regression_info, get_regression_info_metric, get_params_arima_metric, \
     get_forecast_time, get_monitoring_forecast_percentage
 from prediction.arima import get_forecasts_array
