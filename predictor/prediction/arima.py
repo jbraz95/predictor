@@ -1,5 +1,5 @@
 from statsmodels.tsa.arima_model import ARIMA
-from api_calls.general_api_calls import adapt_time_series
+from api.general_api_calls import adapt_time_series
 
 
 # It generates the forecast for a timeseries

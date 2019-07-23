@@ -1,4 +1,4 @@
-from api_calls.general_api_calls import get_actual_value, get_query_regression, itct_actual_forced_query, get_values, \
+from api.general_api_calls import get_actual_value, get_query_regression, itct_actual_forced_query, get_values, \
     adapt_time_series, get_query_actual_search
 from file_loader.config_loader import get_server, get_app, get_datacenter, get_kubernetes_namespace, \
     get_monitoring_time_span, get_regression_info, modify_manual_error

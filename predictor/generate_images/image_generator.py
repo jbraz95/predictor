@@ -1,4 +1,4 @@
-from api_calls.general_api_calls import adapt_time_series, get_query_actual_search, get_values
+from api.general_api_calls import adapt_time_series, get_query_actual_search, get_values
 from file_loader.config_loader import get_server, get_monitoring_time_span, get_forecast_time, \
     get_forecast_training_time, get_params_arima_metric
 from prediction.arima import get_forecasts_array

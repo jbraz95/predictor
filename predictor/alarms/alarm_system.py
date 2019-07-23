@@ -1,4 +1,4 @@
-from api_calls.general_api_calls import get_query_actual_search, get_values, adapt_time_series
+from api.general_api_calls import get_query_actual_search, get_values, adapt_time_series
 from file_loader.config_loader import get_alarm_pause_status, get_alarm_minimum_difference, get_forecast_time, \
     get_monitoring_forecast_percentage, get_server, get_monitoring_regression_percentage, \
     get_monitoring_forecast_percentage_nc
