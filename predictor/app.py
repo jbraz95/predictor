@@ -1,7 +1,7 @@
 from alarms.alarm_system import send_alarm, double_check_alarm, double_forecast_check, \
     alarm_forecast, alarm_regression
 from file_loader.config_loader import *
-from api_calls.general_api_calls import get_actual_value, get_query_actual, get_values
+from api.general_api_calls import get_actual_value, get_query_actual, get_values
 from prediction.regression import get_regression_actual_search, reset_regression
 from prediction.arima import get_forecasts_array
 from slack_integration.slackbot import read_messages

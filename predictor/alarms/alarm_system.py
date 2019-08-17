@@ -1,7 +1,7 @@
 from api.general_api_calls import get_query_actual_search, get_values, adapt_time_series
 from file_loader.config_loader import get_alarm_pause_status, get_alarm_minimum_difference, get_forecast_time, \
     get_monitoring_forecast_percentage, get_server, get_monitoring_regression_percentage, \
-    get_monitoring_forecast_percentage_nc
+    get_monitoring_forecast_percentage_nc, get_alarm_maximum_difference
 from slack_integration.slackbot import send_image, send_message
 from generate_images.image_generator import get_url_image
 
@@ -22,7 +22,7 @@ def calculate_percentage(a, b):
 # percentage_change = maximum difference in percentage between actual_value and calculated_value (p.e. 20%)
 # config_file = configuration file for the rest of parameters
 # output: a boolean indicating if there is an alarm or not
-def check_alarm_percentage(actual_value, calculated_value, percentage_change, min_diff):
+def check_alarm_percentage(actual_value, calculated_value, percentage_change, min_diff, max_diff=10000):
 
     percentage = calculate_percentage(actual_value, calculated_value)
 
@@ -30,9 +30,11 @@ def check_alarm_percentage(actual_value, calculated_value, percentage_change, mi
     # but it will not be an anomaly.
     difference_number = abs(actual_value - calculated_value)
 
+    print(difference_number)
+
     print("The difference between the new value and the original one is: " + str(percentage))
 
-    if (abs(percentage) > percentage_change) and (difference_number > min_diff):
+    if ((abs(percentage) > percentage_change) and (abs(difference_number) > min_diff)) or (abs(difference_number) > max_diff):
         return True
     else:
         return False
@@ -48,9 +50,10 @@ def alarm_regression(actual_value, calculated_value, config_file):
     if not alarm_paused:
         regression_percentage = get_monitoring_regression_percentage(config_file)
         min_diff = get_alarm_minimum_difference(config_file)
+        max_diff = get_alarm_maximum_difference(config_file)
 
         alarm = check_alarm_percentage(actual_value=actual_value, calculated_value=calculated_value,
-                                          percentage_change=regression_percentage, min_diff=min_diff)
+                                          percentage_change=regression_percentage, min_diff=min_diff, max_diff=max_diff)
 
         return alarm
     else:
@@ -77,7 +80,6 @@ def alarm_forecast(forecasts, config_file, mode):
             forecast_percentage = get_monitoring_forecast_percentage_nc(config_file)  # Max increase in forecast
         else:
             forecast_percentage = get_monitoring_forecast_percentage(config_file)  # Max increase in forecast
-
 
         alarm = True
         for forecast in forecasts:
@@ -125,6 +127,7 @@ def alarm_forecast(forecasts, config_file, mode):
 def double_check_alarm(original_value, regression_value, forecasts, config_file, mode):
     alarm_paused = get_alarm_pause_status(config_file, "double_check")
     regression_percentage = get_monitoring_regression_percentage(config_file)
+    forecast_percentage = get_monitoring_forecast_percentage(config_file)
 
     if not alarm_paused:
         min_diff = get_alarm_minimum_difference(config_file)
