@@ -8,14 +8,15 @@ from prediction.arima import get_forecasts_array
 
 
 def test_cases():
-    cases = [['case1', 'incoming_task_count_total-BASIC_PREPARATION'],
-             ['case2', 'incoming_task_count_total-BASIC_PREPARATION'],
-             ['case3', 'incoming_task_count_total-BASIC_PREPARATION'],
-             ['case4', 'incoming_task_count_total-BASIC_PREPARATION'],
-             ['case5', 'incoming_task_count_total-BASIC_PREPARATION'],
-             ['case6', 'incoming_task_count_total-BASIC_PREPARATION'],
-             ['case7', 'incoming_task_count_total-BASIC_PREPARATION']
-             ]
+    # cases = [['case1', 'incoming_task_count_total-BASIC_PREPARATION'],
+    #          ['case2', 'incoming_task_count_total-BASIC_PREPARATION'],
+    #          ['case3', 'incoming_task_count_total-BASIC_PREPARATION'],
+    #          ['case4', 'incoming_task_count_total-BASIC_PREPARATION'],
+    #          ['case5', 'incoming_task_count_total-BASIC_PREPARATION'],
+    #          ['case6', 'incoming_task_count_total-BASIC_PREPARATION'],
+    #          ['case7', 'incoming_task_count_total-BASIC_PREPARATION'],
+    #          ['case8', 'incoming_task_count_total-BASIC_PREPARATION']
+    #          ]
     cases = [['case7', 'incoming_task_count_total-BASIC_PREPARATION']]
 
     for case, regression in cases:

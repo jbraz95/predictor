@@ -76,6 +76,9 @@ def alarm_forecast(forecasts, config_file, mode):
 
     if not alarm_paused:
         forecast_time = get_forecast_time(config_file)                                  # How much time we forecast
+        min_diff = get_alarm_minimum_difference(config_file)
+        max_diff = get_alarm_maximum_difference(config_file)
+
         if mode == "nc":
             forecast_percentage = get_monitoring_forecast_percentage_nc(config_file)  # Max increase in forecast
         else:
@@ -92,7 +95,7 @@ def alarm_forecast(forecasts, config_file, mode):
                 max_forecast = max(forecast[1])
                 min_forecast = min(forecast[1])
                 if check_alarm_percentage(actual_value=max_forecast, calculated_value=min_forecast,
-                                          percentage_change=forecast_percentage, min_diff=0):
+                                          percentage_change=forecast_percentage, min_diff=min_diff, max_diff=max_diff):
                     alarm = alarm or True
                 else:
                     alarm = alarm or False
@@ -131,9 +134,10 @@ def double_check_alarm(original_value, regression_value, forecasts, config_file,
 
     if not alarm_paused:
         min_diff = get_alarm_minimum_difference(config_file)
+        max_diff = get_alarm_maximum_difference(config_file)
 
         regression_anomaly = check_alarm_percentage(actual_value=original_value, calculated_value=regression_value,
-                                                    percentage_change=regression_percentage, min_diff=min_diff)
+                                                    percentage_change=regression_percentage, min_diff=min_diff, max_diff=max_diff)
 
         forecast_anomaly = True
         for forecast in forecasts:
@@ -141,7 +145,7 @@ def double_check_alarm(original_value, regression_value, forecasts, config_file,
                 max_forecast = max(forecast[1])
                 min_forecast = min(forecast[1])
                 if check_alarm_percentage(actual_value=max_forecast, calculated_value=min_forecast,
-                                          percentage_change=forecast_percentage, min_diff=0):
+                                          percentage_change=forecast_percentage, min_diff=min_diff, max_diff=max_diff):
                     alarm = alarm or True
                 else:
                     alarm = alarm or False
@@ -184,6 +188,9 @@ def double_forecast_check(metric, forecasts, config_file, mode):
         min_actual = min(actual_values[1])
         difference_actual = calculate_percentage(max_actual, min_actual)
 
+        min_diff = get_alarm_minimum_difference(config_file)
+        max_diff = get_alarm_maximum_difference(config_file)
+
         if difference_actual > forecast_percentage:
             forecast_anomaly = True
             for forecast in forecasts:
@@ -191,7 +198,7 @@ def double_forecast_check(metric, forecasts, config_file, mode):
                     max_forecast = max(forecast[1])
                     min_forecast = min(forecast[1])
                     if check_alarm_percentage(actual_value=max_forecast, calculated_value=min_forecast,
-                                              percentage_change=forecast_percentage, min_diff=0):
+                                              percentage_change=forecast_percentage, min_diff=min_diff, max_diff=max_diff):
                         alarm = alarm or True
                     else:
                         alarm = alarm or False
