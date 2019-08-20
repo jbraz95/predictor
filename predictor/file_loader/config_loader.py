@@ -98,12 +98,20 @@ def get_paused_time(file):
     return float(load_file(file)["alerting"]["paused_time"])
 
 
-def get_alarm_minimum_difference(file):
+def get_alarm_minimum_difference_regression(file):
     return int(load_file(file)["alerting"]["regression_min_difference"])
 
-def get_alarm_maximum_difference(file):
+
+def get_alarm_maximum_difference_regression(file):
     return int(load_file(file)["alerting"]["regression_max_difference"])
 
+
+def get_alarm_minimum_difference_forecast(file):
+    return int(load_file(file)["alerting"]["forecast_min_difference"])
+
+
+def get_alarm_maximum_difference_forecast(file):
+    return int(load_file(file)["alerting"]["forecast_max_difference"])
 
 def get_slack_channel(file):
     return load_file(file)["slack"]["channel"]

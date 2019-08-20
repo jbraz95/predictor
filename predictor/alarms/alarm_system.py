@@ -1,7 +1,9 @@
 from api.general_api_calls import get_query_actual_search, get_values, adapt_time_series
-from file_loader.config_loader import get_alarm_pause_status, get_alarm_minimum_difference, get_forecast_time, \
+from file_loader.config_loader import get_alarm_pause_status, get_alarm_minimum_difference_regression, \
+    get_forecast_time, \
     get_monitoring_forecast_percentage, get_server, get_monitoring_regression_percentage, \
-    get_monitoring_forecast_percentage_nc, get_alarm_maximum_difference
+    get_monitoring_forecast_percentage_nc, get_alarm_maximum_difference_regression, \
+    get_alarm_maximum_difference_forecast, get_alarm_minimum_difference_forecast
 from slack_integration.slackbot import send_image, send_message
 from generate_images.image_generator import get_url_image
 
@@ -49,8 +51,8 @@ def alarm_regression(actual_value, calculated_value, config_file):
 
     if not alarm_paused:
         regression_percentage = get_monitoring_regression_percentage(config_file)
-        min_diff = get_alarm_minimum_difference(config_file)
-        max_diff = get_alarm_maximum_difference(config_file)
+        min_diff = get_alarm_minimum_difference_regression(config_file)
+        max_diff = get_alarm_maximum_difference_regression(config_file)
 
         alarm = check_alarm_percentage(actual_value=actual_value, calculated_value=calculated_value,
                                           percentage_change=regression_percentage, min_diff=min_diff, max_diff=max_diff)
@@ -76,8 +78,8 @@ def alarm_forecast(forecasts, config_file, mode):
 
     if not alarm_paused:
         forecast_time = get_forecast_time(config_file)                                  # How much time we forecast
-        min_diff = get_alarm_minimum_difference(config_file)
-        max_diff = get_alarm_maximum_difference(config_file)
+        min_diff = get_alarm_minimum_difference_forecast(config_file)
+        max_diff = get_alarm_maximum_difference_forecast(config_file)
 
         if mode == "nc":
             forecast_percentage = get_monitoring_forecast_percentage_nc(config_file)  # Max increase in forecast
@@ -103,7 +105,7 @@ def alarm_forecast(forecasts, config_file, mode):
                 max_forecast = max(forecast[1])
                 min_forecast = min(forecast[1])
                 if check_alarm_percentage(actual_value=max_forecast, calculated_value=min_forecast,
-                                          percentage_change=forecast_percentage, min_diff=0):
+                                          percentage_change=forecast_percentage, min_diff=min_diff, max_diff=max_diff):
                     alarm = alarm and True
                 else:
                     alarm = alarm and False
@@ -133,11 +135,14 @@ def double_check_alarm(original_value, regression_value, forecasts, config_file,
     forecast_percentage = get_monitoring_forecast_percentage(config_file)
 
     if not alarm_paused:
-        min_diff = get_alarm_minimum_difference(config_file)
-        max_diff = get_alarm_maximum_difference(config_file)
+        min_diff_regression = get_alarm_minimum_difference_regression(config_file)
+        max_diff_regression = get_alarm_maximum_difference_regression(config_file)
+        min_diff_forecast = get_alarm_minimum_difference_forecast(config_file)
+        max_diff_forecast = get_alarm_maximum_difference_forecast(config_file)
 
         regression_anomaly = check_alarm_percentage(actual_value=original_value, calculated_value=regression_value,
-                                                    percentage_change=regression_percentage, min_diff=min_diff, max_diff=max_diff)
+                                                    percentage_change=regression_percentage, min_diff=min_diff_regression,
+                                                    max_diff=max_diff_regression)
 
         forecast_anomaly = True
         for forecast in forecasts:
@@ -145,7 +150,8 @@ def double_check_alarm(original_value, regression_value, forecasts, config_file,
                 max_forecast = max(forecast[1])
                 min_forecast = min(forecast[1])
                 if check_alarm_percentage(actual_value=max_forecast, calculated_value=min_forecast,
-                                          percentage_change=forecast_percentage, min_diff=min_diff, max_diff=max_diff):
+                                          percentage_change=forecast_percentage, min_diff=min_diff_forecast,
+                                          max_diff=max_diff_forecast):
                     alarm = alarm or True
                 else:
                     alarm = alarm or False
@@ -188,8 +194,8 @@ def double_forecast_check(metric, forecasts, config_file, mode):
         min_actual = min(actual_values[1])
         difference_actual = calculate_percentage(max_actual, min_actual)
 
-        min_diff = get_alarm_minimum_difference(config_file)
-        max_diff = get_alarm_maximum_difference(config_file)
+        min_diff = get_alarm_minimum_difference_forecast(config_file)
+        max_diff = get_alarm_maximum_difference_forecast(config_file)
 
         if difference_actual > forecast_percentage:
             forecast_anomaly = True
